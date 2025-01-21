@@ -90,7 +90,7 @@ const AdminPanelLayout: React.FC<PropsWithChildren> = ({ children }) => {
             <Title>{identifier}</Title>
             <Breadcrumb />
           </div>
-          <Group className={classes["header-right-part"]}>
+          <Group className={classes["header-right-part"]} wrap="nowrap">
             <TextInput leftSection={<IconSearch />} placeholder="search..." />
             {headerButtons}
             <MantineMenu>
