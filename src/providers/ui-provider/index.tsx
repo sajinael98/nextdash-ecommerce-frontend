@@ -1,21 +1,30 @@
-"use client"
-import { createTheme, MantineProvider, Text } from "@mantine/core";
+"use client";
+import {
+  createTheme,
+  CSSVariablesResolver,
+  MantineProvider,
+  Text,
+} from "@mantine/core";
 import React, { PropsWithChildren } from "react";
 
-const theme = createTheme({
-  components: {
-    Text: Text.extend({
-      styles(theme, props, ctx) {
-        
-          return {
+const theme = createTheme({});
 
-          }
-      },
-    })
-  }
-})
+const resolver: CSSVariablesResolver = (theme) => ({
+  light: {
+    "--mantine-dashboard-bg": "#fcfcfc ",
+  },
+  dark: {
+    "--mantine-dashboard-bg": theme.colors.dark[8],
+  },
+  variables: {},
+});
+
 const UiProvider: React.FC<PropsWithChildren> = ({ children }) => {
-  return <MantineProvider theme={theme}>{children}</MantineProvider>;
+  return (
+    <MantineProvider theme={theme} cssVariablesResolver={resolver}>
+      {children}
+    </MantineProvider>
+  );
 };
 
 export default UiProvider;

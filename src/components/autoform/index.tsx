@@ -73,12 +73,14 @@ const ArrayFieldTemplate: ComponentType<
       [
         {
           accessorKey: "action",
+          size: 70,
+
           cell(props) {
             const index = props.row.index;
             const item = items[index];
             return (
               <>
-                <Group gap="xs">
+                <Group gap="xs" wrap="nowrap">
                   <ActionIcon
                     onClick={() => openModalHandler(index)}
                     size="sm"
@@ -148,10 +150,15 @@ const ArrayFieldTemplate: ComponentType<
         </Text>
       </Text>
       <DashboardTable table={table} />
-      <Button onClick={() => { 
-        onAddClick()
-        table.setColumnFilters([])
-      }} variant="outline" size="compact-sm" w={120}>
+      <Button
+        onClick={() => {
+          onAddClick();
+          table.setColumnFilters([]);
+        }}
+        variant="outline"
+        size="compact-sm"
+        w={120}
+      >
         Add
       </Button>
     </>

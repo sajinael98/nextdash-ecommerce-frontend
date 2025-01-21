@@ -3,7 +3,6 @@ import {
   Flex,
   Group,
   Menu,
-  Select,
   Table,
   Text,
   TextInput,
@@ -41,6 +40,7 @@ const TableHeaderGroup: React.FC<TableHeaderGroupProps> = ({ groups }) => {
                   position: "sticky",
                   right: 0,
                   [header.column.getIsPinned() as string]: 0,
+                  background: "var(--mantine-dashboard-bg)",
                 },
               },
             })}
@@ -106,7 +106,16 @@ const TableHeaderGroup: React.FC<TableHeaderGroupProps> = ({ groups }) => {
 const DashboardTable: React.FC<TableProps> = ({ table }) => {
   return (
     <>
-      <Table.ScrollContainer minWidth={200}>
+      <Table.ScrollContainer
+        minWidth={200}
+        // {...(table.getRowCount() !== 0 && { h: 100, mah: 500 })}
+        styles={{
+          scrollContainerInner: {
+            minHeight: 100,
+            maxHeight: 500
+          }
+        }}
+      >
         <Table
           layout="fixed"
           verticalSpacing="xs"
@@ -127,7 +136,12 @@ const DashboardTable: React.FC<TableProps> = ({ table }) => {
             {table.getRowCount() === 0 && (
               <Table.Tr>
                 <Table.Td colSpan={table.getAllColumns().length + 1}>
-                  <Flex direction="column" justify="center" align="center" h={200}>
+                  <Flex
+                    direction="column"
+                    justify="center"
+                    align="center"
+                    h={200}
+                  >
                     <ThemeIcon variant="transparent">
                       <IconDatabase />
                     </ThemeIcon>
@@ -140,7 +154,16 @@ const DashboardTable: React.FC<TableProps> = ({ table }) => {
               <Table.Tr key={row.id}>
                 <Table.Td>{index + 1}</Table.Td>
                 {row.getLeftVisibleCells().map((cell) => (
-                  <Table.Td key={cell.id}>
+                  <Table.Td
+                    key={cell.id}
+                    styles={(theme) => ({
+                      td: {
+                        position: "sticky",
+                        right: 0,
+                        background: "var(--mantine-dashboard-bg)",
+                      },
+                    })}
+                  >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </Table.Td>
                 ))}
@@ -150,7 +173,16 @@ const DashboardTable: React.FC<TableProps> = ({ table }) => {
                   </Table.Td>
                 ))}
                 {row.getRightVisibleCells().map((cell) => (
-                  <Table.Td key={cell.id}>
+                  <Table.Td
+                    key={cell.id}
+                    styles={(theme) => ({
+                      td: {
+                        position: "sticky",
+                        right: 0,
+                        background: "var(--mantine-dashboard-bg)",
+                      },
+                    })}
+                  >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </Table.Td>
                 ))}

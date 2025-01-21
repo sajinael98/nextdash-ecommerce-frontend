@@ -6,10 +6,9 @@ import { dataProvider } from "@providers/data-provider";
 import UiProvider from "@providers/ui-provider";
 import { Refine, ResourceProps } from "@refinedev/core";
 import routerProvider from "@refinedev/nextjs-router";
-import "@styles/global.css";
 import { IconChartBar, IconHome, IconShoppingCart } from "@tabler/icons-react";
 import { Metadata } from "next";
-import React, { Suspense } from "react";
+import React from "react";
 
 export const metadata: Metadata = {
   title: "Refine",
