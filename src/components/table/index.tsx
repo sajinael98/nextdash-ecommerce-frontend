@@ -1,13 +1,15 @@
 import {
   ActionIcon,
+  Flex,
   Group,
   Menu,
   Select,
   Table,
   Text,
   TextInput,
+  ThemeIcon,
 } from "@mantine/core";
-import { IconCaretUpDown, IconFilter } from "@tabler/icons-react";
+import { IconCaretUpDown, IconDatabase, IconFilter } from "@tabler/icons-react";
 import {
   flexRender,
   HeaderGroup,
@@ -37,7 +39,7 @@ const TableHeaderGroup: React.FC<TableHeaderGroupProps> = ({ groups }) => {
               styles: {
                 th: {
                   position: "sticky",
-                  top: 0,
+                  right: 0,
                   [header.column.getIsPinned() as string]: 0,
                 },
               },
@@ -122,6 +124,18 @@ const DashboardTable: React.FC<TableProps> = ({ table }) => {
             </Table.Tr>
           </Table.Thead>
           <Table.Tbody>
+            {table.getRowCount() === 0 && (
+              <Table.Tr>
+                <Table.Td colSpan={table.getAllColumns().length + 1}>
+                  <Flex direction="column" justify="center" align="center" h={200}>
+                    <ThemeIcon variant="transparent">
+                      <IconDatabase />
+                    </ThemeIcon>
+                    <Text>No Data</Text>
+                  </Flex>
+                </Table.Td>
+              </Table.Tr>
+            )}
             {table.getRowModel().rows.map((row, index) => (
               <Table.Tr key={row.id}>
                 <Table.Td>{index + 1}</Table.Td>
