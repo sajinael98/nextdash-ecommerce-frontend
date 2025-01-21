@@ -1,0 +1,26 @@
+.glass-bg {
+  @mixin dark {
+    background: var(--mantine-color-dark-6);
+  }
+
+  @mixin light {
+    background: var(--mantine-color-gray-1);
+
+  }
+  border-radius: 16px;
+  /* boxShadow: 0 4px 30px rgba(0, 0, 0, 0.1), */
+  backdrop-filter: blur(5px);
+  webkit-backdrop-filter: blur(5px);
+}
+
+.header-right-part {
+  padding: var(--mantine-spacing-md);
+  border-radius: 1.5rem;
+  @mixin dark {
+    background-color: var(--mantine-color-black);
+  }
+
+  @mixin light {
+    background-color:var(--mantine-color-white);
+  }
+}

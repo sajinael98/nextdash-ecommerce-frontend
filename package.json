@@ -1,0 +1,54 @@
+{
+  "name": "dashboard",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "dev": "cross-env NODE_OPTIONS=--max_old_space_size=4096 refine dev",
+    "build": "refine build",
+    "start": "refine start",
+    "lint": "next lint",
+    "refine": "refine"
+  },
+  "dependencies": {
+    "@mantine/charts": "^7.15.2",
+    "@mantine/core": "^7.15.2",
+    "@mantine/dates": "^7.15.2",
+    "@mantine/form": "^7.15.2",
+    "@mantine/hooks": "^7.15.2",
+    "@mantine/notifications": "^7.15.2",
+    "@refinedev/cli": "^2.16.21",
+    "@refinedev/core": "^4.47.1",
+    "@refinedev/devtools": "^1.1.32",
+    "@refinedev/kbar": "^1.3.6",
+    "@refinedev/nextjs-router": "^6.0.0",
+    "@refinedev/react-table": "^5.6.15",
+    "@refinedev/simple-rest": "^5.0.1",
+    "@rjsf/core": "^5.24.1",
+    "@rjsf/utils": "^5.24.1",
+    "@rjsf/validator-ajv8": "^5.24.1",
+    "@tabler/icons": "^3.26.0",
+    "@tabler/icons-react": "^3.26.0",
+    "dayjs": "^1.11.13",
+    "next": "^14.1.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "recharts": "^2.15.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.16.2",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "cross-env": "^7.0.3",
+    "eslint": "^8",
+    "eslint-config-next": "^14.1.0",
+    "postcss-preset-mantine": "^1.17.0",
+    "typescript": "^5.4.2"
+  },
+  "refine": {
+    "projectId": "sXyKYR-uoMAWV-NTZ337"
+  }
+}

@@ -1,0 +1,33 @@
+.list-item {
+  position: relative;
+  color: var(--mantine-color-gray-6);
+  padding: var(--mantine-spacing-sm) calc(var(--mantine-spacing-md) * 1.5);
+  margin: var(--mantine-spacing-xs) 0;
+  cursor: pointer;
+
+  &[data-selected="true"] {
+    font-weight: 500;
+    @mixin dark {
+      color: white;
+    }
+
+    @mixin light {
+      color: black;
+    }
+    svg {
+      color: var(--mantine-primary-color-filled);
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      right: 0;
+      transform: translateY(-50%);
+      background-color: var(--mantine-primary-color-filled);
+      width: 5px;
+      height: 75%;
+      border-radius: 5px;
+    }
+  }
+}
