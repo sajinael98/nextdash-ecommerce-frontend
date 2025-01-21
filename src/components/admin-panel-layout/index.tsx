@@ -14,6 +14,7 @@ import {
   Box,
   Container,
   Divider,
+  Flex,
   Group,
   Menu as MantineMenu,
   MenuDropdown,
@@ -53,7 +54,6 @@ const AdminPanelLayout: React.FC<PropsWithChildren> = ({ children }) => {
     () =>
       [
         { icon: IconBell, onClick() {} },
-        { icon: IconAlertSquareRounded, onClick() {} },
         {
           icon: colorSchemaIcons[colorScheme as "light" | "dark"],
           onClick: toggleColorScheme,
@@ -85,26 +85,32 @@ const AdminPanelLayout: React.FC<PropsWithChildren> = ({ children }) => {
       }}
     >
       <AppShellHeader p="xl" className={classes["glass-bg"]} withBorder={false}>
-        <Group justify="space-between">
+        <Flex
+          justify="space-between"
+          direction={{ base: "column-reverse", md: "row" }}
+        >
           <div>
             <Title>{identifier}</Title>
             <Breadcrumb />
           </div>
-          <Group className={classes["header-right-part"]} wrap="nowrap">
+          <Group
+            className={classes["header-right-part"]}
+            wrap="nowrap"
+            p={{ base: 0, md: "md" }}
+            mb={{ base: "md", md: 0 }}
+          >
             <TextInput leftSection={<IconSearch />} placeholder="search..." />
             {headerButtons}
             <MantineMenu>
               <MenuTarget>
-                <Avatar radius="xl">
-                  MK
-                </Avatar>
+                <Avatar radius="xl">MK</Avatar>
               </MenuTarget>
               <MenuDropdown>
                 <MenuItem>Logout</MenuItem>
               </MenuDropdown>
             </MantineMenu>
           </Group>
-        </Group>
+        </Flex>
       </AppShellHeader>
       <AppShellNavbar px="md">
         <Text
