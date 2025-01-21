@@ -49,29 +49,27 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" {...mantineHtmlProps}>
-       <head>
+      <head>
         <ColorSchemeScript />
       </head>
       <body>
-        <Suspense>
-          <UiProvider>
-            {/* <DevtoolsProvider> */}
-            <Refine
-              resources={resources}
-              routerProvider={routerProvider}
-              dataProvider={dataProvider}
-              options={{
-                syncWithLocation: true,
-                warnWhenUnsavedChanges: true,
-                useNewQueryKeys: true,
-                projectId: "sXyKYR-uoMAWV-NTZ337",
-              }}
-            >
-              {children}
-            </Refine>
-          </UiProvider>
-          {/* </DevtoolsProvider> */}
-        </Suspense>
+        <UiProvider>
+          {/* <DevtoolsProvider> */}
+          <Refine
+            resources={resources}
+            routerProvider={routerProvider}
+            dataProvider={dataProvider}
+            options={{
+              syncWithLocation: true,
+              warnWhenUnsavedChanges: true,
+              useNewQueryKeys: true,
+              projectId: "sXyKYR-uoMAWV-NTZ337",
+            }}
+          >
+            {children}
+          </Refine>
+        </UiProvider>
+        {/* </DevtoolsProvider> */}
       </body>
     </html>
   );

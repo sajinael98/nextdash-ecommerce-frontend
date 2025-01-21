@@ -20,6 +20,7 @@ import {
   MenuItem,
   MenuTarget,
   Text,
+  TextInput,
   Title,
   useMantineColorScheme,
 } from "@mantine/core";
@@ -83,45 +84,28 @@ const AdminPanelLayout: React.FC<PropsWithChildren> = ({ children }) => {
         },
       }}
     >
-      {/* <AppShellHeader p="xl" className={classes["glass-bg"]} withBorder={false}>
+      <AppShellHeader p="xl" className={classes["glass-bg"]} withBorder={false}>
         <Group justify="space-between">
-          <Box>
-            <Breadcrumb />
+          <div>
             <Title>{identifier}</Title>
-          </Box>
-          <Group
-            className={classes["header-right-part"]}
-            w={{ base: "100%", md: "auto" }}
-            justify=""
-          >
-            <Autocomplete
-              placeholder="Search..."
-              leftSection={<IconSearch />}
-              variant="filled"
-              radius="lg"
-              flex="1"
-            />
-            <Group>
-              {headerButtons}
-              <MantineMenu width={200} position="bottom-end" withArrow>
-                <MenuTarget>
-                  <Avatar
-                    styles={{ root: { cursor: "pointer" } }}
-                    variant="filled"
-                    color="var(--mantine-primary-color-filled)"
-                    radius="xl"
-                  >
-                    MK
-                  </Avatar>
-                </MenuTarget>
-                <MenuDropdown>
-                  <MenuItem>Test</MenuItem>
-                </MenuDropdown>
-              </MantineMenu>
-            </Group>
+            <Breadcrumb />
+          </div>
+          <Group className={classes["header-right-part"]}>
+            <TextInput leftSection={<IconSearch />} placeholder="search..." />
+            {headerButtons}
+            <MantineMenu>
+              <MenuTarget>
+                <Avatar radius="xl">
+                  MK
+                </Avatar>
+              </MenuTarget>
+              <MenuDropdown>
+                <MenuItem>Logout</MenuItem>
+              </MenuDropdown>
+            </MantineMenu>
           </Group>
         </Group>
-      </AppShellHeader> */}
+      </AppShellHeader>
       <AppShellNavbar px="md">
         <Text
           mx="auto"
