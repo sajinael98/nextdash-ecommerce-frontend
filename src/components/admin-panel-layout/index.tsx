@@ -84,7 +84,7 @@ const AdminPanelLayout: React.FC<PropsWithChildren> = ({ children }) => {
         },
       }}
     >
-      <AppShellHeader p="xl" className={classes["glass-bg"]} withBorder={false}>
+      {/* <AppShellHeader p="xl" className={classes["glass-bg"]} withBorder={false}>
         <Flex
           justify="space-between"
           direction={{ base: "column-reverse", md: "row" }}
@@ -111,7 +111,7 @@ const AdminPanelLayout: React.FC<PropsWithChildren> = ({ children }) => {
             </MantineMenu>
           </Group>
         </Flex>
-      </AppShellHeader>
+      </AppShellHeader> */}
       <AppShellNavbar px="md">
         <Text
           mx="auto"

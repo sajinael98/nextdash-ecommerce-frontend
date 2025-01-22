@@ -1,14 +1,10 @@
 import { ColorSchemeScript, mantineHtmlProps } from "@mantine/core";
 import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
+import AppProvider from "@providers/app-provider";
 
-import { dataProvider } from "@providers/data-provider";
-import UiProvider from "@providers/ui-provider";
-import { Refine, ResourceProps } from "@refinedev/core";
-import routerProvider from "@refinedev/nextjs-router";
-import { IconChartBar, IconHome, IconShoppingCart } from "@tabler/icons-react";
 import { Metadata } from "next";
-import React from "react";
+import React, { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "Refine",
@@ -18,29 +14,6 @@ export const metadata: Metadata = {
   },
 };
 
-const resources: ResourceProps[] = [
-  {
-    name: "Main Dashboard",
-    list: "/",
-    meta: {
-      icon: <IconHome />,
-    },
-  },
-  {
-    name: "NFT MarketPlace",
-    list: "/",
-    meta: {
-      icon: <IconShoppingCart />,
-    },
-  },
-  {
-    name: "Data Tables",
-    list: "/",
-    meta: {
-      icon: <IconChartBar />,
-    },
-  },
-];
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -52,23 +25,7 @@ export default function RootLayout({
         <ColorSchemeScript />
       </head>
       <body>
-        <UiProvider>
-          {/* <DevtoolsProvider> */}
-          <Refine
-            resources={resources}
-            routerProvider={routerProvider}
-            dataProvider={dataProvider}
-            options={{
-              syncWithLocation: true,
-              warnWhenUnsavedChanges: true,
-              useNewQueryKeys: true,
-              projectId: "sXyKYR-uoMAWV-NTZ337",
-            }}
-          >
-            {children}
-          </Refine>
-        </UiProvider>
-        {/* </DevtoolsProvider> */}
+        <AppProvider>{children}</AppProvider>
       </body>
     </html>
   );
