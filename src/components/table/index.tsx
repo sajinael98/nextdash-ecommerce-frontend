@@ -1,5 +1,6 @@
 import {
   ActionIcon,
+  Button,
   Flex,
   Group,
   Menu,
@@ -8,13 +9,15 @@ import {
   TextInput,
   ThemeIcon,
 } from "@mantine/core";
+import { useForm } from "@mantine/form";
 import { IconCaretUpDown, IconDatabase, IconFilter } from "@tabler/icons-react";
 import {
+  Column,
   flexRender,
   HeaderGroup,
   Table as ReactTable,
 } from "@tanstack/react-table";
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
 
 interface TableProps {
   table: ReactTable<any>;
@@ -24,6 +27,34 @@ interface TableHeaderGroupProps {
   groups: HeaderGroup<any>[];
 }
 
+interface FilterProps {
+  column: Column<any>;
+}
+
+const Filter: React.FC<FilterProps> = ({ column }) => {
+  const { getInputProps, onSubmit, setFieldValue } = useForm({
+    [column.id]: "",
+  });
+
+  function submitHandler(values: any) {
+    column.setFilterValue(values[column.id]);
+  }
+
+  useEffect(() => {
+    setFieldValue(column.id, column.getFilterValue());
+  }, []);
+
+  return (
+    <form onSubmit={onSubmit(submitHandler)}>
+      <TextInput mb="md" {...getInputProps(column.id)} />
+      <Group justify="flex-end">
+        <Button size="compact-sm" type="submit">
+          Filter
+        </Button>
+      </Group>
+    </form>
+  );
+};
 const TableHeaderGroup: React.FC<TableHeaderGroupProps> = ({ groups }) => {
   return groups.map((headerGroup) => (
     <Fragment key={headerGroup.id}>
@@ -49,7 +80,7 @@ const TableHeaderGroup: React.FC<TableHeaderGroupProps> = ({ groups }) => {
               {flexRender(header.column.columnDef.header, header.getContext())}
               {!header.column.getIsPinned() && (
                 <Group wrap="nowrap" gap="xs">
-                  <Menu position="bottom-start" closeOnItemClick={false}>
+                  <Menu closeOnItemClick={false}>
                     <Menu.Target>
                       <ActionIcon
                         size="sm"
@@ -64,12 +95,7 @@ const TableHeaderGroup: React.FC<TableHeaderGroupProps> = ({ groups }) => {
                     <Menu.Dropdown>
                       <Menu.Label>Search</Menu.Label>
                       <Menu.Item>
-                        <TextInput
-                          value={header.column.getFilterValue() as string}
-                          onChange={(event) => {
-                            header.column.setFilterValue(event.target.value);
-                          }}
-                        />
+                        <Filter column={header.column} />
                       </Menu.Item>
                     </Menu.Dropdown>
                   </Menu>
@@ -112,21 +138,29 @@ const DashboardTable: React.FC<TableProps> = ({ table }) => {
         styles={{
           scrollContainerInner: {
             minHeight: 100,
-            maxHeight: 500
-          }
+            maxHeight: 500,
+          },
         }}
       >
         <Table
           layout="fixed"
           verticalSpacing="xs"
           horizontalSpacing="xs"
-          withColumnBorders
           withRowBorders
           withTableBorder
+          striped
+          styles={{
+            td: {
+              padding: 5,
+            },
+            th: {
+              padding: 5,
+            },
+          }}
         >
           <Table.Thead>
             <Table.Tr>
-              <Table.Th w={40}>#</Table.Th>
+              <Table.Th w={20}>#</Table.Th>
               <TableHeaderGroup groups={table.getLeftHeaderGroups()} />
               <TableHeaderGroup groups={table.getCenterHeaderGroups()} />
               <TableHeaderGroup groups={table.getRightHeaderGroups()} />

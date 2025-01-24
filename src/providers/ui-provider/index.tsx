@@ -3,11 +3,23 @@ import {
   createTheme,
   CSSVariablesResolver,
   MantineProvider,
+  Menu,
   Text,
 } from "@mantine/core";
 import React, { PropsWithChildren } from "react";
 
-const theme = createTheme({});
+const theme = createTheme({
+  components: {
+    Menu: Menu.extend({
+      defaultProps: {
+        width: 200,
+        position: "bottom-end",
+        withArrow: true,
+        withinPortal: true,
+      },
+    }),
+  },
+});
 
 const resolver: CSSVariablesResolver = (theme) => ({
   light: {
