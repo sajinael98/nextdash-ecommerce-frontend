@@ -1,6 +1,13 @@
 "use client";
 
-import { List } from "@mantine/core";
+import {
+  Group,
+  List,
+  ScrollArea,
+  Text,
+  ThemeIcon,
+  UnstyledButton,
+} from "@mantine/core";
 import { useMenu } from "@refinedev/core";
 import { useRouter } from "next/navigation";
 import classes from "./menu.module.css";
@@ -13,16 +20,33 @@ export const Menu = () => {
     router.push(path);
   }
 
-  const items = menuItems.map(({ name, meta, list = "" }) => (
-    <List.Item
-      key={name}
-      icon={meta?.icon}
-      className={classes["list-item"]}
-      data-selected={selectedKey === `/${name}`}
-      onClick={() => redirectUser(list.toString())}
-    >
-      {name}
-    </List.Item>
-  ));
-  return <List>{items}</List>;
+  const items = menuItems.map(({ name, meta, list = "" }) => {
+    const flag = selectedKey === `/${name}`;
+    return (
+      <UnstyledButton
+        key={name}
+        onClick={() => redirectUser(list.toString())}
+        w="100%"
+        h={40}
+        pl="xl"
+        mb="xs"
+        styles={{
+          root: {
+            borderRadius: "var(--mantine-radius-default)",
+            ...(flag && {
+              backgroundColor: "var(--mantine-primary-color-light)",
+            }),
+          },
+        }}
+      >
+        <Group align="flex-end" gap={5}>
+          <ThemeIcon variant="transparent">{meta?.icon}</ThemeIcon>
+          <Text tt="capitalize" c="dimmed" {...(flag && { fw: 500, c: 'light-dark(black, white)' })}>
+            {name}
+          </Text>
+        </Group>
+      </UnstyledButton>
+    );
+  });
+  return <ScrollArea>{items}</ScrollArea>;
 };
