@@ -6,6 +6,7 @@ const authOptions: AuthOptions = {
     signIn: "/login",
   },
   session: {
+    strategy: "jwt",
     // Set session max age to 30 minutes
     maxAge: 60 * 60, // 30 minutes in seconds
   },
@@ -14,11 +15,12 @@ const authOptions: AuthOptions = {
     maxAge: 60 * 60, // 30 minutes in seconds
   },
   callbacks: {
-    jwt(params) {
-      return params;
+    async jwt({ token, user }) {
+      return { ...token, ...user };
     },
-    session(params) {
-      return params.session;
+    async session({ session, token, user }) {
+      session.user = token as any;
+      return session;
     },
   },
   providers: [credentialsProvider],

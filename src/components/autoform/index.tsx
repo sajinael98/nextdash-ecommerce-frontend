@@ -25,9 +25,8 @@ import {
   SubmitButtonProps,
 } from "@rjsf/utils";
 import validator from "@rjsf/validator-ajv8";
-import { IconEdit, IconTrash } from "@tabler/icons-react";
+import { IconDeviceFloppy, IconEdit, IconTrash } from "@tabler/icons-react";
 import {
-  ColumnDef,
   getCoreRowModel,
   getFilteredRowModel,
   getSortedRowModel,
@@ -39,12 +38,13 @@ import {
   ComponentType,
   FocusEvent,
   useEffect,
-  useMemo,
   useState,
 } from "react";
 
 interface AutoFormProps
-  extends Pick<FormProps, "schema" | "formData" | "onSubmit"> {}
+  extends Pick<FormProps, "schema" | "formData" | "onSubmit"> {
+  formLoading?: boolean;
+}
 
 //templates
 const ArrayFieldTemplate: ComponentType<
@@ -169,7 +169,7 @@ const ObjectFieldTemplate: ComponentType<
   ObjectFieldTemplateProps<any, any, any>
 > = ({ properties, idSchema, title }) => {
   const items = (
-    <Grid>
+    <Grid align="flex-end">
       {properties.map((p) => {
         let lg = 6;
         if (["array", "object"].includes(p.content.props.schema.type)) {
@@ -208,7 +208,9 @@ const ButtonTemplates: Partial<{
     }
     return (
       <Group justify="flex-end" my="md">
-        <Button type="submit">{submitText}</Button>
+        <Button leftSection={<IconDeviceFloppy />} type="submit">
+          {submitText}
+        </Button>
       </Group>
     );
   },
@@ -375,13 +377,17 @@ const fields: RegistryFieldsType<any, any, any> = {
   },
 };
 const AutoForm: React.FC<AutoFormProps> = (props) => {
-  const { schema } = props;
+  const { schema, onSubmit, formData } = props;
   return (
-    <Form
+    <Form 
+      formData={formData}
       validator={validator}
       schema={schema}
       templates={{ ArrayFieldTemplate, ObjectFieldTemplate, ButtonTemplates }}
       fields={fields}
+      onSubmit={(data) => {
+        onSubmit(data.formData);
+      }}
     />
   );
 };

@@ -90,13 +90,10 @@ export const authProvider: AuthProvider = {
   },
 
   onError: async (params) => {
-    console.log("onError", params);
-
     // TODO: do something with the error
 
     return {
       logout: false, // or false if you want to continue
-      redirectTo: "/login", // or undefined if you want to continue
     };
   },
 };

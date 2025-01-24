@@ -10,24 +10,12 @@ import React, { PropsWithChildren } from "react";
 
 const resources: ResourceProps[] = [
   {
-    name: "Main Dashboard",
-    list: "/",
+    name: "roles",
+    list: "/roles",
+    create: "/roles/create",
+    edit: "/roles/:id",
     meta: {
       icon: <IconHome />,
-    },
-  },
-  {
-    name: "NFT MarketPlace",
-    list: "/",
-    meta: {
-      icon: <IconShoppingCart />,
-    },
-  },
-  {
-    name: "Data Tables",
-    list: "/",
-    meta: {
-      icon: <IconChartBar />,
     },
   },
 ];

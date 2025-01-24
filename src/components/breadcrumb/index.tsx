@@ -8,11 +8,11 @@ export const Breadcrumb = () => {
   return (
     <Breadcrumbs className="breadcrumb">
       <Text c="dimmed">Pages</Text>
-      {breadcrumbs.map((breadcrumb) => {
+      {breadcrumbs.slice(0, 1).map((breadcrumb) => {
         return (
           <Text
             c="dimmed"
-            href={breadcrumb.href as string}
+            href={breadcrumb.href || ("" as string)}
             key={`breadcrumb-${breadcrumb.label}`}
             component={Link}
           >

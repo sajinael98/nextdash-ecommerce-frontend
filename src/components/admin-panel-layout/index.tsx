@@ -73,7 +73,6 @@ const AdminPanelLayout: React.FC<PropsWithChildren> = ({ children }) => {
 
   return (
     <AppShell
-      padding="xl"
       layout="alt"
       navbar={{
         width: 300,
@@ -84,34 +83,40 @@ const AdminPanelLayout: React.FC<PropsWithChildren> = ({ children }) => {
         },
       }}
     >
-      {/* <AppShellHeader p="xl" className={classes["glass-bg"]} withBorder={false}>
-        <Flex
-          justify="space-between"
-          direction={{ base: "column-reverse", md: "row" }}
-        >
-          <div>
-            <Title>{identifier}</Title>
-            <Breadcrumb />
-          </div>
-          <Group
-            className={classes["header-right-part"]}
-            wrap="nowrap"
-            p={{ base: 0, md: "md" }}
-            mb={{ base: "md", md: 0 }}
+      <AppShellHeader
+        className={classes["glass-bg"]}
+        mt="xl"
+        withBorder={false}
+      >
+        <Container size="lg">
+          <Flex
+            justify="space-between"
+            direction={{ base: "column-reverse", md: "row" }}
           >
-            <TextInput leftSection={<IconSearch />} placeholder="search..." />
-            {headerButtons}
-            <MantineMenu>
-              <MenuTarget>
-                <Avatar radius="xl">MK</Avatar>
-              </MenuTarget>
-              <MenuDropdown>
-                <MenuItem>Logout</MenuItem>
-              </MenuDropdown>
-            </MantineMenu>
-          </Group>
-        </Flex>
-      </AppShellHeader> */}
+            <div>
+              <Title tt="capitalize">{identifier}</Title>
+              <Breadcrumb />
+            </div>
+            <Group
+              className={classes["header-right-part"]}
+              wrap="nowrap"
+              p={{ base: 0, md: "md" }}
+              mb={{ base: "md", md: 0 }}
+            >
+              <TextInput leftSection={<IconSearch />} placeholder="search..." />
+              {headerButtons}
+              <MantineMenu>
+                <MenuTarget>
+                  <Avatar radius="xl">MK</Avatar>
+                </MenuTarget>
+                <MenuDropdown>
+                  <MenuItem>Logout</MenuItem>
+                </MenuDropdown>
+              </MantineMenu>
+            </Group>
+          </Flex>
+        </Container>
+      </AppShellHeader>
       <AppShellNavbar px="md">
         <Text
           mx="auto"
@@ -127,12 +132,11 @@ const AdminPanelLayout: React.FC<PropsWithChildren> = ({ children }) => {
       </AppShellNavbar>
       <AppShellMain
         className={classes["glass-bg"]}
-        pt={{
-          base: "calc(var(--mantine-spacing-lg) * 11)",
-          md: "calc(var(--mantine-spacing-lg) * 7)",
-        }}
+        pt={"calc(var(--mantine-spacing-lg) * 7)"}
       >
-        {children}
+        <Container size="lg">
+          {children}
+        </Container>
       </AppShellMain>
     </AppShell>
   );
