@@ -1,5 +1,6 @@
 "use client";
 import {
+  Checkbox,
   createTheme,
   CSSVariablesResolver,
   MantineProvider,
@@ -18,6 +19,12 @@ const theme = createTheme({
         withinPortal: true,
       },
     }),
+    Checkbox: Checkbox.extend({
+      defaultProps:{
+        size: "sm",
+        fz: "lg"
+      }
+    })
   },
 });
 
