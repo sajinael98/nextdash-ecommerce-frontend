@@ -35,7 +35,7 @@ const ResourceList: React.FC<ResourceListProps> = ({ columns: cols }) => {
     () => [
       {
         id: "select-col",
-        size: 50,
+        size: 30,
         enableColumnFilter: false,
         header: ({ table }) => (
           <Checkbox
@@ -111,7 +111,7 @@ const ResourceList: React.FC<ResourceListProps> = ({ columns: cols }) => {
           <Menu.Dropdown>
             {table
               .getAllColumns()
-              .filter((column) => column.id !== "id")
+              .filter((column) => !["id", "select-col"].includes(column.id))
               .map((column) => (
                 <Menu.Item key={column.id}>
                   <Switch
