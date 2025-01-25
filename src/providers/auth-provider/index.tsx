@@ -91,7 +91,7 @@ export const authProvider: AuthProvider = {
 
   onError: async (params) => {
     // TODO: do something with the error
-    
+
     return {
       logout: false, // or false if you want to continue
     };

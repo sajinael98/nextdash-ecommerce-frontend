@@ -134,9 +134,7 @@ const AdminPanelLayout: React.FC<PropsWithChildren> = ({ children }) => {
         className={classes["glass-bg"]}
         pt={"calc(var(--mantine-spacing-lg) * 7)"}
       >
-        <Container size="lg">
-          {children}
-        </Container>
+        <Container size="lg">{children}</Container>
       </AppShellMain>
     </AppShell>
   );

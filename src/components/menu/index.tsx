@@ -2,15 +2,13 @@
 
 import {
   Group,
-  List,
   ScrollArea,
   Text,
   ThemeIcon,
-  UnstyledButton,
+  UnstyledButton
 } from "@mantine/core";
 import { useMenu } from "@refinedev/core";
 import { useRouter } from "next/navigation";
-import classes from "./menu.module.css";
 
 export const Menu = () => {
   const router = useRouter();
@@ -41,7 +39,11 @@ export const Menu = () => {
       >
         <Group align="flex-end" gap={5}>
           <ThemeIcon variant="transparent">{meta?.icon}</ThemeIcon>
-          <Text tt="capitalize" c="dimmed" {...(flag && { fw: 500, c: 'light-dark(black, white)' })}>
+          <Text
+            tt="capitalize"
+            c="dimmed"
+            {...(flag && { fw: 500, c: "light-dark(black, white)" })}
+          >
             {name}
           </Text>
         </Group>

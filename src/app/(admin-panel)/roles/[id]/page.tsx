@@ -1,8 +1,8 @@
 "use client";
 
 import AutoForm from "@components/autoform";
-import { Box, LoadingOverlay } from "@mantine/core";
 import { useForm } from "@refinedev/core";
+import { roleSchema } from "../form";
 
 const EditRolePage = () => {
   const { onFinish, formLoading, query } = useForm();
@@ -16,20 +16,7 @@ const EditRolePage = () => {
       formData={query?.data?.data}
       formLoading={formLoading || query?.isFetching}
       onSubmit={submitHandler}
-      schema={{
-        type: "object",
-        required: ["role"],
-        properties: {
-          role: {
-            type: "string",
-            title: "Role",
-          },
-          enabled: {
-            type: "boolean",
-            title: "Enabled",
-          },
-        },
-      }}
+      schema={roleSchema}
     />
   );
 };

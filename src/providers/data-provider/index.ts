@@ -6,7 +6,7 @@ export const dataProvider: DataProvider = {
   getApiUrl: () => "/backend-api",
   getList: async ({ resource, pagination, sorters, filters, meta }) => {
     const session = await getSession();
-    console.log(session)
+    console.log(session);
     return axiosInstance
       .get(`/backend-api/${resource}`, {
         headers: {

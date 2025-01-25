@@ -2,6 +2,7 @@
 
 import AutoForm from "@components/autoform";
 import { useForm } from "@refinedev/core";
+import { roleSchema } from "../form";
 
 const CreateRolePage = () => {
   const { onFinish, formLoading } = useForm();
@@ -14,20 +15,7 @@ const CreateRolePage = () => {
     <AutoForm
       formLoading={formLoading}
       onSubmit={submitHandler}
-      schema={{
-        type: "object",
-        required: ["role"],
-        properties: {
-          role: {
-            type: "string",
-            title: "Role",
-          },
-          enabled: {
-            type: "boolean",
-            title: "Enabled",
-          },
-        },
-      }}
+      schema={roleSchema}
     />
   );
 };

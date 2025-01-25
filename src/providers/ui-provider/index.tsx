@@ -4,7 +4,7 @@ import {
   createTheme,
   CSSVariablesResolver,
   MantineProvider,
-  Menu
+  Menu,
 } from "@mantine/core";
 import React, { PropsWithChildren } from "react";
 
@@ -19,11 +19,11 @@ const theme = createTheme({
       },
     }),
     Checkbox: Checkbox.extend({
-      defaultProps:{
+      defaultProps: {
         size: "sm",
-        fz: "lg"
-      }
-    })
+        fz: "lg",
+      },
+    }),
   },
 });
 

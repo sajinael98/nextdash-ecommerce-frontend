@@ -7,7 +7,7 @@ export const credentialsProvider = CredentialsProvider({
     username: { label: "Username", type: "text" },
     password: { label: "Password", type: "password" },
   },
-  
+
   async authorize(credentials, req) {
     const response = await axiosInstance.post(
       "http://localhost:8080/sys-auth/login",
@@ -24,7 +24,6 @@ export const credentialsProvider = CredentialsProvider({
       token,
       roles,
       permissions,
-
     };
   },
 });

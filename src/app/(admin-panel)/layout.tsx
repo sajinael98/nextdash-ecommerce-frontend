@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import AdminPanelLayout from "@components/admin-panel-layout";
 import React, { PropsWithChildren } from "react";
 

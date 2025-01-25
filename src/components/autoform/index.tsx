@@ -379,7 +379,7 @@ const fields: RegistryFieldsType<any, any, any> = {
 const AutoForm: React.FC<AutoFormProps> = (props) => {
   const { schema, onSubmit, formData } = props;
   return (
-    <Form 
+    <Form
       formData={formData}
       validator={validator}
       schema={schema}

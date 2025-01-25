@@ -85,7 +85,7 @@ const ResourceList: React.FC<ResourceListProps> = ({ columns: cols }) => {
     [table.getSelectedRowModel().rows.map((row) => row.original)]
   );
   function deleteHandler() {
-    console.log(selectedRows)
+    console.log(selectedRows);
     const ids = selectedRows.map((row) => row.id);
     if (!ids.length) {
       notifications.show({
