@@ -80,45 +80,49 @@ const TableHeaderGroup: React.FC<TableHeaderGroupProps> = ({ groups }) => {
               {flexRender(header.column.columnDef.header, header.getContext())}
               {!header.column.getIsPinned() && (
                 <Group wrap="nowrap" gap="xs">
-                  <Menu closeOnItemClick={false}>
-                    <Menu.Target>
-                      <ActionIcon
-                        size="sm"
-                        variant="transparent"
-                        {...(!!header.column.getFilterValue() && {
-                          color: "green",
-                        })}
-                      >
-                        <IconFilter />
-                      </ActionIcon>
-                    </Menu.Target>
-                    <Menu.Dropdown>
-                      <Menu.Label>Search</Menu.Label>
-                      <Menu.Item>
-                        <Filter column={header.column} />
-                      </Menu.Item>
-                    </Menu.Dropdown>
-                  </Menu>
-                  <Menu position="bottom-start">
-                    <Menu.Target>
-                      <ActionIcon size="sm" variant="transparent">
-                        <IconCaretUpDown />
-                      </ActionIcon>
-                    </Menu.Target>
-                    <Menu.Dropdown>
-                      <Menu.Label>Sort By</Menu.Label>
-                      <Menu.Item
-                        onClick={() => header.column.toggleSorting(false)}
-                      >
-                        ASC
-                      </Menu.Item>
-                      <Menu.Item
-                        onClick={() => header.column.toggleSorting(true)}
-                      >
-                        DESC
-                      </Menu.Item>
-                    </Menu.Dropdown>
-                  </Menu>
+                  {header.column.getCanFilter() && (
+                    <Menu closeOnItemClick={false}>
+                      <Menu.Target>
+                        <ActionIcon
+                          size="sm"
+                          variant="transparent"
+                          {...(!!header.column.getFilterValue() && {
+                            color: "green",
+                          })}
+                        >
+                          <IconFilter />
+                        </ActionIcon>
+                      </Menu.Target>
+                      <Menu.Dropdown>
+                        <Menu.Label>Search</Menu.Label>
+                        <Menu.Item>
+                          <Filter column={header.column} />
+                        </Menu.Item>
+                      </Menu.Dropdown>
+                    </Menu>
+                  )}
+                  {header.column.getCanSort() && (
+                    <Menu position="bottom-start">
+                      <Menu.Target>
+                        <ActionIcon size="sm" variant="transparent">
+                          <IconCaretUpDown />
+                        </ActionIcon>
+                      </Menu.Target>
+                      <Menu.Dropdown>
+                        <Menu.Label>Sort By</Menu.Label>
+                        <Menu.Item
+                          onClick={() => header.column.toggleSorting(false)}
+                        >
+                          ASC
+                        </Menu.Item>
+                        <Menu.Item
+                          onClick={() => header.column.toggleSorting(true)}
+                        >
+                          DESC
+                        </Menu.Item>
+                      </Menu.Dropdown>
+                    </Menu>
+                  )}
                 </Group>
               )}
             </Group>

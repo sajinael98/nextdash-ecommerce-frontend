@@ -4,8 +4,7 @@ import {
   createTheme,
   CSSVariablesResolver,
   MantineProvider,
-  Menu,
-  Text,
+  Menu
 } from "@mantine/core";
 import React, { PropsWithChildren } from "react";
 

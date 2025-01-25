@@ -1,10 +1,11 @@
 import { ColorSchemeScript, mantineHtmlProps } from "@mantine/core";
 import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
+import "@mantine/notifications/styles.css";
 import AppProvider from "@providers/app-provider";
 
 import { Metadata } from "next";
-import React, { Suspense } from "react";
+import React from "react";
 
 export const metadata: Metadata = {
   title: "Refine",

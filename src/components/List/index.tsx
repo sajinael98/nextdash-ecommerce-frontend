@@ -2,16 +2,19 @@ import DashboardTable from "@components/table";
 import {
   ActionIcon,
   Button,
+  Checkbox,
   Divider,
   Group,
   Menu,
   Switch,
 } from "@mantine/core";
-import { useResourceParams } from "@refinedev/core";
+import { notifications } from "@mantine/notifications";
+import { useDeleteMany, useResourceParams } from "@refinedev/core";
 import { useTable } from "@refinedev/react-table";
 import {
   IconColumns,
   IconEdit,
+  IconMenu2,
   IconPlus,
   IconRotate,
 } from "@tabler/icons-react";
@@ -27,8 +30,28 @@ const ResourceList: React.FC<ResourceListProps> = ({ columns: cols }) => {
   if (!resource?.name) {
     throw Error("this component is only used with resource.");
   }
+  const { mutate } = useDeleteMany();
   const columns = useMemo<ColumnDef<any>[]>(
     () => [
+      {
+        id: "select-col",
+        size: 50,
+        enableColumnFilter: false,
+        header: ({ table }) => (
+          <Checkbox
+            checked={table.getIsAllRowsSelected()}
+            indeterminate={table.getIsSomeRowsSelected()}
+            onChange={table.getToggleAllRowsSelectedHandler()}
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            checked={row.getIsSelected()}
+            disabled={!row.getCanSelect()}
+            onChange={row.getToggleSelectedHandler()}
+          />
+        ),
+      },
       ...cols,
       {
         accessorKey: "id",
@@ -55,8 +78,27 @@ const ResourceList: React.FC<ResourceListProps> = ({ columns: cols }) => {
         right: ["id"],
       },
     },
+    getRowId: (row) => row.id,
   });
-
+  const selectedRows = useMemo(
+    () => table.getSelectedRowModel().rows.map((row) => row.original),
+    [table.getSelectedRowModel().rows.map((row) => row.original)]
+  );
+  function deleteHandler() {
+    console.log(selectedRows)
+    const ids = selectedRows.map((row) => row.id);
+    if (!ids.length) {
+      notifications.show({
+        color: "red",
+        message: "no rows are selected!",
+      });
+      return;
+    }
+    mutate({
+      ids,
+      resource: resource?.name as string,
+    });
+  }
   return (
     <>
       <Group justify="flex-end" mb="md">
@@ -88,6 +130,16 @@ const ResourceList: React.FC<ResourceListProps> = ({ columns: cols }) => {
         >
           Refresh
         </Button>
+        <Menu>
+          <Menu.Target>
+            <Button leftSection={<IconMenu2 />} variant="light">
+              Menu
+            </Button>
+          </Menu.Target>
+          <Menu.Dropdown>
+            <Menu.Item onClick={deleteHandler}>Delete</Menu.Item>
+          </Menu.Dropdown>
+        </Menu>
         <Divider orientation="vertical" />
         <Button
           leftSection={<IconPlus />}

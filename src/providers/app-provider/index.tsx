@@ -1,5 +1,6 @@
 "use client";
 
+import { Notifications } from "@mantine/notifications";
 import { authProvider } from "@providers/auth-provider";
 import { dataProvider } from "@providers/data-provider";
 import UiProvider from "@providers/ui-provider";
@@ -35,6 +36,7 @@ const resources: ResourceProps[] = [
 const AppProvider: React.FC<PropsWithChildren> = ({ children }) => {
   return (
     <UiProvider>
+      <Notifications />
       <Refine
         resources={resources}
         routerProvider={routerProvider}
