@@ -1,17 +1,13 @@
 "use client";
 
 import { Notifications } from "@mantine/notifications";
+import { auditLogProvider } from "@providers/audit-log-provider";
 import { authProvider } from "@providers/auth-provider";
 import { dataProvider } from "@providers/data-provider";
 import UiProvider from "@providers/ui-provider";
 import { Refine, ResourceProps } from "@refinedev/core";
 import routerProvider from "@refinedev/nextjs-router";
-import {
-  IconChartBar,
-  IconHierarchy3,
-  IconHome,
-  IconShoppingCart,
-} from "@tabler/icons-react";
+import { IconHierarchy3, IconHome } from "@tabler/icons-react";
 import React, { PropsWithChildren } from "react";
 
 const resources: ResourceProps[] = [
@@ -38,6 +34,7 @@ const AppProvider: React.FC<PropsWithChildren> = ({ children }) => {
     <UiProvider>
       <Notifications />
       <Refine
+        auditLogProvider={auditLogProvider}
         resources={resources}
         routerProvider={routerProvider}
         dataProvider={dataProvider}

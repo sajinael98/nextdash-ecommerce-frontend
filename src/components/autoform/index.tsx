@@ -201,7 +201,7 @@ const ObjectFieldTemplate: ComponentType<
 const ButtonTemplates: Partial<{
   SubmitButton: ComponentType<SubmitButtonProps<any, any, any>>;
 }> = {
-  SubmitButton: ({ uiSchema }) => {
+  SubmitButton: ({ uiSchema,registry }) => {
     const { norender, submitText } = getSubmitButtonOptions(uiSchema);
     if (norender) {
       return null;
@@ -273,7 +273,7 @@ const fields: RegistryFieldsType<any, any, any> = {
       <TextInput
         id={id}
         name={name}
-        value={formData}
+        value={formData ?? ''}
         onChange={changeHandler}
         onBlur={blurHandler}
         onFocus={focusHandler}
@@ -282,7 +282,7 @@ const fields: RegistryFieldsType<any, any, any> = {
         disabled={disabled}
         autoFocus={autoFocus}
         error={hasError}
-        defaultValue={defaultValue}
+        defaultValue={defaultValue ?? ''}
       />
     );
   },
@@ -380,6 +380,7 @@ const AutoForm: React.FC<AutoFormProps> = (props) => {
   const { schema, onSubmit, formData } = props;
   return (
     <Form
+      
       formData={formData}
       validator={validator}
       schema={schema}

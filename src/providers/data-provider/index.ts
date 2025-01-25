@@ -6,7 +6,6 @@ export const dataProvider: DataProvider = {
   getApiUrl: () => "/backend-api",
   getList: async ({ resource, pagination, sorters, filters, meta }) => {
     const session = await getSession();
-    console.log(session);
     return axiosInstance
       .get(`/backend-api/${resource}`, {
         headers: {
@@ -108,7 +107,6 @@ export const dataProvider: DataProvider = {
   },
   async custom({ method, url, payload }) {
     const session = await getSession();
-    console.log(session);
 
     switch (method) {
       case "get":
