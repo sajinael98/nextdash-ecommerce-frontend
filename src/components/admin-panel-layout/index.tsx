@@ -5,14 +5,10 @@ import { Menu } from "@components/menu";
 import {
   ActionIcon,
   AppShell,
-  AppShellFooter,
   AppShellHeader,
   AppShellMain,
   AppShellNavbar,
-  Autocomplete,
   Avatar,
-  Box,
-  Container,
   Divider,
   Flex,
   Group,
@@ -23,16 +19,15 @@ import {
   Text,
   TextInput,
   Title,
-  useMantineColorScheme,
+  useMantineColorScheme
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useResourceParams } from "@refinedev/core";
 import {
-  IconAlertSquareRounded,
   IconBell,
   IconMoon,
   IconSearch,
-  IconSun,
+  IconSun
 } from "@tabler/icons-react";
 import React, { PropsWithChildren, useMemo } from "react";
 import classes from "./admin-panel-layout.module.css";

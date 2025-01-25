@@ -1,23 +1,18 @@
 "use client";
 
-import AutoForm from "@components/autoform";
+import EditResource from "@components/Edit";
 import { useForm } from "@refinedev/core";
 import { roleSchema } from "../form";
 
 const EditRolePage = () => {
-  const { onFinish, formLoading, query } = useForm();
+  const form = useForm();
 
   function submitHandler(values: any) {
-    onFinish(values);
+    form.onFinish(values);
   }
 
   return (
-    <AutoForm
-      formData={query?.data?.data}
-      formLoading={formLoading || query?.isFetching}
-      onSubmit={submitHandler}
-      schema={roleSchema}
-    />
+    <EditResource schema={roleSchema} form={form} onSubmit={submitHandler} />
   );
 };
 
