@@ -152,7 +152,6 @@ const DashboardTable: React.FC<TableProps> = ({ table }) => {
           horizontalSpacing="xs"
           withRowBorders
           withTableBorder
-          striped
           styles={{
             td: {
               padding: 5,
