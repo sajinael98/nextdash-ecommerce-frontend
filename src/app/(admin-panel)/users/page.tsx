@@ -13,7 +13,8 @@ const UserListPage = () => {
         header: "Username"
       },
       {
-        accessorKey: "email",
+        accessorKey: "accountInformation.email",
+        header: "Email",
         cell: ({ getValue }) => (
           <Anchor href={`mailto:${getValue()}`}>{getValue() as string}</Anchor>
         ),
