@@ -1,6 +1,6 @@
 "use client";
 import { AuthProvider } from "@refinedev/core";
-import { signIn } from "next-auth/react";
+import { signIn, signOut } from "next-auth/react";
 
 /**
  * Check out the Auth Provider documentation for detailed information
@@ -40,10 +40,7 @@ export const authProvider: AuthProvider = {
   },
 
   logout: async (params) => {
-    console.log("logout", params);
-
-    // TODO: send request to the API to logout
-
+    await signOut();
     return {
       success: true, // or false if the logout is not successful
     };

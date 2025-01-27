@@ -19,16 +19,11 @@ import {
   Text,
   TextInput,
   Title,
-  useMantineColorScheme
+  useMantineColorScheme,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { useResourceParams } from "@refinedev/core";
-import {
-  IconBell,
-  IconMoon,
-  IconSearch,
-  IconSun
-} from "@tabler/icons-react";
+import { useLogout, useResourceParams } from "@refinedev/core";
+import { IconBell, IconMoon, IconSearch, IconSun } from "@tabler/icons-react";
 import React, { PropsWithChildren, useMemo } from "react";
 import classes from "./admin-panel-layout.module.css";
 
@@ -44,6 +39,7 @@ const AdminPanelLayout: React.FC<PropsWithChildren> = ({ children }) => {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme({
     keepTransitions: true,
   });
+  const { mutate } = useLogout();
 
   const headerButtons = useMemo(
     () =>
@@ -106,7 +102,7 @@ const AdminPanelLayout: React.FC<PropsWithChildren> = ({ children }) => {
                 <Avatar radius="xl">MK</Avatar>
               </MenuTarget>
               <MenuDropdown>
-                <MenuItem>Logout</MenuItem>
+                <MenuItem onClick={() => mutate()}>Logout</MenuItem>
               </MenuDropdown>
             </MantineMenu>
           </Group>
