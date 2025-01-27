@@ -11,11 +11,13 @@ import {
   Group,
   Modal,
   NumberInput,
+  Select,
   Text,
   TextInput,
 } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import { useDisclosure } from "@mantine/hooks";
+import { useSelect } from "@refinedev/core";
 import Form, { FormProps } from "@rjsf/core";
 import {
   ArrayFieldTemplateProps,
@@ -37,12 +39,13 @@ import {
   ChangeEvent,
   ComponentType,
   FocusEvent,
+  PropsWithChildren,
   useEffect,
   useState,
 } from "react";
 
 interface AutoFormProps
-  extends Pick<FormProps, "schema" | "formData" | "onSubmit"> {
+  extends Pick<FormProps, "schema" | "formData" | "onSubmit" | "onChange"> {
   formLoading?: boolean;
 }
 
@@ -62,10 +65,10 @@ const ArrayFieldTemplate: ComponentType<
   const columns = Object.entries(schema.items.properties)
     .filter(([_, props]) => (props as { view?: boolean })?.view)
     .reduce(
-      (cols, [field]) => {
+      (cols, [field, { title }]) => {
         cols.push({
           id: field,
-          header: field,
+          header: title,
           accessorKey: field,
         });
         return cols;
@@ -73,8 +76,8 @@ const ArrayFieldTemplate: ComponentType<
       [
         {
           accessorKey: "action",
-          size: 70,
-
+          header: "",
+          size: 20,
           cell(props) {
             const index = props.row.index;
             const item = items[index];
@@ -187,7 +190,7 @@ const ObjectFieldTemplate: ComponentType<
 
   if (idSchema.$id !== "root") {
     return (
-      <Accordion variant="contained" defaultValue={idSchema.$id}>
+      <Accordion variant="separated" defaultValue={idSchema.$id}>
         <Accordion.Item value={idSchema.$id}>
           <Accordion.Control>{title}</Accordion.Control>
           <Accordion.Panel>{items}</Accordion.Panel>
@@ -201,7 +204,8 @@ const ObjectFieldTemplate: ComponentType<
 const ButtonTemplates: Partial<{
   SubmitButton: ComponentType<SubmitButtonProps<any, any, any>>;
 }> = {
-  SubmitButton: ({ uiSchema,registry }) => {
+  SubmitButton: (props) => {
+    const { uiSchema } = props;
     const { norender, submitText } = getSubmitButtonOptions(uiSchema);
     if (norender) {
       return null;
@@ -273,7 +277,7 @@ const fields: RegistryFieldsType<any, any, any> = {
       <TextInput
         id={id}
         name={name}
-        value={formData ?? ''}
+        value={formData ?? ""}
         onChange={changeHandler}
         onBlur={blurHandler}
         onFocus={focusHandler}
@@ -282,7 +286,7 @@ const fields: RegistryFieldsType<any, any, any> = {
         disabled={disabled}
         autoFocus={autoFocus}
         error={hasError}
-        defaultValue={defaultValue ?? ''}
+        defaultValue={defaultValue ?? ""}
       />
     );
   },
@@ -301,8 +305,12 @@ const fields: RegistryFieldsType<any, any, any> = {
       rawErrors,
       hideError,
       defaultValue,
+      schema,
     } = props;
-
+    const resource = schema.resource ?? "";
+    if (!!resource && !schema.optionLabel) {
+      throw Error(`optionLabel is required for ${id}`);
+    }
     const changeHandler = (value: string | number) => onChange(value);
 
     const blurHandler = (e: FocusEvent<HTMLInputElement>) =>
@@ -312,7 +320,41 @@ const fields: RegistryFieldsType<any, any, any> = {
       onFocus(id as string, e.target.value);
 
     const hasError = (rawErrors ?? []).length > 0 && !hideError;
-
+    const { options, query } = useSelect({
+      defaultValue: String(formData),
+      resource,
+      optionLabel: schema.optionLabel,
+      queryOptions: {
+        enabled: !!resource,
+      },
+    });
+    if (resource) {
+      return (
+        <Select
+          id={id}
+          name={name}
+          data={options.map((option) => ({
+            ...option,
+            value: option.value.toString(),
+          }))}
+          onChange={(value) => {
+            if (value == null) {
+              onChange(value);
+            }
+            onChange(parseInt(value as string));
+          }}
+          value={String(formData)}
+          onBlur={blurHandler}
+          onFocus={focusHandler}
+          required={required}
+          readOnly={readonly}
+          disabled={disabled || query.isFetching}
+          autoFocus={autoFocus}
+          error={hasError}
+          defaultValue={defaultValue}
+        />
+      );
+    }
     return (
       <NumberInput
         id={id}
@@ -376,20 +418,38 @@ const fields: RegistryFieldsType<any, any, any> = {
     );
   },
 };
-const AutoForm: React.FC<AutoFormProps> = (props) => {
-  const { schema, onSubmit, formData } = props;
+const AutoForm: React.FC<PropsWithChildren<AutoFormProps>> = (props) => {
+  const { schema, onSubmit, formData, onChange, children } = props;
   return (
     <Form
-      
       formData={formData}
       validator={validator}
       schema={schema}
       templates={{ ArrayFieldTemplate, ObjectFieldTemplate, ButtonTemplates }}
       fields={fields}
+      onChange={onChange}
       onSubmit={(data) => {
+        const formData = Object.entries(data.formData).reduce(
+          (data, [key, value]) => {
+            if (
+              typeof value === "object" &&
+              value !== null &&
+              !Array.isArray(value)
+            ) {
+              Object.assign(data, value);
+            } else {
+              data[key] = value;
+            }
+            return data;
+          },
+          {}
+        );
+        // console.log(formData);
         onSubmit(data.formData);
       }}
-    />
+    >
+      {children}
+    </Form>
   );
 };
 

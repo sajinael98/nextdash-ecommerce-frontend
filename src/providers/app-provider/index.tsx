@@ -7,7 +7,7 @@ import { dataProvider } from "@providers/data-provider";
 import UiProvider from "@providers/ui-provider";
 import { Refine, ResourceProps } from "@refinedev/core";
 import routerProvider from "@refinedev/nextjs-router";
-import { IconHierarchy3, IconHome } from "@tabler/icons-react";
+import { IconHierarchy3, IconHome, IconUser } from "@tabler/icons-react";
 import React, { PropsWithChildren } from "react";
 
 const resources: ResourceProps[] = [
@@ -16,6 +16,15 @@ const resources: ResourceProps[] = [
     list: "/",
     meta: {
       icon: <IconHome />,
+    },
+  },
+  {
+    name: "users",
+    list: "/users",
+    create: "/users/create",
+    edit: "/users/:id",
+    meta: {
+      icon: <IconUser />,
     },
   },
   {

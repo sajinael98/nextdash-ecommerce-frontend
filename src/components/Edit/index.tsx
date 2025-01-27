@@ -2,6 +2,7 @@
 
 import AutoForm from "@components/autoform";
 import { Badge, Button, Group, Menu, Text } from "@mantine/core";
+import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import {
   BaseRecord,
@@ -10,9 +11,13 @@ import {
 } from "@refinedev/core";
 import { IChangeEvent } from "@rjsf/core";
 import { RJSFSchema } from "@rjsf/utils";
-import { IconHistoryToggle, IconMenu2 } from "@tabler/icons-react";
+import {
+  IconDeviceFloppy,
+  IconHistoryToggle,
+  IconMenu2,
+} from "@tabler/icons-react";
 import dayjs from "dayjs";
-import { FormEvent } from "react";
+import { FormEvent, useEffect } from "react";
 
 interface EditResource {
   schema: RJSFSchema;
@@ -22,13 +27,26 @@ interface EditResource {
 
 const EditResource: React.FC<EditResource> = ({ schema, form, onSubmit }) => {
   const { id } = useResourceParams();
+  const {} = useDisclosure();
+  const editForm = useForm();
+  useEffect(() => {
+    if (form.query?.isFetched) {
+      editForm.setValues(form.query.data?.data);
+      editForm.resetDirty();
+    }
+  }, [form.query?.isFetched]);
   return (
     <>
       <Group mb="md" justify="space-between">
         <Text fz="h3" fw={500}>
-          Resource Id: {id} <Badge variant="dot">saved</Badge>
+          Resource Id: {id}
+          {editForm.isDirty() ? (
+            <Badge variant="dot" color="red">not saved</Badge>
+          ) : (
+            <Badge variant="dot">saved</Badge>
+          )}
           <Text fz="sm" c="dimmed">
-            Last Modified Date:{" "}
+            Last Modified Date:
             {dayjs(form.query?.data?.data.lastModifiedDate).format(
               "YYYY-MM-DD hh:mm:ss"
             )}
@@ -48,11 +66,24 @@ const EditResource: React.FC<EditResource> = ({ schema, form, onSubmit }) => {
         </Group>
       </Group>
       <AutoForm
-        formData={form.query?.data?.data}
+        formData={editForm.values}
         formLoading={form.formLoading || form.query?.isFetching}
         onSubmit={onSubmit}
         schema={schema}
-      />
+        onChange={(data, id) => {
+          editForm.setValues(data.formData);
+        }}
+      >
+        <Group justify="flex-end" mt="md">
+          <Button
+            disabled={!editForm.isDirty()}
+            type="submit"
+            leftSection={<IconDeviceFloppy />}
+          >
+            Submit
+          </Button>
+        </Group>
+      </AutoForm>
     </>
   );
 };
