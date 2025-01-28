@@ -1,12 +1,14 @@
 "use client";
 
 import AutoForm from "@components/autoform";
-import { Badge, Button, Group, Menu, Text } from "@mantine/core";
+import DashboardTable from "@components/table";
+import { Badge, Button, Group, Menu, Modal, Text } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import {
   BaseRecord,
   UseFormReturnType,
+  useLogList,
   useResourceParams,
 } from "@refinedev/core";
 import { IChangeEvent } from "@rjsf/core";
@@ -16,8 +18,16 @@ import {
   IconHistoryToggle,
   IconMenu2,
 } from "@tabler/icons-react";
+import {
+  ColumnDef,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import { Log } from "@types";
 import dayjs from "dayjs";
-import { FormEvent, useEffect } from "react";
+import { FormEvent, useEffect, useMemo } from "react";
 
 interface EditResource {
   schema: RJSFSchema;
@@ -26,22 +36,63 @@ interface EditResource {
 }
 
 const EditResource: React.FC<EditResource> = ({ schema, form, onSubmit }) => {
-  const { id } = useResourceParams();
-  const {} = useDisclosure();
+  const { id, identifier } = useResourceParams();
+  const [visible, { open, close }] = useDisclosure(false);
   const editForm = useForm();
+  const columns = useMemo<ColumnDef<Log>[]>(
+    () => [
+      {
+        accessorKey: "username",
+        header: "Username",
+      },
+      {
+        accessorKey: "createdDate",
+        header: "Date",
+      },
+      {
+        accessorKey: "action",
+        header: "Action",
+      },
+    ],
+    []
+  );
+  const logsResults = useLogList<Log[]>({
+    resource: identifier as string,
+    meta: {
+      id,
+    },
+    queryOptions: {
+      enabled: visible,
+    },
+  });
+  const logs = useMemo(() => logsResults?.data?.data ?? [], [logsResults.data]);
+
+  const table = useReactTable({
+    data: logs,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+  });
   useEffect(() => {
     if (form.query?.isFetched) {
       editForm.setValues(form.query.data?.data);
       editForm.resetDirty();
     }
   }, [form.query?.isFetched]);
+
   return (
     <>
+      <Modal size="lg" title="Audit Logs" onClose={close} opened={visible}>
+        <DashboardTable table={table} />
+      </Modal>
       <Group mb="md" justify="space-between">
         <Text fz="h3" fw={500}>
           Resource Id: {id}
           {editForm.isDirty() ? (
-            <Badge variant="dot" color="red">not saved</Badge>
+            <Badge variant="dot" color="red">
+              not saved
+            </Badge>
           ) : (
             <Badge variant="dot">saved</Badge>
           )}
@@ -53,7 +104,12 @@ const EditResource: React.FC<EditResource> = ({ schema, form, onSubmit }) => {
           </Text>
         </Text>
         <Group>
-          <Button w={120} leftSection={<IconHistoryToggle />} variant="light">
+          <Button
+            w={120}
+            leftSection={<IconHistoryToggle />}
+            variant="light"
+            onClick={() => open()}
+          >
             Audit
           </Button>
           <Menu>

@@ -1,6 +1,6 @@
 "use client";
 import { AuthProvider } from "@refinedev/core";
-import { signIn, signOut } from "next-auth/react";
+import { getSession, signIn, signOut } from "next-auth/react";
 
 /**
  * Check out the Auth Provider documentation for detailed information
@@ -30,12 +30,21 @@ export const authProvider: AuthProvider = {
   },
 
   check: async (params) => {
-    console.log("check", params);
-
-    // TODO: control if the user is logged in
+    const session = await getSession();
+    if (session) {
+      return {
+        authenticated: true,
+      };
+    }
 
     return {
-      authenticated: false, // or false if the user is not authenticated
+      authenticated: false,
+      logout: true,
+      redirectTo: "/login",
+      error: {
+        message: "Check failed",
+        name: "Unauthorized",
+      },
     };
   },
 
@@ -69,21 +78,17 @@ export const authProvider: AuthProvider = {
   },
 
   getPermissions: async (params) => {
-    console.log("getPermissions", params);
-
-    // TODO: send request to the API to get permissions
+    const session = await getSession();
 
     return {
-      permissions: [],
+      permissions: session?.user.permissions,
+      roles: session?.user.roles,
     };
   },
 
   getIdentity: async (params) => {
-    console.log("getIdentity", params);
-
-    // TODO: send request to the API to get identity
-
-    return {};
+    const session = await getSession();
+    return session?.user;
   },
 
   onError: async (params) => {

@@ -43,6 +43,7 @@ import {
   useEffect,
   useState,
 } from "react";
+import UrlField from "./UrlField";
 
 interface AutoFormProps
   extends Pick<FormProps, "schema" | "formData" | "onSubmit" | "onChange"> {
@@ -251,44 +252,52 @@ const fields: RegistryFieldsType<any, any, any> = {
 
     const hasError = (rawErrors ?? []).length > 0 && !hideError;
     const format = schema?.format ?? "";
-    if (format === "date") {
-      return (
-        <DateInput
-          id={id}
-          name={name}
-          value={(formData && new Date(formData)) ?? undefined}
-          onChange={(value) => {
-            const formattedDate = dayjs(value).format("YYYY-MM-DD");
-            onChange(formattedDate);
-          }}
-          onBlur={blurHandler}
-          onFocus={focusHandler}
-          required={required}
-          readOnly={readonly}
-          disabled={disabled}
-          autoFocus={autoFocus}
-          error={hasError}
-          defaultValue={defaultValue}
-          valueFormat="YYYY-MM-DD"
-        />
-      );
+    switch (format) {
+      case "date": {
+        return (
+          <DateInput
+            id={id}
+            name={name}
+            value={(formData && new Date(formData)) ?? undefined}
+            onChange={(value) => {
+              const formattedDate = dayjs(value).format("YYYY-MM-DD");
+              onChange(formattedDate);
+            }}
+            onBlur={blurHandler}
+            onFocus={focusHandler}
+            required={required}
+            readOnly={readonly}
+            disabled={disabled}
+            autoFocus={autoFocus}
+            error={hasError}
+            defaultValue={defaultValue}
+            valueFormat="YYYY-MM-DD"
+          />
+        );
+      }
+
+      case "custom-url": {
+        return <UrlField {...props} />;
+      }
+      default: {
+        return (
+          <TextInput
+            id={id}
+            name={name}
+            value={formData ?? ""}
+            onChange={changeHandler}
+            onBlur={blurHandler}
+            onFocus={focusHandler}
+            required={required}
+            readOnly={readonly}
+            disabled={disabled}
+            autoFocus={autoFocus}
+            error={hasError}
+            defaultValue={defaultValue ?? ""}
+          />
+        );
+      }
     }
-    return (
-      <TextInput
-        id={id}
-        name={name}
-        value={formData ?? ""}
-        onChange={changeHandler}
-        onBlur={blurHandler}
-        onFocus={focusHandler}
-        required={required}
-        readOnly={readonly}
-        disabled={disabled}
-        autoFocus={autoFocus}
-        error={hasError}
-        defaultValue={defaultValue ?? ""}
-      />
-    );
   },
   NumberField: (props) => {
     const {
