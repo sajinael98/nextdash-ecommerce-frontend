@@ -19,6 +19,7 @@
     "@mantine/dates": "^7.15.2",
     "@mantine/form": "^7.15.2",
     "@mantine/hooks": "^7.15.2",
+    "@mantine/modals": "^7.16.2",
     "@mantine/notifications": "^7.16.1",
     "@refinedev/cli": "^2.16.21",
     "@refinedev/core": "^4.47.1",

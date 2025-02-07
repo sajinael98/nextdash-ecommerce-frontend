@@ -1,6 +1,8 @@
 "use client";
 
+import { ModalsProvider } from "@mantine/modals";
 import { Notifications } from "@mantine/notifications";
+import { accessControlProvider } from "@providers/access-control-provider";
 import { auditLogProvider } from "@providers/audit-log-provider";
 import { authProvider } from "@providers/auth-provider";
 import { dataProvider } from "@providers/data-provider";
@@ -42,24 +44,28 @@ const resources: ResourceProps[] = [
 const AppProvider: React.FC<PropsWithChildren> = ({ children }) => {
   return (
     <UiProvider>
-      <SessionProvider>
-        <Notifications />
-        <Refine
-          auditLogProvider={auditLogProvider}
-          resources={resources}
-          routerProvider={routerProvider}
-          dataProvider={dataProvider}
-          authProvider={authProvider}
-          options={{
-            syncWithLocation: true,
-            warnWhenUnsavedChanges: true,
-            useNewQueryKeys: true,
-            projectId: "sXyKYR-uoMAWV-NTZ337",
-          }}
-        >
-          {children}
-        </Refine>
-      </SessionProvider>
+      <ModalsProvider>
+        <SessionProvider>
+          <Notifications />
+          <Refine
+            auditLogProvider={auditLogProvider}
+            resources={resources}
+            routerProvider={routerProvider}
+            dataProvider={dataProvider}
+            authProvider={authProvider}
+            accessControlProvider={accessControlProvider}
+            options={{
+              syncWithLocation: true,
+              warnWhenUnsavedChanges: true,
+              useNewQueryKeys: true,
+              projectId: "sXyKYR-uoMAWV-NTZ337",
+              
+            }}
+          >
+            {children}
+          </Refine>
+        </SessionProvider>
+      </ModalsProvider>
     </UiProvider>
   );
 };

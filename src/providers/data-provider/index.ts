@@ -6,10 +6,15 @@ export const dataProvider: DataProvider = {
   getApiUrl: () => "/backend-api",
   getList: async ({ resource, pagination, sorters, filters, meta }) => {
     const session = await getSession();
+    const headerParams = {
+      "x-entity": resource,
+      "x-action": "read",
+    };
     return axiosInstance
       .get(`/backend-api/${resource}`, {
         headers: {
           Authorization: "Bearer " + session?.user.token,
+          ...headerParams,
         },
         params: {
           page: pagination?.current,

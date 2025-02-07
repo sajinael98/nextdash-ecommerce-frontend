@@ -33,9 +33,15 @@ interface EditResource {
   schema: RJSFSchema;
   form: UseFormReturnType<BaseRecord>;
   onSubmit: (data: IChangeEvent<any, any, any>, event: FormEvent<any>) => void;
+  menuItems?: { label: string; onClick: VoidFunction }[];
 }
 
-const EditResource: React.FC<EditResource> = ({ schema, form, onSubmit }) => {
+const EditResource: React.FC<EditResource> = ({
+  schema,
+  form,
+  onSubmit,
+  menuItems = [],
+}) => {
   const { id, identifier } = useResourceParams();
   const [visible, { open, close }] = useDisclosure(false);
   const editForm = useForm();
@@ -81,6 +87,11 @@ const EditResource: React.FC<EditResource> = ({ schema, form, onSubmit }) => {
     }
   }, [form.query?.isFetched]);
 
+  const items = menuItems.map((item) => (
+    <Menu.Item key={item.label} onClick={item.onClick}>
+      {item.label}
+    </Menu.Item>
+  ));
   return (
     <>
       <Modal size="lg" title="Audit Logs" onClose={close} opened={visible}>
@@ -112,12 +123,13 @@ const EditResource: React.FC<EditResource> = ({ schema, form, onSubmit }) => {
           >
             Audit
           </Button>
-          <Menu>
+          <Menu disabled={menuItems.length === 0}>
             <Menu.Target>
               <Button w={120} leftSection={<IconMenu2 />} variant="light">
                 Menu
               </Button>
             </Menu.Target>
+            <Menu.Dropdown>{items}</Menu.Dropdown>
           </Menu>
         </Group>
       </Group>

@@ -5,6 +5,7 @@ import {
   CSSVariablesResolver,
   MantineProvider,
   Menu,
+  Modal,
 } from "@mantine/core";
 import React, { PropsWithChildren } from "react";
 
@@ -22,6 +23,11 @@ const theme = createTheme({
       defaultProps: {
         size: "sm",
         fz: "lg",
+      },
+    }),
+    Modal: Modal.extend({
+      defaultProps: {
+        withinPortal: true,
       },
     }),
   },

@@ -79,7 +79,6 @@ export const authProvider: AuthProvider = {
 
   getPermissions: async (params) => {
     const session = await getSession();
-
     return {
       permissions: session?.user.permissions,
       roles: session?.user.roles,

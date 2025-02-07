@@ -9,7 +9,7 @@ import {
   Switch,
 } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
-import { useDeleteMany, useResourceParams } from "@refinedev/core";
+import { CanAccess, useDeleteMany, useResourceParams } from "@refinedev/core";
 import { useTable } from "@refinedev/react-table";
 import {
   IconColumns,
@@ -58,14 +58,16 @@ const ResourceList: React.FC<ResourceListProps> = ({ columns: cols }) => {
         header: "",
         size: 30,
         cell: ({ getValue }) => (
-          <ActionIcon
-            size="sm"
-            variant="transparent"
-            component={Link}
-            href={`/${resource.name}/${getValue() as number}`}
-          >
-            <IconEdit />
-          </ActionIcon>
+          <CanAccess action="update">
+            <ActionIcon
+              size="sm"
+              variant="transparent"
+              component={Link}
+              href={`/${resource.name}/${getValue() as number}`}
+            >
+              <IconEdit />
+            </ActionIcon>
+          </CanAccess>
         ),
       },
     ],
@@ -100,7 +102,7 @@ const ResourceList: React.FC<ResourceListProps> = ({ columns: cols }) => {
     });
   }
   return (
-    <>
+    <CanAccess action="read">
       <Group justify="flex-end" mb="md">
         <Menu closeOnItemClick={false}>
           <Menu.Target>
@@ -137,20 +139,24 @@ const ResourceList: React.FC<ResourceListProps> = ({ columns: cols }) => {
             </Button>
           </Menu.Target>
           <Menu.Dropdown>
-            <Menu.Item onClick={deleteHandler}>Delete</Menu.Item>
+            <CanAccess action="delete">
+              <Menu.Item onClick={deleteHandler}>Delete</Menu.Item>
+            </CanAccess>
           </Menu.Dropdown>
         </Menu>
         <Divider orientation="vertical" />
-        <Button
-          leftSection={<IconPlus />}
-          component={Link}
-          href={`/${resource.name}/create`}
-        >
-          New
-        </Button>
+        <CanAccess action="create">
+          <Button
+            leftSection={<IconPlus />}
+            component={Link}
+            href={`/${resource.name}/create`}
+          >
+            New
+          </Button>
+        </CanAccess>
       </Group>
       <DashboardTable table={table} />
-    </>
+    </CanAccess>
   );
 };
 
