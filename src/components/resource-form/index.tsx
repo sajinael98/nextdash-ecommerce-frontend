@@ -82,7 +82,7 @@ const ResourceForm: React.FC<ResourceFormProps> = (props) => {
           <Box></Box>
         </Group>
         <AutoForm
-          formValues={form.values}
+          formValues={form.getValues()}
           schema={schema}
           onChange={formChangeHandler}
           onSubmit={(data) => {

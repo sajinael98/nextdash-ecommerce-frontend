@@ -163,7 +163,7 @@ const DashboardTable: React.FC<TableProps> = ({ table }) => {
         >
           <Table.Thead>
             <Table.Tr>
-              <Table.Th w={20}>#</Table.Th>
+              <Table.Th w={10}>#</Table.Th>
               <TableHeaderGroup groups={table.getLeftHeaderGroups()} />
               <TableHeaderGroup groups={table.getCenterHeaderGroups()} />
               <TableHeaderGroup groups={table.getRightHeaderGroups()} />

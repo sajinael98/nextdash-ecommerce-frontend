@@ -1,13 +1,11 @@
-import { TextInput } from "@mantine/core";
+import { Checkbox } from "@mantine/core";
 import { FieldProps } from "@rjsf/utils";
 import React, { ChangeEventHandler, FocusEventHandler } from "react";
-import SelectField from "./SelectField";
 
-const StringField: React.FC<FieldProps> = (props) => {
+const BooleanField: React.FC<FieldProps> = (props) => {
   const {
     name,
     idSchema,
-    schema: { widget = "" },
     defaultValue = "",
     formData = "",
     onChange,
@@ -15,15 +13,11 @@ const StringField: React.FC<FieldProps> = (props) => {
     readonly,
     required,
     disabled,
+    title
   } = props;
-  
-  switch (widget) {
-    case "select":
-      return <SelectField {...props} />;
-  }
 
   const changeHandler: ChangeEventHandler<HTMLInputElement> = function (event) {
-    onChange(event.target.value);
+    onChange(event.target.checked);
   };
 
   const foucsHandler: FocusEventHandler<HTMLInputElement> = function (event) {
@@ -31,9 +25,10 @@ const StringField: React.FC<FieldProps> = (props) => {
   };
 
   return (
-    <TextInput
+    <Checkbox
       id={idSchema.$id}
       name={name}
+      label={title ?? name}
       defaultValue={defaultValue}
       value={formData}
       onChange={changeHandler}
@@ -46,4 +41,4 @@ const StringField: React.FC<FieldProps> = (props) => {
   );
 };
 
-export default StringField;
+export default BooleanField;

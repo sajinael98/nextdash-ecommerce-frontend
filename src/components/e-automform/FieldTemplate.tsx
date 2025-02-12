@@ -2,19 +2,19 @@ import { Grid, GridCol, Text } from "@mantine/core";
 import { FieldTemplateProps } from "@rjsf/utils";
 import React from "react";
 
-const FULL_WIDTH_TYPES = ["object"];
+const FULL_WIDTH_TYPES = ["object", "array"];
 
 const FieldTemplate: React.ComponentType<FieldTemplateProps> = (props) => {
-  const { schema, id, children, label, required } = props;
-
+  const { schema, id, children, label, required, registry,  } = props;
+  
   const ariaLabel = required ? `${label} (required)` : label;
   if (id === "root") {
-    return <Grid>{children}</Grid>;
+    return <Grid align="flex-end">{children}</Grid>;
   }
-
+  
   return (
     <GridCol span={{ lg: FULL_WIDTH_TYPES.includes(schema.type) ? 12 : 6 }}>
-      {schema.type != "object" && (
+      {!["object", "boolean"].includes(schema.type) && (
         <Text mb="xs" fz="sm" aria-label={ariaLabel} component="label">
           {label}
           {required && (

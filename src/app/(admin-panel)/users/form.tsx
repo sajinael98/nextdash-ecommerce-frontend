@@ -3,6 +3,24 @@ import { RJSFSchema } from "@rjsf/utils";
 export const userSchema: RJSFSchema = {
   type: "object",
   properties: {
+    test: {
+      type: "number",
+      widget: "resource",
+      resource: "roles",
+      optionLabel: "role"
+    },
+    phone: {
+      type: "string",
+    },
+    enabled: {
+      type: "boolean",
+    },
+    numberEnum: {
+      type: "string",
+      title: "Number enum",
+      widget: "select",
+      enums: [{ label: "Yes", value: "y" }],
+    },
     personalInformation: {
       type: "object",
       title: "Personal Information",

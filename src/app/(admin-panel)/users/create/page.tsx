@@ -1,31 +1,8 @@
 "use client";
 import ResourceForm from "@components/resource-form";
 import { useForm } from "@refinedev/core";
+import { userSchema } from "../form";
 
-const schema = {
-  type: "object",
-  properties: {
-    personalInformation: {
-      required: ["firstName"],
-      title: "Personal Information",
-      type: "object",
-      properties: {
-        firstName: {
-          type: "string",
-          title: "First Name",
-        },
-        midName: {
-          type: "string",
-          title: "Mid Name",
-        },
-        lastName: {
-          type: "string",
-          title: "Last Name",
-        },
-      },
-    },
-  },
-};
 const CreateUserPage = () => {
   const { onFinish } = useForm();
   function submitHandler(values: any) {
@@ -34,7 +11,7 @@ const CreateUserPage = () => {
   return (
     <ResourceForm
       onSubmit={submitHandler}
-      schema={schema}
+      schema={userSchema}
       validate={{
         firstName(value) {
           return value?.length < 6

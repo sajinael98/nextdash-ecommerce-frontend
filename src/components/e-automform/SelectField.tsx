@@ -1,13 +1,12 @@
-import { TextInput } from "@mantine/core";
+import { ComboboxItem, Select } from "@mantine/core";
 import { FieldProps } from "@rjsf/utils";
-import React, { ChangeEventHandler, FocusEventHandler } from "react";
-import SelectField from "./SelectField";
+import React, { FocusEventHandler } from "react";
 
-const StringField: React.FC<FieldProps> = (props) => {
+const SelectField: React.FC<FieldProps> = (props) => {
   const {
     name,
     idSchema,
-    schema: { widget = "" },
+    schema,
     defaultValue = "",
     formData = "",
     onChange,
@@ -16,25 +15,23 @@ const StringField: React.FC<FieldProps> = (props) => {
     required,
     disabled,
   } = props;
-  
-  switch (widget) {
-    case "select":
-      return <SelectField {...props} />;
+  const { enums } = schema;
+  if (!enums) {
+    throw Error("Enums are missing for:" + name);
   }
-
-  const changeHandler: ChangeEventHandler<HTMLInputElement> = function (event) {
-    onChange(event.target.value);
-  };
+  const changeHandler = (value: string | null, option: ComboboxItem) =>
+    onChange(value);
 
   const foucsHandler: FocusEventHandler<HTMLInputElement> = function (event) {
     onBlur(idSchema.$id, event.target.value);
   };
 
   return (
-    <TextInput
+    <Select
+      data={enums}
       id={idSchema.$id}
       name={name}
-      defaultValue={defaultValue}
+      defaultValue={defaultValue as string}
       value={formData}
       onChange={changeHandler}
       onFocus={foucsHandler}
@@ -46,4 +43,4 @@ const StringField: React.FC<FieldProps> = (props) => {
   );
 };
 
-export default StringField;
+export default SelectField;
