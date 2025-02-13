@@ -1,21 +1,21 @@
 "use client";
 
-import AutoForm from "@components/autoform";
+import ResourceForm from "@components/resource-form";
 import { useForm } from "@refinedev/core";
 import { roleSchema } from "../form";
 
 const CreateRolePage = () => {
-  const { onFinish, formLoading } = useForm();
+  const form = useForm();
 
   function submitHandler(values: any) {
-    onFinish(values);
+    form.onFinish(values);
   }
 
   return (
-    <AutoForm
-      formLoading={formLoading}
-      onSubmit={submitHandler}
+    <ResourceForm
+      loading={form.formLoading}
       schema={roleSchema}
+      onSubmit={submitHandler}
     />
   );
 };

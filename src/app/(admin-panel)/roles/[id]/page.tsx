@@ -1,10 +1,10 @@
 "use client";
 
-import EditResource from "@components/Edit";
+import ResourceForm from "@components/resource-form";
 import { useForm } from "@refinedev/core";
 import { roleSchema } from "../form";
 
-const EditRolePage = () => {
+const CreateRolePage = () => {
   const form = useForm();
 
   function submitHandler(values: any) {
@@ -12,8 +12,13 @@ const EditRolePage = () => {
   }
 
   return (
-    <EditResource schema={roleSchema} form={form} onSubmit={submitHandler} />
+    <ResourceForm
+      loading={form.formLoading}
+      schema={roleSchema}
+      onSubmit={submitHandler}
+      formValues={form.query?.data?.data}
+    />
   );
 };
 
-export default EditRolePage;
+export default CreateRolePage;

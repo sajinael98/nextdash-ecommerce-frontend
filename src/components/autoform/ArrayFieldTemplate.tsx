@@ -1,3 +1,5 @@
+"use client"
+
 import DashboardTable from "@components/table";
 import {
     ActionIcon,

@@ -30,7 +30,7 @@ const BooleanField: React.FC<FieldProps> = (props) => {
       name={name}
       label={title ?? name}
       defaultValue={defaultValue}
-      value={formData}
+      checked={formData}
       onChange={changeHandler}
       onFocus={foucsHandler}
       onBlur={foucsHandler}
