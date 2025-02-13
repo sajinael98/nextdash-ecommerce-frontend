@@ -4,12 +4,15 @@ import { useForm } from "@refinedev/core";
 import { userSchema } from "../form";
 
 const CreateUserPage = () => {
-  const { onFinish } = useForm();
+  const { onFinish, formLoading } = useForm({
+    
+  });
   function submitHandler(values: any) {
-    console.log(values);
+    onFinish(values);
   }
   return (
     <ResourceForm
+      loading={formLoading}
       onSubmit={submitHandler}
       schema={userSchema}
       validate={{

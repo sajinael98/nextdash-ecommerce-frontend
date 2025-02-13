@@ -1,12 +1,12 @@
 "use client";
 
-import EditResource from "@components/Edit";
-import { modals } from "@mantine/modals";
-import { useField } from "@mantine/form";
-import { CanAccess, useCustomMutation, useForm } from "@refinedev/core";
-import { userSchema } from "../form";
+import ResourceForm from "@components/resource-form";
 import { Button, Group, PasswordInput } from "@mantine/core";
+import { useField } from "@mantine/form";
+import { modals } from "@mantine/modals";
+import { useCustomMutation, useForm } from "@refinedev/core";
 import React from "react";
+import { userSchema } from "../form";
 
 interface UpdatePasswordModalProps {
   onSubmit: (password: string) => void;
@@ -74,21 +74,14 @@ const EditUserPage: React.FC<{ params: { id: string } }> = ({
       confirmProps: { display: "none" },
       cancelProps: { display: "none" },
     });
-
+    
   return (
-    <>
-      <EditResource
-        schema={userSchema}
-        form={form}
-        onSubmit={submitHandler}
-        menuItems={[
-          {
-            label: "Update Password",
-            onClick: updatePasswordModal,
-          },
-        ]}
-      />
-    </>
+    <ResourceForm
+      loading={form.formLoading}
+      formValues={form.query?.data?.data}
+      schema={userSchema}
+      onSubmit={submitHandler}
+    />
   );
 };
 

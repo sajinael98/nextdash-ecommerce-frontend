@@ -1,7 +1,15 @@
 "use client";
 
 import AutoForm from "@components/e-automform";
-import { Badge, Box, Button, Container, Group, Title } from "@mantine/core";
+import {
+  Badge,
+  Box,
+  Button,
+  Container,
+  Group,
+  LoadingOverlay,
+  Title,
+} from "@mantine/core";
 import { createFormContext, FormValidateInput } from "@mantine/form";
 import { useDebouncedCallback } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
@@ -16,17 +24,13 @@ interface ResourceFormProps {
   validate?: FormValidateInput<BaseRecord>;
   onSubmit: (values: BaseRecord) => void;
   schema: RJSFSchema;
+  loading: boolean;
 }
 
 const [FormProvider, _, useForm] = createFormContext<BaseRecord>();
 
 const ResourceForm: React.FC<ResourceFormProps> = (props) => {
-  const {
-    formValues = {},
-    onSubmit,
-    schema,
-    validate,
-  } = props;
+  const { formValues = {}, onSubmit, schema, validate, loading } = props;
 
   const { identifier, action } = useResourceParams();
   const form = useForm({
@@ -62,10 +66,13 @@ const ResourceForm: React.FC<ResourceFormProps> = (props) => {
     },
     500
   );
-
+  const values = Object.keys(form.getValues()).length
+    ? form.getValues()
+    : formValues;
   return (
     <FormProvider form={form}>
-      <Container size="xl">
+      <Container size="xl" pos="relative">
+        <LoadingOverlay visible={loading} />
         <Group mb="md" grow>
           <Box>
             <Title tt="capitalize" order={2}>
@@ -82,7 +89,7 @@ const ResourceForm: React.FC<ResourceFormProps> = (props) => {
           <Box></Box>
         </Group>
         <AutoForm
-          formValues={form.getValues()}
+          formValues={values}
           schema={schema}
           onChange={formChangeHandler}
           onSubmit={(data) => {
