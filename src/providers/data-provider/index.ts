@@ -1,176 +1,113 @@
-import { DataProvider, HttpError } from "@refinedev/core";
+import {
+  DataProvider,
+  DeleteOneResponse,
+  GetOneResponse,
+  HttpError,
+} from "@refinedev/core";
 import { axiosInstance } from "@refinedev/simple-rest";
+import { AxiosError } from "axios";
 import { getSession } from "next-auth/react";
 
-export const dataProvider: DataProvider = {
-  getApiUrl: () => "/backend-api",
-  getList: async ({ resource, pagination, sorters, filters, meta }) => {
-    const session = await getSession();
-    const headerParams = {
-      "x-entity": resource,
-      "x-action": "read",
-    };
-    return axiosInstance
-      .get(`/backend-api/${resource}`, {
-        headers: {
-          Authorization: "Bearer " + session?.user.token,
-          ...headerParams,
-        },
-        params: {
-          page: pagination?.current,
-          size: pagination?.pageSize,
-          filters,
-          sorters,
-        },
-      })
-      .then((res) => res.data)
-      .catch((err) => {
-        const error: HttpError = {
-          message: err.response.data,
-          statusCode: err.statusCode,
-        };
-        throw new Error("");
-      });
-  },
-  create: async ({ resource, variables, meta }) => {
-    const session = await getSession();
-    return axiosInstance
-      .post(`/backend-api/${resource}`, variables, {
-        headers: {
-          Authorization: "Bearer " + session?.user.token,
-        },
-      })
-      .catch((err) => {
-        const error: HttpError = {
-          message: err.response.data,
-          statusCode: err.statusCode,
-        };
-        throw new Error("");
-      });
-  },
-  update: async ({ resource, id, variables, meta }) => {
-    const session = await getSession();
-    return axiosInstance
-      .patch(`/backend-api/${resource}/${id}`, variables, {
-        headers: {
-          Authorization: "Bearer " + session?.user.token,
-        },
-      })
-      .catch((err) => {
-        let message = err.response.data;
-        if (typeof message === "object") {
-          message = Object.entries(message).reduce(
-            (msg, [key, value]) => msg + "\n" + `${key}: ${value}`,
-            ""
-          );
-        }
-        const error: HttpError = {
-          message,
-          statusCode: err.statusCode,
-        };
-        throw new Error("");
-      });
-  },
-  deleteOne: async ({ resource, id, variables, meta }) => {
-    const session = await getSession();
-    return axiosInstance
-      .delete(`/backend-api/${resource}/${id}`, {
-        headers: {
-          Authorization: "Bearer " + session?.user.token,
-        },
-      })
-      .catch((err) => {
-        const error: HttpError = {
-          message: err.response.data,
-          statusCode: err.statusCode,
-        };
-        throw new Error("");
-      });
-  },
-  getOne: async ({ resource, id, meta }) => {
-    const session = await getSession();
-    return axiosInstance
-      .get(`/backend-api/${resource}/${id}`, {
-        headers: {
-          Authorization: "Bearer " + session?.user.token,
-        },
-      })
-      .then((res) => {
-        return {
-          data: {
-            ...res.data,
-          },
-        };
-      })
-      .catch((err) => {
-        const error: HttpError = {
-          message: err.response.data,
-          statusCode: err.statusCode,
-        };
-        throw new Error("");
-      });
-  },
-  async custom({ method, url, payload }) {
-    const session = await getSession();
+function errorHandler(error: AxiosError<any> | any) {
+  const err: HttpError = {
+    message: error.response?.data,
+    statusCode: error.response?.status ?? 500,
+  };
+  return Promise.reject(err);
+}
 
-    switch (method) {
-      case "get":
-        return axiosInstance
-          .get(`/backend-api/${url}`, {
-            headers: {
-              Authorization: "Bearer " + session?.user.token,
-            },
-          })
-          .catch((err) => {
-            const error: HttpError = {
-              message: err.response.data,
-              statusCode: err.statusCode,
-            };
-            throw new Error("");
-          });
-      case "post":
-        return axiosInstance
-          .post(`/backend-api/${url}`, payload, {
-            headers: {
-              Authorization: "Bearer " + session?.user.token,
-            },
-          })
-          .catch((err) => {
-            const error: HttpError = {
-              message: err.response.data,
-              statusCode: err.statusCode,
-            };
-            throw new Error("");
-          });
-      case "patch":
-        return axiosInstance
-          .patch(`/backend-api/${url}`, payload, {
-            headers: {
-              Authorization: "Bearer " + session?.user.token,
-            },
-          })
-          .catch((err) => {
-            const error: HttpError = {
-              message: err.response.data,
-              statusCode: err.statusCode,
-            };
-            throw new Error("");
-          });
-      case "delete":
-        return axiosInstance
-          .delete(`/backend-api/${url}`, {
-            headers: {
-              Authorization: "Bearer " + session?.user.token,
-            },
-          })
-          .catch((err) => {
-            const error: HttpError = {
-              message: err.response.data,
-              statusCode: err.statusCode,
-            };
-            throw new Error("");
-          });
+async function getCommonHeaders(
+  resource: string,
+  action: "create" | "update" | "read" | "delete" = "read"
+) {
+  const session = await getSession();
+
+  return {
+    Authorization: "Bearer " + session?.user.token,
+    "x-entity": resource,
+    "x-action": action,
+  };
+}
+
+const dataProvider = (apiUrl: string): DataProvider => ({
+  getApiUrl: () => apiUrl,
+  getList: async ({ resource, pagination, sorters, filters }) => {
+    const headers = await getCommonHeaders(resource);
+    const params = {
+      page: pagination?.current ?? 1,
+      size: pagination?.pageSize ?? 20,
+      filters,
+      sorters,
+    };
+    try {
+      const response = await axiosInstance.get(apiUrl + `/${resource}`, {
+        headers,
+        params,
+      });
+
+      return response.data;
+    } catch (error) {
+      return errorHandler(error);
     }
-    return axiosInstance.get(url);
   },
-};
+  create: async function ({ resource, variables }) {
+    const headers = await getCommonHeaders(resource, "create");
+    try {
+      const response = await axiosInstance.post(
+        `${apiUrl}/${resource}`,
+        variables,
+        {
+          headers,
+        }
+      );
+
+      return response.data;
+    } catch (error) {
+      errorHandler(error);
+    }
+  },
+  update: async function ({ resource, id, variables }) {
+    const headers = await getCommonHeaders(resource, "update");
+    try {
+      const response = await axiosInstance.patch(
+        `${apiUrl}/${resource}/${id}`,
+        variables,
+        {
+          headers,
+        }
+      );
+
+      return { data: response.data };
+    } catch (error) {
+      return errorHandler(error);
+    }
+  },
+  deleteOne: async function ({ resource, id }) {
+    const headers = await getCommonHeaders(resource, "delete");
+    try {
+      await axiosInstance.delete(`${apiUrl}/${resource}/${id}`, {
+        headers,
+      });
+
+      return { data: { id } } as DeleteOneResponse<any>;
+    } catch (error) {
+      return errorHandler(errorHandler);
+    }
+  },
+  getOne: async function ({ resource, id, meta }) {
+    const headers = await getCommonHeaders(resource, "read");
+    try {
+      const response = await axiosInstance.get(`${apiUrl}/${resource}/${id}`, {
+        headers,
+      });
+
+      return {
+        data: response.data,
+      } as GetOneResponse<any>;
+    } catch (error) {
+      return errorHandler(error);
+    }
+  },
+});
+
+export const defaultDataProvider = dataProvider("/backend-api");

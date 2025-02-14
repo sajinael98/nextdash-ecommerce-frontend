@@ -5,7 +5,8 @@ import { Notifications } from "@mantine/notifications";
 import { accessControlProvider } from "@providers/access-control-provider";
 import { auditLogProvider } from "@providers/audit-log-provider";
 import { authProvider } from "@providers/auth-provider";
-import { dataProvider } from "@providers/data-provider";
+import { defaultDataProvider } from "@providers/data-provider";
+import { notificationProvider } from "@providers/notification-provider";
 import UiProvider from "@providers/ui-provider";
 import { Refine, ResourceProps } from "@refinedev/core";
 import routerProvider from "@refinedev/nextjs-router";
@@ -51,9 +52,10 @@ const AppProvider: React.FC<PropsWithChildren> = ({ children }) => {
             auditLogProvider={auditLogProvider}
             resources={resources}
             routerProvider={routerProvider}
-            dataProvider={dataProvider}
+            dataProvider={defaultDataProvider}
             authProvider={authProvider}
             accessControlProvider={accessControlProvider}
+            notificationProvider={notificationProvider}
             options={{
               syncWithLocation: true,
               warnWhenUnsavedChanges: true,
