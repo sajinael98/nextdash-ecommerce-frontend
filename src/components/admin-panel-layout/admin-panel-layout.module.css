@@ -8,6 +8,7 @@
 
 .header-right-part {
   border-radius: 1.5rem;
+  overflow: hidden;
   background-color: light-dark(
     var(--mantine-color-white),
     var(--mantine-color-black)

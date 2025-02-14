@@ -9,6 +9,7 @@ import {
   AppShellMain,
   AppShellNavbar,
   Avatar,
+  Box,
   Divider,
   Flex,
   Group,
@@ -79,23 +80,19 @@ const AdminPanelLayout: React.FC<PropsWithChildren> = ({ children }) => {
       padding="md"
     >
       <AppShellHeader className={classes["glass-bg"]} withBorder={false} p="md">
-        <Flex
-          h="100%"
-          justify="space-between"
-          align="center"
-          direction={{ base: "column-reverse", md: "row" }}
-        >
-          <div>
+        <Flex h="100%" justify="space-between" align="center">
+          <Box visibleFrom="md">
             <Title tt="capitalize">{identifier}</Title>
             <Breadcrumb />
-          </div>
+          </Box>
           <Group
             className={classes["header-right-part"]}
             wrap="nowrap"
             p={{ base: 0, md: "md" }}
             mb={{ base: "md", md: 0 }}
+            flex={{ base: 1, md: 0.3 }}
           >
-            <TextInput leftSection={<IconSearch />} placeholder="search..." />
+            <TextInput leftSection={<IconSearch />} variant="transparent" placeholder="search..." />
             {headerButtons}
             <MantineMenu>
               <MenuTarget>
