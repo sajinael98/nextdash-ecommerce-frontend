@@ -1,21 +1,15 @@
-"use client"
+"use client";
 
 import DashboardTable from "@components/table";
-import {
-    ActionIcon,
-    Button,
-    Group,
-    Modal,
-    Text
-} from "@mantine/core";
+import { ActionIcon, Button, Group, Modal, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { ArrayFieldTemplateProps } from "@rjsf/utils";
 import { IconEdit, IconTrash } from "@tabler/icons-react";
 import {
-    getCoreRowModel,
-    getFilteredRowModel,
-    getSortedRowModel,
-    useReactTable,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getSortedRowModel,
+  useReactTable,
 } from "@tanstack/react-table";
 import React, { useEffect, useMemo, useState } from "react";
 

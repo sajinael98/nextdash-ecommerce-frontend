@@ -65,7 +65,6 @@ const AdminPanelLayout: React.FC<PropsWithChildren> = ({ children }) => {
   return (
     <AppShell
       layout="alt"
-      padding="md"
       navbar={{
         width: 300,
         breakpoint: "sm",
@@ -74,15 +73,16 @@ const AdminPanelLayout: React.FC<PropsWithChildren> = ({ children }) => {
           mobile: !opened,
         },
       }}
+      header={{
+        height: 100,
+      }}
+      padding="md"
     >
-      <AppShellHeader
-        className={classes["glass-bg"]}
-        mt="xl"
-        withBorder={false}
-        px="md"
-      >
+      <AppShellHeader className={classes["glass-bg"]} withBorder={false} p="md">
         <Flex
+          h="100%"
           justify="space-between"
+          align="center"
           direction={{ base: "column-reverse", md: "row" }}
         >
           <div>
@@ -121,12 +121,7 @@ const AdminPanelLayout: React.FC<PropsWithChildren> = ({ children }) => {
         <Divider mb="md" />
         <Menu />
       </AppShellNavbar>
-      <AppShellMain
-        className={classes["glass-bg"]}
-        pt={"calc(var(--mantine-spacing-lg) * 7)"}
-      >
-        {children}
-      </AppShellMain>
+      <AppShellMain className={classes["glass-bg"]}>{children}</AppShellMain>
     </AppShell>
   );
 };

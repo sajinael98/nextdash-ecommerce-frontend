@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import Form, { FormProps } from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";

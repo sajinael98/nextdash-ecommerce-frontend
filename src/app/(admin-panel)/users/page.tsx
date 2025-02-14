@@ -10,7 +10,7 @@ const UserListPage = () => {
     () => [
       {
         accessorKey: "username",
-        header: "Username"
+        header: "Username",
       },
       {
         accessorKey: "accountInformation.email",

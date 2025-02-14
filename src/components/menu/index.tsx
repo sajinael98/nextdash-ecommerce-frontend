@@ -5,7 +5,7 @@ import {
   ScrollArea,
   Text,
   ThemeIcon,
-  UnstyledButton
+  UnstyledButton,
 } from "@mantine/core";
 import { useMenu } from "@refinedev/core";
 import { useRouter } from "next/navigation";

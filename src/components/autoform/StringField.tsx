@@ -16,7 +16,7 @@ const StringField: React.FC<FieldProps> = (props) => {
     required,
     disabled,
   } = props;
-  
+
   switch (widget) {
     case "select":
       return <SelectField {...props} />;

@@ -59,7 +59,6 @@ const AppProvider: React.FC<PropsWithChildren> = ({ children }) => {
               warnWhenUnsavedChanges: true,
               useNewQueryKeys: true,
               projectId: "sXyKYR-uoMAWV-NTZ337",
-              
             }}
           >
             {children}

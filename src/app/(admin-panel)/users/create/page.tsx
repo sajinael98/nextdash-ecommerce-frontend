@@ -4,9 +4,7 @@ import { useForm } from "@refinedev/core";
 import { userSchema } from "../form";
 
 const CreateUserPage = () => {
-  const { onFinish, formLoading } = useForm({
-    
-  });
+  const { onFinish, formLoading } = useForm({});
   function submitHandler(values: any) {
     onFinish(values);
   }

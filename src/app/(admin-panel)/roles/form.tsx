@@ -27,7 +27,7 @@ export const roleSchema: RJSFSchema = {
             title: "Resource",
             view: true,
           },
-          
+
           create: {
             view: true,
             type: "boolean",

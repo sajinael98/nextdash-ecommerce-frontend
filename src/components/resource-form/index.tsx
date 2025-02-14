@@ -36,7 +36,7 @@ const ResourceForm: React.FC<ResourceFormProps> = (props) => {
   const form = useForm({
     mode: "uncontrolled",
     initialValues: formValues,
-    validate
+    validate,
   });
 
   if (!identifier) {

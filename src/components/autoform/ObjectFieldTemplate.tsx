@@ -3,7 +3,7 @@ import {
   AccordionControl,
   AccordionItem,
   AccordionPanel,
-  Grid
+  Grid,
 } from "@mantine/core";
 import { ObjectFieldTemplateProps } from "@rjsf/utils";
 import React, { Fragment } from "react";
@@ -11,7 +11,9 @@ import React, { Fragment } from "react";
 const ObjectFieldTemplate: React.FC<ObjectFieldTemplateProps> = (props) => {
   const { idSchema, properties, title } = props;
 
-  const content = properties.map((prop) => <Fragment key={prop.name}>{prop.content}</Fragment>);
+  const content = properties.map((prop) => (
+    <Fragment key={prop.name}>{prop.content}</Fragment>
+  ));
 
   if (idSchema.$id === "root") {
     return content;

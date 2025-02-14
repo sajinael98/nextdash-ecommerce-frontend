@@ -5,13 +5,13 @@ import React from "react";
 const FULL_WIDTH_TYPES = ["object", "array"];
 
 const FieldTemplate: React.ComponentType<FieldTemplateProps> = (props) => {
-  const { schema, id, children, label, required, registry,  } = props;
-  
+  const { schema, id, children, label, required, registry } = props;
+
   const ariaLabel = required ? `${label} (required)` : label;
   if (id === "root") {
     return <Grid align="flex-end">{children}</Grid>;
   }
-  
+
   return (
     <GridCol span={{ lg: FULL_WIDTH_TYPES.includes(schema.type) ? 12 : 6 }}>
       {!["object", "boolean"].includes(schema.type) && (

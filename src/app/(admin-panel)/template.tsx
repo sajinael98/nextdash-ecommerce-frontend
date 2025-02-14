@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { Authenticated, useResourceParams } from "@refinedev/core";
 import React, { PropsWithChildren } from "react";
 

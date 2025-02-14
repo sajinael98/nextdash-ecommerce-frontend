@@ -13,7 +13,7 @@ const BooleanField: React.FC<FieldProps> = (props) => {
     readonly,
     required,
     disabled,
-    title
+    title,
   } = props;
 
   const changeHandler: ChangeEventHandler<HTMLInputElement> = function (event) {

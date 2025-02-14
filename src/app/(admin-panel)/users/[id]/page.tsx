@@ -74,7 +74,7 @@ const EditUserPage: React.FC<{ params: { id: string } }> = ({
       confirmProps: { display: "none" },
       cancelProps: { display: "none" },
     });
-    
+
   return (
     <ResourceForm
       loading={form.formLoading}
