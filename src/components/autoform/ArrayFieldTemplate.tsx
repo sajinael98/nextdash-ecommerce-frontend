@@ -111,12 +111,6 @@ const ArrayFieldTemplate: React.FC<ArrayFieldTemplateProps> = (props) => {
           {items[currentRow].children}
         </Modal>
       )}
-      <Text>
-        {title}{" "}
-        <Text size="sm" c="dimmed" span>
-          (count: {formData.length})
-        </Text>
-      </Text>
       <DashboardTable table={table} />
       <Button
         onClick={() => {
