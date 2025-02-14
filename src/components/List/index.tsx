@@ -1,10 +1,12 @@
 import DashboardTable from "@components/table";
 import {
   ActionIcon,
+  Box,
   Button,
   Checkbox,
   Divider,
   Group,
+  LoadingOverlay,
   Menu,
   Switch,
 } from "@mantine/core";
@@ -103,59 +105,62 @@ const ResourceList: React.FC<ResourceListProps> = ({ columns: cols }) => {
   }
   return (
     <CanAccess action="read">
-      <Group justify="flex-end" mb="md">
-        <Menu closeOnItemClick={false}>
-          <Menu.Target>
-            <Button leftSection={<IconColumns />} variant="light">
-              Columns
-            </Button>
-          </Menu.Target>
-          <Menu.Dropdown>
-            {table
-              .getAllColumns()
-              .filter((column) => !["id", "select-col"].includes(column.id))
-              .map((column) => (
-                <Menu.Item key={column.id}>
-                  <Switch
-                    label={column?.columnDef?.header?.toString() ?? ""}
-                    checked={column.getIsVisible()}
-                    onChange={() => column.toggleVisibility()}
-                  />
-                </Menu.Item>
-              ))}
-          </Menu.Dropdown>
-        </Menu>
-        <Button
-          leftSection={<IconRotate />}
-          variant="light"
-          onClick={() => table.refineCore.tableQuery.refetch()}
-        >
-          Refresh
-        </Button>
-        <Menu>
-          <Menu.Target>
-            <Button leftSection={<IconMenu2 />} variant="light">
-              Menu
-            </Button>
-          </Menu.Target>
-          <Menu.Dropdown>
-            <CanAccess action="delete">
-              <Menu.Item onClick={deleteHandler}>Delete</Menu.Item>
-            </CanAccess>
-          </Menu.Dropdown>
-        </Menu>
-        <Divider orientation="vertical" />
-        <CanAccess action="create">
+      <Box pos="relative">
+        <LoadingOverlay visible={table.refineCore.tableQuery.isFetching} />
+        <Group justify="flex-end" mb="md">
+          <Menu closeOnItemClick={false}>
+            <Menu.Target>
+              <Button leftSection={<IconColumns />} variant="light">
+                Columns
+              </Button>
+            </Menu.Target>
+            <Menu.Dropdown>
+              {table
+                .getAllColumns()
+                .filter((column) => !["id", "select-col"].includes(column.id))
+                .map((column) => (
+                  <Menu.Item key={column.id}>
+                    <Switch
+                      label={column?.columnDef?.header?.toString() ?? ""}
+                      checked={column.getIsVisible()}
+                      onChange={() => column.toggleVisibility()}
+                    />
+                  </Menu.Item>
+                ))}
+            </Menu.Dropdown>
+          </Menu>
           <Button
-            leftSection={<IconPlus />}
-            component={Link}
-            href={`/${resource.name}/create`}
+            leftSection={<IconRotate />}
+            variant="light"
+            onClick={() => table.refineCore.tableQuery.refetch()}
           >
-            New
+            Refresh
           </Button>
-        </CanAccess>
-      </Group>
-      <DashboardTable table={table} />
+          <Menu>
+            <Menu.Target>
+              <Button leftSection={<IconMenu2 />} variant="light">
+                Menu
+              </Button>
+            </Menu.Target>
+            <Menu.Dropdown>
+              <CanAccess action="delete">
+                <Menu.Item onClick={deleteHandler}>Delete</Menu.Item>
+              </CanAccess>
+            </Menu.Dropdown>
+          </Menu>
+          <Divider orientation="vertical" />
+          <CanAccess action="create">
+            <Button
+              leftSection={<IconPlus />}
+              component={Link}
+              href={`/${resource.name}/create`}
+            >
+              New
+            </Button>
+          </CanAccess>
+        </Group>
+        <DashboardTable table={table} />
+      </Box>
     </CanAccess>
   );
 };
