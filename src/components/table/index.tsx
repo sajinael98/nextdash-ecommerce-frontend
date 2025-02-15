@@ -62,7 +62,12 @@ const TableHeaderGroup: React.FC<TableHeaderGroupProps> = ({ groups }) => {
         return (
           <Table.Th
             key={header.id}
-            w={header.getSize()}
+            w={
+              header?.column?.columnDef?.size ??
+              header.getSize() < header.getSize()
+                ? header.column.columnDef.size
+                : header.getSize()
+            }
             {...(["right", "left"].includes(
               header.column.getIsPinned() as string
             ) && {
@@ -163,7 +168,6 @@ const DashboardTable: React.FC<TableProps> = ({ table }) => {
         >
           <Table.Thead>
             <Table.Tr>
-              <Table.Th w={10}>#</Table.Th>
               <TableHeaderGroup groups={table.getLeftHeaderGroups()} />
               <TableHeaderGroup groups={table.getCenterHeaderGroups()} />
               <TableHeaderGroup groups={table.getRightHeaderGroups()} />
@@ -189,7 +193,6 @@ const DashboardTable: React.FC<TableProps> = ({ table }) => {
             )}
             {table.getRowModel().rows.map((row, index) => (
               <Table.Tr key={row.id}>
-                <Table.Td>{index + 1}</Table.Td>
                 {row.getLeftVisibleCells().map((cell) => (
                   <Table.Td
                     key={cell.id}

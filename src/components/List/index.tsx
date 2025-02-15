@@ -9,6 +9,7 @@ import {
   LoadingOverlay,
   Menu,
   Switch,
+  Text,
 } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { CanAccess, useDeleteMany, useResourceParams } from "@refinedev/core";
@@ -37,10 +38,12 @@ const ResourceList: React.FC<ResourceListProps> = ({ columns: cols }) => {
     () => [
       {
         id: "select-col",
-        size: 30,
+        size: 50,
         enableColumnFilter: false,
         header: ({ table }) => (
           <Checkbox
+            label="#"
+            labelPosition="left"
             checked={table.getIsAllRowsSelected()}
             indeterminate={table.getIsSomeRowsSelected()}
             onChange={table.getToggleAllRowsSelectedHandler()}
@@ -48,6 +51,8 @@ const ResourceList: React.FC<ResourceListProps> = ({ columns: cols }) => {
         ),
         cell: ({ row }) => (
           <Checkbox
+            label={row.index + 1}
+            labelPosition="left"
             checked={row.getIsSelected()}
             disabled={!row.getCanSelect()}
             onChange={row.getToggleSelectedHandler()}
@@ -82,6 +87,10 @@ const ResourceList: React.FC<ResourceListProps> = ({ columns: cols }) => {
         right: ["id"],
       },
     },
+    defaultColumn: {
+      size: 200,
+      minSize: 200,
+    },
     getRowId: (row) => row.id,
   });
   const selectedRows = useMemo(
@@ -110,9 +119,18 @@ const ResourceList: React.FC<ResourceListProps> = ({ columns: cols }) => {
         <Group justify="flex-end" mb="md">
           <Menu closeOnItemClick={false}>
             <Menu.Target>
-              <Button leftSection={<IconColumns />} variant="light">
-                Columns
-              </Button>
+              <div>
+                <Button
+                  leftSection={<IconColumns />}
+                  variant="light"
+                  visibleFrom="md"
+                >
+                  Columns
+                </Button>
+                <ActionIcon hiddenFrom="md" variant="light">
+                  <IconColumns />
+                </ActionIcon>
+              </div>
             </Menu.Target>
             <Menu.Dropdown>
               {table
@@ -133,14 +151,31 @@ const ResourceList: React.FC<ResourceListProps> = ({ columns: cols }) => {
             leftSection={<IconRotate />}
             variant="light"
             onClick={() => table.refineCore.tableQuery.refetch()}
+            visibleFrom="md"
           >
             Refresh
           </Button>
+          <ActionIcon
+            hiddenFrom="md"
+            variant="light"
+            onClick={() => table.refineCore.tableQuery.refetch()}
+          >
+            <IconRotate />
+          </ActionIcon>
           <Menu>
             <Menu.Target>
-              <Button leftSection={<IconMenu2 />} variant="light">
-                Menu
-              </Button>
+              <div>
+                <Button
+                  leftSection={<IconMenu2 />}
+                  variant="light"
+                  visibleFrom="md"
+                >
+                  Menu
+                </Button>
+                <ActionIcon variant="light" hiddenFrom="md">
+                  <IconMenu2 />
+                </ActionIcon>
+              </div>
             </Menu.Target>
             <Menu.Dropdown>
               <CanAccess action="delete">
@@ -154,9 +189,17 @@ const ResourceList: React.FC<ResourceListProps> = ({ columns: cols }) => {
               leftSection={<IconPlus />}
               component={Link}
               href={`/${resource.name}/create`}
+              visibleFrom="md"
             >
               New
             </Button>
+            <ActionIcon
+              component={Link}
+              href={`/${resource.name}/create`}
+              hiddenFrom="md"
+            >
+              <IconPlus />
+            </ActionIcon>
           </CanAccess>
         </Group>
         <DashboardTable table={table} />
