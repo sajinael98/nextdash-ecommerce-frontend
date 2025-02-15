@@ -6,7 +6,7 @@ export const Breadcrumb = () => {
   const { breadcrumbs } = useBreadcrumb();
 
   return (
-    <Breadcrumbs className="breadcrumb">
+    <Breadcrumbs>
       <Text c="dimmed">Pages</Text>
       {breadcrumbs.slice(0, 1).map((breadcrumb) => {
         return (

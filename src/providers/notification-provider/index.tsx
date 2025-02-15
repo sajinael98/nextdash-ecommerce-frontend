@@ -14,6 +14,6 @@ export const notificationProvider: NotificationProvider = {
     });
   },
   close(key) {
-    throw Error("close is not implemented in NotificationProvider");
+    // throw Error("close is not implemented in NotificationProvider");
   },
 };
