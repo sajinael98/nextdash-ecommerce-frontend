@@ -15,6 +15,11 @@ export const userSchema: RJSFSchema = {
           type: "string",
           title: "Last Name",
         },
+        profileImage: {
+          type: "string",
+          title: "Image",
+          widget: "image",
+        },
       },
     },
     accountInformation: {

@@ -108,6 +108,21 @@ const dataProvider = (apiUrl: string): DataProvider => ({
       return errorHandler(error);
     }
   },
+  async custom(params) {
+    const session = await getSession();
+    const headers = {
+      Authorization: "Bearer " + session?.user.token,
+      ...params.headers,
+    };
+    switch (params.method) {
+      case "post":
+        return axiosInstance.post(`${apiUrl}/${params.url}`, params.payload, {
+          headers,
+        });
+      default:
+        throw Error(params.method + "not implement yet");
+    }
+  },
 });
 
 export const defaultDataProvider = dataProvider("/backend-api");

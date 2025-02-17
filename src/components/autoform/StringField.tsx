@@ -2,8 +2,9 @@ import { TextInput } from "@mantine/core";
 import { FieldProps } from "@rjsf/utils";
 import React, { ChangeEventHandler, FocusEventHandler } from "react";
 import SelectField from "./SelectField";
+import ImageUploader from "./ImageField";
 
-const StringField: React.FC<FieldProps> = (props) => {
+const Field: React.FC<FieldProps> = (props) => {
   const {
     name,
     idSchema,
@@ -16,11 +17,6 @@ const StringField: React.FC<FieldProps> = (props) => {
     required,
     disabled,
   } = props;
-
-  switch (widget) {
-    case "select":
-      return <SelectField {...props} />;
-  }
 
   const changeHandler: ChangeEventHandler<HTMLInputElement> = function (event) {
     onChange(event.target.value);
@@ -44,6 +40,18 @@ const StringField: React.FC<FieldProps> = (props) => {
       disabled={disabled}
     />
   );
+};
+const StringField: React.FC<FieldProps> = (props) => {
+  const { schema } = props;
+  const { widget } = schema;
+  switch (widget) {
+    case "select":
+      return <SelectField {...props} />;
+    case "image":
+      return <ImageUploader {...props} />;
+    default:
+      return <Field {...props} />;
+  }
 };
 
 export default StringField;
