@@ -16,7 +16,7 @@ export const credentialsProvider = CredentialsProvider({
         password: credentials?.password,
       }
     );
-    const { id, username, email, token, roles, permissions } = response.data;
+    const { id, username, email, token, roles, permissions, profileImage: image, fullName } = response.data;
     return {
       id,
       username,
@@ -24,6 +24,8 @@ export const credentialsProvider = CredentialsProvider({
       token,
       roles,
       permissions,
+      image,
+      fullName,
     };
   },
 });
