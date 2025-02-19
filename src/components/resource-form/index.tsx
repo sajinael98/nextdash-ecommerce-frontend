@@ -8,6 +8,7 @@ import {
   Container,
   Group,
   LoadingOverlay,
+  Menu,
   Title,
 } from "@mantine/core";
 import { createFormContext, FormValidateInput } from "@mantine/form";
@@ -19,18 +20,31 @@ import { RJSFSchema } from "@rjsf/utils";
 import { IconDeviceFloppy } from "@tabler/icons-react";
 import React from "react";
 
+interface MenuItem {
+  label: string;
+  onClick: (data: any) => void;
+}
+
 interface ResourceFormProps {
   formValues?: BaseRecord;
   validate?: FormValidateInput<BaseRecord>;
   onSubmit: (values: BaseRecord) => void;
   schema: RJSFSchema;
   loading: boolean;
+  menuItems?: MenuItem[];
 }
 
 const [FormProvider, _, useForm] = createFormContext<BaseRecord>();
 
 const ResourceForm: React.FC<ResourceFormProps> = (props) => {
-  const { formValues = {}, onSubmit, schema, validate, loading } = props;
+  const {
+    formValues = {},
+    onSubmit,
+    schema,
+    validate,
+    loading,
+    menuItems = [],
+  } = props;
 
   const { identifier, action } = useResourceParams();
   const form = useForm({
@@ -73,7 +87,7 @@ const ResourceForm: React.FC<ResourceFormProps> = (props) => {
     <FormProvider form={form}>
       <Container size="xl" pos="relative">
         <LoadingOverlay visible={loading} />
-        <Group mb="md" grow>
+        <Group mb="md" justify="space-between">
           <Box>
             <Title tt="capitalize" order={2}>
               {identifier} Form
@@ -86,7 +100,25 @@ const ResourceForm: React.FC<ResourceFormProps> = (props) => {
               </Badge>
             </Title>
           </Box>
-          <Box></Box>
+          <Box>
+            <Menu>
+              <Menu.Target>
+                <Button variant="light">Menu</Button>
+              </Menu.Target>
+              {Boolean(menuItems.length) && (
+                <Menu.Dropdown>
+                  {menuItems.map((item, index) => (
+                    <Menu.Item
+                      key={index}
+                      onClick={() => item.onClick(formValues)}
+                    >
+                      {item.label}
+                    </Menu.Item>
+                  ))}
+                </Menu.Dropdown>
+              )}
+            </Menu>
+          </Box>
         </Group>
         <AutoForm
           formValues={values}
