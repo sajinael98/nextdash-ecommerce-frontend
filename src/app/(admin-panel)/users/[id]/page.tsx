@@ -81,6 +81,14 @@ const EditUserPage: React.FC<{ params: { id: string } }> = ({
       formValues={form.query?.data?.data}
       schema={userSchema}
       onSubmit={submitHandler}
+      menuItems={[
+        {
+          label: 'Update Password',
+          onClick(data) {
+              updatePasswordModal()
+          },
+        }
+      ]}
     />
   );
 };

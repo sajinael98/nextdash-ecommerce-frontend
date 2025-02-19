@@ -119,6 +119,11 @@ const dataProvider = (apiUrl: string): DataProvider => ({
         return axiosInstance.post(`${apiUrl}/${params.url}`, params.payload, {
           headers,
         });
+
+      case "patch":
+        return axiosInstance.patch(`${apiUrl}/${params.url}`, params.payload, {
+          headers,
+        });
       default:
         throw Error(params.method + "not implement yet");
     }
