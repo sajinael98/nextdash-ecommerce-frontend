@@ -1,16 +1,20 @@
 "use client";
 
 import {
+  Anchor,
+  Box,
   Button,
   Container,
   Flex,
   Paper,
   PasswordInput,
   TextInput,
+  Title
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useLogin } from "@refinedev/core";
-
+import Image from "next/image";
+import img from "../../../public/undraw_secure-login_m11a.svg";
 const LoginPage = () => {
   const { getInputProps, onSubmit } = useForm({
     initialValues: {
@@ -24,27 +28,37 @@ const LoginPage = () => {
     signIn(values);
   }
   return (
-    <Container bg="dark.8" styles={{ root: { height: "100vh" } }} fluid>
+    <Container bg="dark.7" styles={{ root: { height: "100vh" } }} fluid>
       <Flex justify="center" align="center" h="100%">
-        <Paper p="md" w={300} bg="dark.6" shadow="md">
+        <Box flex={1} h="60%" pos="relative" visibleFrom="md">
+          <Image src={img} fill alt="0" />
+        </Box>
+        <Flex flex={1} justify="center" align="center" mih="100%">
           <form onSubmit={onSubmit(signInHandler)}>
-            <TextInput
-              label="Username"
-              mb="md"
-              c="white"
-              {...getInputProps("username")}
-            />
-            <PasswordInput
-              label="Password"
-              mb="md"
-              c="white"
-              {...getInputProps("password")}
-            />
-            <Button type="submit" fullWidth>
-              Sign In
-            </Button>
+            <Paper
+              radius="md"
+              bg="dark"
+              withBorder
+              p="xl"
+              h="100%"
+              styles={{
+                root: {
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "stretch",
+                  gap: "var(--mantine-spacing-md)",
+                },
+              }}
+            >
+              <Title order={2}>Welcome To NextDash</Title>
+              <TextInput label="Username" {...getInputProps("username")} />
+              <PasswordInput label="Password" {...getInputProps("password")} />
+              <Anchor>Forget your password?</Anchor>
+              <Button type="submit">Sign In</Button>
+            </Paper>
           </form>
-        </Paper>
+        </Flex>
       </Flex>
     </Container>
   );
