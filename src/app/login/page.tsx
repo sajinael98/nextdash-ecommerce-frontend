@@ -6,6 +6,7 @@ import {
   Button,
   Container,
   Flex,
+  LoadingOverlay,
   Paper,
   PasswordInput,
   TextInput,
@@ -23,7 +24,7 @@ const LoginPage = () => {
       password: "123456",
     },
   });
-  const { mutate: signIn } = useLogin();
+  const { mutate: signIn, isLoading, isSuccess } = useLogin();
 
   const signInHandler = onSubmit((values) => {
     signIn(values);
@@ -51,9 +52,11 @@ const LoginPage = () => {
                 justifyContent: "center",
                 alignItems: "stretch",
                 gap: "var(--mantine-spacing-md)",
+                position: "relative",
               },
             }}
           >
+            <LoadingOverlay visible={isLoading || isSuccess} />
             <Title order={2}>Welcome To NextDash</Title>
             <TextInput label="Username" {...getInputProps("username")} />
             <PasswordInput label="Password" {...getInputProps("password")} />
