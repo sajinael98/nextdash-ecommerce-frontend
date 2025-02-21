@@ -38,12 +38,14 @@ const Avatar = () => {
       <Menu.Target>
         <Group gap="xs" styles={{ root: { cursor: "pointer" } }}>
           <MantineAvatar src={`/backend-api/files/${userQuery.data?.image}`} />
-          <Text tt="capitalize" fw={700} visibleFrom="md">
-            {userQuery.data?.fullName}
+          <div>
+            <Text tt="capitalize" fw={700} visibleFrom="md">
+              {userQuery.data?.fullName}
+            </Text>
             <Text tt="lowercase" fz="xs" c="dimmed">
               {userQuery.data?.name}
             </Text>
-          </Text>
+          </div>
         </Group>
       </Menu.Target>
       <Menu.Dropdown>
