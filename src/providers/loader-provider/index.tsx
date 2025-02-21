@@ -30,7 +30,7 @@ export const LoaderProvider: React.FC<PropsWithChildren> = ({ children }) => {
   useEffect(() => {
     const timeout = setTimeout(() => {
       hide();
-    }, 1500);
+    }, 750);
     return () => {
       clearTimeout(timeout);
       show();
