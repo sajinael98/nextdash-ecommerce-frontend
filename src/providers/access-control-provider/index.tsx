@@ -2,18 +2,16 @@
 
 import { authProvider } from "@providers/auth-provider";
 import { AccessControlProvider } from "@refinedev/core";
-
-interface Permission {
-  resource: string;
-  create: boolean;
-  read: boolean;
-  update: boolean;
-  delete: boolean;
-}
+import { Permission } from "next-auth";
 
 export const accessControlProvider: AccessControlProvider = {
   async can(props) {
-    const user = await authProvider.getIdentity();
+    // Check if getIdentity exists
+    if (!authProvider.getIdentity) {
+      throw new Error("authProvider.getIdentity is not defined");
+    }
+
+    const user = (await authProvider.getIdentity()) as any;
 
     // Superuser check
     if (user.id === 1) {
@@ -21,17 +19,26 @@ export const accessControlProvider: AccessControlProvider = {
     }
 
     const { action, resource } = props;
-    const { permissions }: { permissions: Permission[] } =
-      await authProvider.getPermissions();
+
+    // Check if getPermissions exists
+    if (!authProvider.getPermissions) {
+      throw new Error("authProvider.getPermissions is not defined");
+    }
+
+    const { permissions } = (await authProvider.getPermissions()) as {
+      permissions: Permission[];
+    };
 
     // Find the permission for the specified resource
     const permission = permissions.find(
       (p) => p.resource.toLowerCase() === resource
-    );
+    ) as Permission;
 
     // Return access based on permission
     return {
-      can: permission ? permission[action] || false : false,
+      can: permission
+        ? permission[action as "create" | "read" | "update" | "delete"] || false
+        : false,
     };
   },
 };

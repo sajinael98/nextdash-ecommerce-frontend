@@ -28,7 +28,7 @@ const ArrayFieldTemplate: React.FC<ArrayFieldTemplateProps> = (props) => {
       Object.entries(schema.items.properties)
         .filter(([_, props]) => (props as { view?: boolean })?.view)
         .reduce(
-          (cols, [field, { title }]) => {
+          (cols: any, [field, { title }]: any) => {
             cols.push({
               id: field,
               header: title,
@@ -41,7 +41,7 @@ const ArrayFieldTemplate: React.FC<ArrayFieldTemplateProps> = (props) => {
               accessorKey: "action",
               header: "",
               size: 20,
-              cell(props) {
+              cell(props: any) {
                 const index = props.row.index;
                 const item = items[index];
                 return (

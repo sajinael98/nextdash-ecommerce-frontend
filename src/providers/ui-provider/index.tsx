@@ -5,7 +5,7 @@ import {
   createTheme,
   MantineProvider,
   Menu,
-  Modal
+  Modal,
 } from "@mantine/core";
 import React, { PropsWithChildren } from "react";
 

@@ -83,11 +83,11 @@ const EditUserPage: React.FC<{ params: { id: string } }> = ({
       onSubmit={submitHandler}
       menuItems={[
         {
-          label: 'Update Password',
+          label: "Update Password",
           onClick(data) {
-              updatePasswordModal()
+            updatePasswordModal();
           },
-        }
+        },
       ]}
     />
   );

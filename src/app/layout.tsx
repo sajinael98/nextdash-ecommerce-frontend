@@ -5,7 +5,7 @@ import "@mantine/notifications/styles.css";
 import AppProvider from "@providers/app-provider";
 
 import { Metadata } from "next";
-import React from "react";
+import React, { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "Refine",
@@ -26,7 +26,9 @@ export default function RootLayout({
         <ColorSchemeScript />
       </head>
       <body>
-        <AppProvider>{children}</AppProvider>
+        <Suspense>
+          <AppProvider>{children}</AppProvider>
+        </Suspense>
       </body>
     </html>
   );

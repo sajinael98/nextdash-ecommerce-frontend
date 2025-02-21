@@ -42,8 +42,8 @@ const ImageUploader: React.FC<FieldProps> = (props) => {
     }
   }, [value]);
 
-  function deleteFileHandler(){
-    onChange(null)
+  function deleteFileHandler() {
+    onChange(null);
   }
   return (
     <>

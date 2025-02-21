@@ -1,9 +1,11 @@
-import React from 'react'
+import React, { Suspense } from "react";
 
 const IndexPage = () => {
   return (
-    <div>IndexPage</div>
-  )
-}
+    <Suspense>
+      <div>IndexPage</div>
+    </Suspense>
+  );
+};
 
-export default IndexPage
+export default IndexPage;

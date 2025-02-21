@@ -13,7 +13,7 @@ export const auditLogProvider: AuditLogProvider = {
         data: JSON.stringify(data),
         previousData: JSON.stringify(previousData),
         resourceId: meta?.id,
-        username: session?.user?.username,
+        username: session?.user?.name,
       };
 
       await axiosInstance.post("/backend-api/audit-logs", log, {

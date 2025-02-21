@@ -6,6 +6,7 @@ import { accessControlProvider } from "@providers/access-control-provider";
 import { auditLogProvider } from "@providers/audit-log-provider";
 import { authProvider } from "@providers/auth-provider";
 import { defaultDataProvider } from "@providers/data-provider";
+import { LoaderProvider } from "@providers/loader-provider";
 import { notificationProvider } from "@providers/notification-provider";
 import UiProvider from "@providers/ui-provider";
 import { Refine, ResourceProps } from "@refinedev/core";
@@ -45,28 +46,30 @@ const resources: ResourceProps[] = [
 const AppProvider: React.FC<PropsWithChildren> = ({ children }) => {
   return (
     <UiProvider>
-      <ModalsProvider>
-        <SessionProvider>
-          <Notifications />
-          <Refine
-            auditLogProvider={auditLogProvider}
-            resources={resources}
-            routerProvider={routerProvider}
-            dataProvider={defaultDataProvider}
-            authProvider={authProvider}
-            accessControlProvider={accessControlProvider}
-            notificationProvider={notificationProvider}
-            options={{
-              syncWithLocation: true,
-              warnWhenUnsavedChanges: true,
-              useNewQueryKeys: true,
-              projectId: "sXyKYR-uoMAWV-NTZ337",
-            }}
-          >
-            {children}
-          </Refine>
-        </SessionProvider>
-      </ModalsProvider>
+      <LoaderProvider>
+        <ModalsProvider>
+          <SessionProvider>
+            <Notifications />
+            <Refine
+              auditLogProvider={auditLogProvider}
+              resources={resources}
+              routerProvider={routerProvider}
+              dataProvider={defaultDataProvider}
+              authProvider={authProvider}
+              accessControlProvider={accessControlProvider}
+              notificationProvider={notificationProvider}
+              options={{
+                syncWithLocation: true,
+                warnWhenUnsavedChanges: true,
+                useNewQueryKeys: true,
+                projectId: "sXyKYR-uoMAWV-NTZ337",
+              }}
+            >
+              {children}
+            </Refine>
+          </SessionProvider>
+        </ModalsProvider>
+      </LoaderProvider>
     </UiProvider>
   );
 };
