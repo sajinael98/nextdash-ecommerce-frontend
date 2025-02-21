@@ -16,16 +16,11 @@ export const credentialsProvider = CredentialsProvider({
         password: credentials?.password,
       }
     );
-    const { id, username, email, token, roles, permissions, profileImage: image, fullName } = response.data;
+    const { username: name, profileImage: image, ...user } = response.data;
     return {
-      id,
-      username,
-      email,
-      token,
-      roles,
-      permissions,
+      name,
       image,
-      fullName,
+      ...user,
     };
   },
 });
