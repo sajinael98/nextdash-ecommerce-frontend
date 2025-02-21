@@ -38,7 +38,7 @@ const ResourceList: React.FC<ResourceListProps> = ({ columns: cols }) => {
     () => [
       {
         id: "select-col",
-        size: 50,
+        size: 70,
         enableColumnFilter: false,
         header: ({ table }) => (
           <Checkbox
