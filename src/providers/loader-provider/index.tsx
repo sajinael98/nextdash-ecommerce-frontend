@@ -41,7 +41,7 @@ export const LoaderProvider: React.FC<PropsWithChildren> = ({ children }) => {
   return (
     <LoaderContext.Provider value={{ loading, hide, show }}>
       <LoadingOverlay visible={loading} />
-      <Suspense>{children}</Suspense>
+      {children}
     </LoaderContext.Provider>
   );
 };
