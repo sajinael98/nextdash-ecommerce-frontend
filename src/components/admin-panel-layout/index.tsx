@@ -8,12 +8,10 @@ import {
   Group,
   TextInput,
 } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import { useResourceParams } from "@refinedev/core";
 import { IconSearch } from "@tabler/icons-react";
 import React, { PropsWithChildren } from "react";
 import classes from "./admin-panel-layout.module.css";
-import Avatar from "./Avatar";
+import Avatar from "./avatar";
 import Logo from "./Logo";
 import ToggleColorSchemeButtons from "./ToggleColorSchemeButtons";
 
