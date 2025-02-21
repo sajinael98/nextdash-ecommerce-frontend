@@ -4,7 +4,6 @@ import { usePathname, useSearchParams } from "next/navigation";
 import React, {
   createContext,
   PropsWithChildren,
-  Suspense,
   useContext,
   useEffect,
 } from "react";
