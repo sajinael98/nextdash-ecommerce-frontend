@@ -24,9 +24,10 @@ const LoaderContext = createContext<LoaderProp>({
 export const useLoader = () => useContext(LoaderContext);
 
 export const LoaderProvider: React.FC<PropsWithChildren> = ({ children }) => {
-  const [loading, { open: show, close: hide }] = useDisclosure(true);
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const [loading, { open: show, close: hide }] = useDisclosure(true);
+  
   useEffect(() => {
     const timeout = setTimeout(() => {
       hide();
@@ -36,6 +37,7 @@ export const LoaderProvider: React.FC<PropsWithChildren> = ({ children }) => {
       show();
     };
   }, [pathname, searchParams]);
+
   return (
     <LoaderContext.Provider value={{ loading, hide, show }}>
       <LoadingOverlay visible={loading} />
