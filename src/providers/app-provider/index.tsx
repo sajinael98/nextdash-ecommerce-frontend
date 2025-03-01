@@ -11,7 +11,13 @@ import { notificationProvider } from "@providers/notification-provider";
 import UiProvider from "@providers/ui-provider";
 import { Refine, ResourceProps } from "@refinedev/core";
 import routerProvider from "@refinedev/nextjs-router";
-import { IconHierarchy3, IconHome, IconUser } from "@tabler/icons-react";
+import {
+  IconBurger,
+  IconChefHat,
+  IconHierarchy3,
+  IconHome,
+  IconUser,
+} from "@tabler/icons-react";
 import { SessionProvider } from "next-auth/react";
 import React, { PropsWithChildren } from "react";
 
@@ -39,6 +45,22 @@ const resources: ResourceProps[] = [
     edit: "/roles/:id",
     meta: {
       icon: <IconHierarchy3 />,
+    },
+  },
+  {
+    name: "food menu",
+    meta: {
+      icon: <IconChefHat />,
+    },
+  },
+  {
+    name: "items",
+    list: "/items",
+    create: "/items/create",
+    edit: "/items/:id",
+    meta: {
+      icon: <IconBurger />,
+      parent: "food menu",
     },
   },
 ];

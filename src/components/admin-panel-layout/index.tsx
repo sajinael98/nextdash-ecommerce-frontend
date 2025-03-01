@@ -11,7 +11,7 @@ import {
 import { IconSearch } from "@tabler/icons-react";
 import React, { PropsWithChildren } from "react";
 import classes from "./admin-panel-layout.module.css";
-import Avatar from "./avatar";
+import Avatar from "./Avatar";
 import Logo from "./Logo";
 import ToggleColorSchemeButtons from "./ToggleColorSchemeButtons";
 
