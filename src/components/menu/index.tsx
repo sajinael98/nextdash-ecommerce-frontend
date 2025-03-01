@@ -1,54 +1,46 @@
 "use client";
 
 import {
-  Group,
-  ScrollArea,
-  Text,
-  ThemeIcon,
-  UnstyledButton,
+  NavLink,
+  ScrollArea
 } from "@mantine/core";
 import { useMenu } from "@refinedev/core";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export const Menu = () => {
-  const router = useRouter();
-  const { menuItems, selectedKey } = useMenu();
+  const { menuItems} = useMenu();
+ 
+  const items = menuItems.map(({ key, label, icon, list, children }) => {
+    const commonProps = {
+      label: label,
+      leftSection: icon,
+    };
 
-  function redirectUser(path: string) {
-    router.push(path);
-  }
-
-  const items = menuItems.map(({ name, meta, list = "" }) => {
-    const flag = selectedKey === `/${name}`;
-    return (
-      <UnstyledButton
-        key={name}
-        onClick={() => redirectUser(list.toString())}
-        w="100%"
-        h={40}
-        pl="xl"
-        mb="xs"
-        styles={{
-          root: {
-            borderRadius: "var(--mantine-radius-default)",
-            ...(flag && {
-              backgroundColor: "var(--mantine-primary-color-light)",
-            }),
-          },
-        }}
-      >
-        <Group align="flex-end" gap={5}>
-          <ThemeIcon variant="transparent">{meta?.icon}</ThemeIcon>
-          <Text
-            tt="capitalize"
-            c="dimmed"
-            {...(flag && { fw: 500, c: "light-dark(black, white)" })}
-          >
-            {name}
-          </Text>
-        </Group>
-      </UnstyledButton>
-    );
+    if (children.length) {
+      return (
+        <NavLink key={key} {...commonProps}>
+          {children.map(({ key, label, icon, list }) => (
+            <NavLink
+              key={key}
+              label={label}
+              leftSection={icon}
+              href={list?.toString() ?? ""}
+              component={Link}
+            ></NavLink>
+          ))}
+        </NavLink>
+      );
+    }else{
+      return (
+        <NavLink
+          key={key}
+          href={list?.toString() ?? ""}
+          component={Link}
+          {...commonProps}
+        />
+      );
+    }
   });
+  
   return <ScrollArea>{items}</ScrollArea>;
 };
