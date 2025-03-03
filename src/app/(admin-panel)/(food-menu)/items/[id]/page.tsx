@@ -1,6 +1,6 @@
 "use client";
 
-import ResourceForm from "@components/resource-form";
+import ResourceForm from "@components/admin-panel/resource-form";
 import { useForm } from "@refinedev/core";
 import React from "react";
 import { itemSchema } from "../schema";
