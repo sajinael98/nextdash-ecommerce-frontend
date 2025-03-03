@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import ResourceForm from "@components/resource-form";
+import ResourceForm from "@components/admin-panel/resource-form";
 import React from "react";
 import { itemSchema } from "../schema";
 import { useForm } from "@refinedev/core";
@@ -9,7 +9,7 @@ const CreateItemPage = () => {
   const form = useForm();
 
   function submitHandler(values: any) {
-    form.onFinish(values)
+    form.onFinish(values);
   }
 
   return (

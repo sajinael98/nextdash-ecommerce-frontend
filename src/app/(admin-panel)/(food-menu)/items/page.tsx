@@ -1,24 +1,27 @@
-"use client"
+"use client";
 
-import ResourceList from "@components/List";
+import ResourceList from "@components/admin-panel/List";
 import React, { useMemo } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 
 const ItemsListPage = () => {
-  const columns = useMemo<ColumnDef<any>[]>(() => [
-    {
+  const columns = useMemo<ColumnDef<any>[]>(
+    () => [
+      {
         accessorKey: "itemName",
-        header: "Item Name"
-    },
-    {
+        header: "Item Name",
+      },
+      {
         accessorKey: "defaultSize",
-        header: "Default Size"
-    },
-    {
+        header: "Default Size",
+      },
+      {
         accessorKey: "itemImage",
-        header: "Item Image"
-    }
-  ], []);
+        header: "Item Image",
+      },
+    ],
+    []
+  );
   return <ResourceList columns={columns} />;
 };
 

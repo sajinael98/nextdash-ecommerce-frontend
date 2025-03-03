@@ -12,5 +12,7 @@ export default withAuth({
 });
 
 export const config = {
-  matcher: ["/", "/((?!login).*)"],
+  matcher: [
+    "/((?!login|$|public/|api|public/food-menu|_next/static|favicon.ico|menu).*)/",
+  ],
 };
