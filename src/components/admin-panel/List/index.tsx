@@ -1,4 +1,4 @@
-import DashboardTable from "@components/table";
+import DashboardTable from "@components/admin-panel/table";
 import {
   ActionIcon,
   Box,

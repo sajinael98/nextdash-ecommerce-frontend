@@ -31,6 +31,7 @@ export const authProvider: AuthProvider = {
 
   check: async (params) => {
     const session = await getSession();
+    
     if (session) {
       return {
         authenticated: true,
