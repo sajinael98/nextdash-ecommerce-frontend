@@ -1,6 +1,6 @@
 "use client";
 
-import ResourceList from "@components/List";
+import ResourceList from "@components/admin-panel/List";
 import React, { useMemo } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from "@mantine/core";

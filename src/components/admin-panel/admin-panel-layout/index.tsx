@@ -1,4 +1,4 @@
-import { Menu } from "@components/menu";
+import { Menu } from "@components/admin-panel/menu";
 import {
   AppShell,
   AppShellMain,

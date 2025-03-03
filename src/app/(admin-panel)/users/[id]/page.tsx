@@ -1,6 +1,6 @@
 "use client";
 
-import ResourceForm from "@components/resource-form";
+import ResourceForm from "@components/admin-panel/resource-form";
 import { Button, Group, PasswordInput } from "@mantine/core";
 import { useField } from "@mantine/form";
 import { modals } from "@mantine/modals";
