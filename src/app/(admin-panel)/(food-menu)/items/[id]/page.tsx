@@ -2,22 +2,22 @@
 
 import ResourceForm from "@components/admin-panel/resource-form";
 import { useForm } from "@refinedev/core";
-import { roleSchema } from "../form";
+import React from "react";
+import { itemSchema } from "../schema";
 
-const CreateRolePage = () => {
+const ItemEditPage = () => {
   const form = useForm();
-
   function submitHandler(values: any) {
     form.onFinish(values);
   }
-
   return (
     <ResourceForm
       loading={form.formLoading}
-      schema={roleSchema}
       onSubmit={submitHandler}
+      schema={itemSchema}
+      formValues={form.query?.data?.data}
     />
   );
 };
 
-export default CreateRolePage;
+export default ItemEditPage;

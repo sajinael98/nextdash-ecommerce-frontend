@@ -1,6 +1,6 @@
 "use client";
 
-import DashboardTable from "@components/table";
+import DashboardTable from "@components/admin-panel/table";
 import { ActionIcon, Button, Group, Modal, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { ArrayFieldTemplateProps } from "@rjsf/utils";

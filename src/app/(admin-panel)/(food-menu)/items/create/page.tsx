@@ -1,10 +1,11 @@
 "use client";
 
 import ResourceForm from "@components/admin-panel/resource-form";
+import React from "react";
+import { itemSchema } from "../schema";
 import { useForm } from "@refinedev/core";
-import { roleSchema } from "../form";
 
-const CreateRolePage = () => {
+const CreateItemPage = () => {
   const form = useForm();
 
   function submitHandler(values: any) {
@@ -13,11 +14,11 @@ const CreateRolePage = () => {
 
   return (
     <ResourceForm
-      loading={form.formLoading}
-      schema={roleSchema}
+      schema={itemSchema}
       onSubmit={submitHandler}
+      loading={form.formLoading}
     />
   );
 };
 
-export default CreateRolePage;
+export default CreateItemPage;

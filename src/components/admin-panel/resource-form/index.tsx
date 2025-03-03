@@ -1,6 +1,6 @@
 "use client";
 
-import AutoForm from "@components/autoform";
+import AutoForm from "@components/admin-panel/autoform";
 import {
   Badge,
   Box,
