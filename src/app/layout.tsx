@@ -1,7 +1,6 @@
 import {
   ColorSchemeScript,
-  DirectionProvider,
-  MantineProvider
+  DirectionProvider
 } from "@mantine/core";
 import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
@@ -18,12 +17,7 @@ const RootLayout: React.FC<PropsWithChildren> = ({ children }) => {
       <body>
         <Suspense>
           <DirectionProvider detectDirection>
-            <MantineProvider
-              defaultColorScheme="light"
-              forceColorScheme="light"
-            >
-              <RefineProvider>{children}</RefineProvider>
-            </MantineProvider>
+            <RefineProvider>{children}</RefineProvider>
           </DirectionProvider>
         </Suspense>
       </body>

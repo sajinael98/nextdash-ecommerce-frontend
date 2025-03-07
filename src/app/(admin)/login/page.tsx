@@ -15,7 +15,6 @@ import {
 import { useForm } from "@mantine/form";
 import { useLogin } from "@refinedev/core";
 import Image from "next/image";
-import img from "../../../public/undraw_secure-login_m11a.svg";
 
 const LoginPage = () => {
   const { getInputProps, onSubmit } = useForm({
@@ -34,7 +33,7 @@ const LoginPage = () => {
     <Container bg="dark.7" styles={{ root: { height: "100vh" } }} fluid>
       <Flex justify="center" align="center" h="100%">
         <Box flex={1} h="60%" pos="relative" visibleFrom="md">
-          <Image src={img} fill alt="authentication vector" />
+          {/* <Image src={img} fill alt="authentication vector" /> */}
         </Box>
         <Flex flex={1} justify="center" align="center" mih="100%">
           <Paper

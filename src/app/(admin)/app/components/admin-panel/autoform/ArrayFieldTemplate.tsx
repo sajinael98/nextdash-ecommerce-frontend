@@ -1,6 +1,5 @@
 "use client";
 
-import DashboardTable from "@components/admin-panel/table";
 import { ActionIcon, Button, Group, Modal, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { ArrayFieldTemplateProps } from "@rjsf/utils";
@@ -12,6 +11,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import React, { useEffect, useMemo, useState } from "react";
+import DashboardTable from "../table";
 
 const ArrayFieldTemplate: React.FC<ArrayFieldTemplateProps> = (props) => {
   const { items, onAddClick, formData, schema, title } = props;

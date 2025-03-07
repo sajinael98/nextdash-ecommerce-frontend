@@ -1,4 +1,3 @@
-import DashboardTable from "@components/admin-panel/table";
 import {
   ActionIcon,
   Box,
@@ -24,6 +23,7 @@ import {
 import { ColumnDef } from "@tanstack/react-table";
 import Link from "next/link";
 import React, { useMemo } from "react";
+import DashboardTable from "../table";
 
 interface ResourceListProps {
   columns: ColumnDef<any>[];
@@ -70,7 +70,7 @@ const ResourceList: React.FC<ResourceListProps> = ({ columns: cols }) => {
               size="sm"
               variant="transparent"
               component={Link}
-              href={`/${resource.name}/${getValue() as number}`}
+              href={`/app/${resource.name}/${getValue() as number}`}
             >
               <IconEdit />
             </ActionIcon>

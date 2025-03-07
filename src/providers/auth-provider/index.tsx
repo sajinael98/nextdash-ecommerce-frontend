@@ -14,7 +14,7 @@ export const authProvider: AuthProvider = {
     });
     return {
       success: true, // or false if the login is not successful
-      redirectTo: "/",
+      redirectTo: "/app",
     };
   },
 
