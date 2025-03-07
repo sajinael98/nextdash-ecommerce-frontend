@@ -1,16 +1,15 @@
 import { withAuth } from "next-auth/middleware";
 
+const isAuthorized = (token) => !!token;
+
 export default withAuth({
   callbacks: {
-    authorized: ({ req, token }) => {
-      if (!token) {
-        return false;
-      }
-      return true;
-    },
+    authorized: ({ req, token }) => isAuthorized(token),
   },
 });
 
 export const config = {
-  matcher: ["/", "/((?!login).*)"],
+  matcher: [
+    "/((?!api|_next|static|favicon.ico|login|free-api/|$).*)",
+  ],
 };

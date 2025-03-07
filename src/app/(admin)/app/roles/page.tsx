@@ -1,9 +1,9 @@
 "use client";
 
-import ResourceList from "@components/admin-panel/List";
 import React, { useMemo } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from "@mantine/core";
+import ResourceList from "../components/admin-panel/List";
 const RolesListPage = () => {
   const columns = useMemo<ColumnDef<any>[]>(
     () => [

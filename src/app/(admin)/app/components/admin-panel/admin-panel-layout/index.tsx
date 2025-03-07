@@ -1,4 +1,3 @@
-import { Menu } from "@components/admin-panel/menu";
 import {
   AppShell,
   AppShellMain,
@@ -14,6 +13,7 @@ import classes from "./admin-panel-layout.module.css";
 import Avatar from "./Avatar";
 import Logo from "./Logo";
 import ToggleColorSchemeButtons from "./ToggleColorSchemeButtons";
+import { Menu } from "../menu";
 
 const AdminPanelLayout: React.FC<PropsWithChildren> = ({ children }) => {
   return (

@@ -10,6 +10,10 @@ const nextConfig = {
         source: "/backend-api/:path*",
         destination: `http://localhost:8080/:path*`, // Proxy to Backend,
       },
+      {
+        source: "/free-api/:path*",
+        destination: `http://localhost:8080/:path*`, // Proxy to Backend,
+      },
     ];
   },
 };

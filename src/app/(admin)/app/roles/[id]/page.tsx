@@ -1,8 +1,8 @@
 "use client";
 
-import ResourceForm from "@components/admin-panel/resource-form";
 import { useForm } from "@refinedev/core";
 import { roleSchema } from "../form";
+import ResourceForm from "../../components/admin-panel/resource-form";
 
 const CreateRolePage = () => {
   const form = useForm();
@@ -16,6 +16,7 @@ const CreateRolePage = () => {
       loading={form.formLoading}
       schema={roleSchema}
       onSubmit={submitHandler}
+      formValues={form.query?.data?.data}
     />
   );
 };

@@ -1,6 +1,5 @@
 "use client";
 
-import AutoForm from "@components/admin-panel/autoform";
 import {
   Badge,
   Box,
@@ -19,6 +18,7 @@ import { IChangeEvent } from "@rjsf/core";
 import { RJSFSchema } from "@rjsf/utils";
 import { IconDeviceFloppy } from "@tabler/icons-react";
 import React from "react";
+import AutoForm from "../autoform";
 
 interface MenuItem {
   label: string;

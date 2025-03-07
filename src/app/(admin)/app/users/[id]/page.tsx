@@ -1,12 +1,12 @@
 "use client";
 
-import ResourceForm from "@components/admin-panel/resource-form";
 import { Button, Group, PasswordInput } from "@mantine/core";
 import { useField } from "@mantine/form";
 import { modals } from "@mantine/modals";
 import { useCustomMutation, useForm } from "@refinedev/core";
 import React from "react";
 import { userSchema } from "../form";
+import ResourceForm from "../../components/admin-panel/resource-form";
 
 interface UpdatePasswordModalProps {
   onSubmit: (password: string) => void;

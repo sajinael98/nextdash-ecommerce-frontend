@@ -1,7 +1,7 @@
 "use client";
-import ResourceForm from "@components/admin-panel/resource-form";
 import { useForm } from "@refinedev/core";
 import { userSchema } from "../form";
+import ResourceForm from "../../components/admin-panel/resource-form";
 
 const CreateUserPage = () => {
   const { onFinish, formLoading } = useForm({});

@@ -20,36 +20,20 @@ const resources: ResourceProps[] = [
   },
   {
     name: "users",
-    list: "/users",
-    create: "/users/create",
-    edit: "/users/:id",
+    list: "/app/users",
+    create: "/app/users/create",
+    edit: "/app/users/:id",
     meta: {
       icon: <IconUser />,
     },
   },
   {
     name: "roles",
-    list: "/roles",
-    create: "/roles/create",
-    edit: "/roles/:id",
+    list: "/app/roles",
+    create: "/app//roles/create",
+    edit: "/app/roles/:id",
     meta: {
       icon: <IconHierarchy3 />,
-    },
-  },
-  {
-    name: "food menu",
-    meta: {
-      icon: <IconChefHat />,
-    },
-  },
-  {
-    name: "items",
-    list: "/items",
-    create: "/items/create",
-    edit: "/items/:id",
-    meta: {
-      icon: <IconBurger />,
-      parent: "food menu",
     },
   },
 ];
