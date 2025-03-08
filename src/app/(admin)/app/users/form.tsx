@@ -47,6 +47,7 @@ export const userSchema: RJSFSchema = {
         properties: {
           roleId: {
             title: "Role",
+            widget: "resource",
             type: "number",
             resource: "roles",
             optionLabel: "role",

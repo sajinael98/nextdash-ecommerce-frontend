@@ -29,11 +29,18 @@ const SelectField: React.FC<FieldProps> = (props) => {
     resource,
     defaultValue: formData,
     optionLabel,
+    pagination: {
+      current: 1,
+      pageSize: 20,
+      mode: "client",
+    },
+
     queryOptions: {
       initialData: () => ({ data: [], total: 0 }),
     },
     defaultValueQueryOptions: {
       initialData: () => ({ data: [], total: 0 }),
+      enabled: !!formData,
     },
   });
 
