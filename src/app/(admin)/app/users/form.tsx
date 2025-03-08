@@ -35,6 +35,7 @@ export const userSchema: RJSFSchema = {
           title: "Email",
         },
         enabled: {
+          title: "Enabled",
           type: "boolean",
         },
       },

@@ -13,9 +13,8 @@ const BooleanField: React.FC<FieldProps> = (props) => {
     readonly,
     required,
     disabled,
-    title,
+    schema,
   } = props;
-
   const changeHandler: ChangeEventHandler<HTMLInputElement> = function (event) {
     onChange(event.target.checked);
   };
@@ -28,7 +27,7 @@ const BooleanField: React.FC<FieldProps> = (props) => {
     <Checkbox
       id={idSchema.$id}
       name={name}
-      label={title ?? name}
+      label={schema.title ?? name}
       defaultValue={defaultValue}
       checked={formData}
       onChange={changeHandler}
