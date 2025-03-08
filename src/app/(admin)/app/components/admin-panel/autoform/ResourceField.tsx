@@ -46,7 +46,7 @@ const SelectField: React.FC<FieldProps> = (props) => {
     [query.data?.data]
   );
   const changeHandler = (value: string | null, option: ComboboxItem) =>
-    onChange(value);
+    onChange(value ? +value : null);
 
   const foucsHandler: FocusEventHandler<HTMLInputElement> = function (event) {
     onBlur(idSchema.$id, event.target.value);
@@ -58,7 +58,7 @@ const SelectField: React.FC<FieldProps> = (props) => {
       id={idSchema.$id}
       name={name}
       defaultValue={defaultValue as string}
-      value={formData}
+      value={String(formData || "")}
       onChange={changeHandler}
       onFocus={foucsHandler}
       onBlur={foucsHandler}
