@@ -33,7 +33,7 @@ const LoginPage = () => {
     <Container bg="dark.7" styles={{ root: { height: "100vh" } }} fluid>
       <Flex justify="center" align="center" h="100%">
         <Box flex={1} h="60%" pos="relative" visibleFrom="md">
-          {/* <Image src={img} fill alt="authentication vector" /> */}
+          <Image src={"/login.svg"} fill alt="authentication vector" />
         </Box>
         <Flex flex={1} justify="center" align="center" mih="100%">
           <Paper
