@@ -37,7 +37,11 @@ const Avatar = () => {
     <Menu>
       <Menu.Target>
         <Group gap="xs" styles={{ root: { cursor: "pointer" } }}>
-          <MantineAvatar src={`/backend-api/files/${userQuery.data?.image}`} />
+          <MantineAvatar
+            {...(userQuery.data?.image && {
+              src: `/backend-api/files/${userQuery.data?.image}`,
+            })}
+          />
           <div>
             <Text tt="capitalize" fw={700} visibleFrom="md">
               {userQuery.data?.fullName}
