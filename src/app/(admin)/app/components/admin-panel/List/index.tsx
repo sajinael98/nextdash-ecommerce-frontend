@@ -188,7 +188,7 @@ const ResourceList: React.FC<ResourceListProps> = ({ columns: cols }) => {
             <Button
               leftSection={<IconPlus />}
               component={Link}
-              href={`/${resource.name}/create`}
+              href={`/app/${resource.name}/create`}
               visibleFrom="md"
             >
               New
