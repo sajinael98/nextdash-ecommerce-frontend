@@ -59,7 +59,8 @@ const ResourceForm: React.FC<ResourceFormProps> = (props) => {
 
   const formChangeHandler = useDebouncedCallback(
     (event: IChangeEvent, fieldId?: string) => {
-      if (!fieldId || !validate) return;
+      if (!fieldId) return;
+
       const field = fieldId
         .substring(5)
         .split("_")
@@ -67,7 +68,7 @@ const ResourceForm: React.FC<ResourceFormProps> = (props) => {
           index === 0 ? part : part.charAt(0).toUpperCase() + part.slice(1)
         )
         .join("");
-
+        
       form.setFieldValue(field, event.formData[field]);
 
       const { hasError, error } = form.validateField(field);
