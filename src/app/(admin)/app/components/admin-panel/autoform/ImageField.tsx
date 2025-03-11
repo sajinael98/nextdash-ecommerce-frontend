@@ -38,16 +38,16 @@ const ImageUploader: React.FC<FieldProps> = (props) => {
         .catch((err) => {
           setValue(null);
         });
-      }
-    }, [value]);
-    
-    function deleteFileHandler() {
-      onChange(undefined);
-      setValue(null);
+    }
+  }, [value]);
+
+  function deleteFileHandler() {
+    onChange(undefined);
+    setValue(null);
   }
   return (
     <>
-    {!formData && (
+      {!formData && (
         <FileInput
           value={value}
           onChange={setValue}
