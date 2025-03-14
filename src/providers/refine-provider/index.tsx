@@ -6,16 +6,17 @@ import { authProvider } from "@providers/auth-provider";
 import { defaultDataProvider } from "@providers/data-provider";
 import { notificationProvider } from "@providers/notification-provider";
 import { Refine, ResourceProps } from "@refinedev/core";
-import { IconBurger, IconChefHat, IconHierarchy3, IconHome, IconUser } from "@tabler/icons-react";
-import React, { PropsWithChildren } from "react";
 import routerProvider from "@refinedev/nextjs-router";
+import { IconHierarchy3, IconHome, IconUser } from "@tabler/icons-react";
+import React, { PropsWithChildren } from "react";
 
 const resources: ResourceProps[] = [
   {
     name: "home",
-    list: "/",
+    list: "/app",
     meta: {
       icon: <IconHome />,
+      label: "Home"
     },
   },
   {

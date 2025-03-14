@@ -3,7 +3,6 @@
 import { ModalsProvider } from "@mantine/modals";
 import { Notifications } from "@mantine/notifications";
 import { LoaderProvider } from "@providers/loader-provider";
-import RefineProvider from "@providers/refine-provider";
 import { SessionProvider } from "next-auth/react";
 import React, { PropsWithChildren } from "react";
 

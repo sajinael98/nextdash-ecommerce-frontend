@@ -1,11 +1,8 @@
-import { TextInput } from "@mantine/core";
+import { PasswordInput } from "@mantine/core";
 import { FieldProps } from "@rjsf/utils";
-import React, { ChangeEventHandler, FocusEventHandler } from "react";
-import SelectField from "./SelectField";
-import ImageUploader from "./ImageField";
-import PasswordField from "./PasswordField";
+import { ChangeEventHandler, FocusEventHandler } from "react";
 
-const Field: React.FC<FieldProps> = (props) => {
+const PasswordField: React.FC<FieldProps> = (props) => {
   const {
     name,
     idSchema,
@@ -28,7 +25,7 @@ const Field: React.FC<FieldProps> = (props) => {
   };
 
   return (
-    <TextInput
+    <PasswordInput
       id={idSchema.$id}
       name={name}
       defaultValue={defaultValue}
@@ -42,19 +39,6 @@ const Field: React.FC<FieldProps> = (props) => {
     />
   );
 };
-const StringField: React.FC<FieldProps> = (props) => {
-  const { schema } = props;
-  const { widget } = schema;
-  switch (widget) {
-    case "select":
-      return <SelectField {...props} />;
-    case "image":
-      return <ImageUploader {...props} />;
-    case "password":
-      return <PasswordField {...props} />;
-    default:
-      return <Field {...props} />;
-  }
-};
 
-export default StringField;
+export default PasswordField;
+ 

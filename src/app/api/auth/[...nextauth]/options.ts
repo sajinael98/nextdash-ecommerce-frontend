@@ -15,7 +15,13 @@ const authOptions: AuthOptions = {
     maxAge: 60 * 60, // 30 minutes in seconds
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, session,  trigger }) {
+      if(trigger === "update"){
+        token = {
+          ...token,
+          ...session
+        }
+      }
       return { ...token, ...user };
     },
     async session({ session, token, user }) {

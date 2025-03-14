@@ -9,6 +9,7 @@ import {
 } from "@mantine/core";
 import { useGetIdentity, useLogout } from "@refinedev/core";
 import { User } from "next-auth";
+import Link from "next/link";
 
 const Avatar = () => {
   const logout = useLogout();
@@ -34,7 +35,7 @@ const Avatar = () => {
     );
   }
   return (
-    <Menu>
+    <Menu width={200} withinPortal>
       <Menu.Target>
         <Group gap="xs" styles={{ root: { cursor: "pointer" } }}>
           <MantineAvatar
@@ -53,6 +54,8 @@ const Avatar = () => {
         </Group>
       </Menu.Target>
       <Menu.Dropdown>
+        <Menu.Item component={Link} href="/app/user-profile">Profile</Menu.Item>
+        <Menu.Divider/>
         <Menu.Item onClick={logoutHandler}>Logout</Menu.Item>
       </Menu.Dropdown>
     </Menu>
