@@ -1,4 +1,5 @@
 "use client";
+
 import { AuthProvider } from "@refinedev/core";
 import { getSession, signIn, signOut } from "next-auth/react";
 
@@ -8,10 +9,21 @@ import { getSession, signIn, signOut } from "next-auth/react";
  **/
 export const authProvider: AuthProvider = {
   login: async (params) => {
-    await signIn("credentials", {
+    const res = await signIn("credentials", {
       ...params,
       redirect: false,
     });
+
+    if (!res?.ok && res?.status === 401) {
+      return {
+        error: {
+          statusCode: 401,
+          message: "Incorrect username or password. Please try again.",
+        },
+        success: false,
+      };
+    }
+
     return {
       success: true, // or false if the login is not successful
       redirectTo: "/app",
@@ -31,7 +43,7 @@ export const authProvider: AuthProvider = {
 
   check: async (params) => {
     const session = await getSession();
-    
+
     if (session) {
       return {
         authenticated: true,

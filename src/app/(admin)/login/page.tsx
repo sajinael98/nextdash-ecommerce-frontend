@@ -17,17 +17,38 @@ import { useLogin } from "@refinedev/core";
 import Image from "next/image";
 
 const LoginPage = () => {
-  const { getInputProps, onSubmit } = useForm({
+  const { getInputProps, onSubmit, ...form } = useForm({
+    mode: "uncontrolled",
     initialValues: {
       username: "system-admin",
       password: "123456",
     },
+    validate: {
+      username: (value) => (value ? null : "required"),
+      password: (value) => {
+        if (!value) {
+          return "required";
+        }
+        return value.length < 6
+          ? "password length should not be less than 6 digits."
+          : null;
+      },
+    },
   });
-  const { mutate: signIn, isLoading, isSuccess } = useLogin();
+  const { mutate: signIn, isLoading, isSuccess, reset } = useLogin();
 
   const signInHandler = onSubmit((values) => {
-    signIn(values);
+    signIn(values, {
+      onSuccess(data, _variables, _context) {
+        if (!data.success) {
+          form.setFieldError("password", data.error?.message);
+          reset();
+        }
+      },
+    });
   });
+
+  const formLoading = isLoading || isSuccess;
 
   return (
     <Container bg="dark.7" styles={{ root: { height: "100vh" } }} fluid>
@@ -55,12 +76,14 @@ const LoginPage = () => {
               },
             }}
           >
-            <LoadingOverlay visible={isLoading || isSuccess} />
+            <LoadingOverlay visible={formLoading} />
             <Title order={2}>Welcome To NextDash</Title>
             <TextInput label="Username" {...getInputProps("username")} />
             <PasswordInput label="Password" {...getInputProps("password")} />
             <Anchor>Forget your password?</Anchor>
-            <Button type="submit">Sign In</Button>
+            <Button type="submit" disabled={formLoading}>
+              Sign In
+            </Button>
           </Paper>
         </Flex>
       </Flex>

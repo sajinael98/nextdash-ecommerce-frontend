@@ -8,19 +8,19 @@ export const credentialsProvider = CredentialsProvider({
     password: { label: "Password", type: "password" },
   },
 
-  async authorize(credentials, req) {
-    const response = await axiosInstance.post(
-      "http://localhost:8080/sys-auth/login",
-      {
+  authorize(credentials, req) {
+    return axiosInstance
+      .post("http://localhost:8080/sys-auth/login", {
         username: credentials?.username,
         password: credentials?.password,
-      }
-    );
-    const { username: name, profileImage: image, ...user } = response.data;
-    return {
-      name,
-      image,
-      ...user,
-    };
+      })
+      .then((response) => {
+        const { username: name, profileImage: image, ...user } = response.data;
+        return {
+          name,
+          image,
+          ...user,
+        };
+      });
   },
 });
