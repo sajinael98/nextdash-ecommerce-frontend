@@ -1,7 +1,8 @@
 import { ComboboxItem, Select } from "@mantine/core";
+import { useDebouncedValue } from "@mantine/hooks";
 import { useSelect } from "@refinedev/core";
 import { FieldProps } from "@rjsf/utils";
-import React, { FocusEventHandler, useMemo } from "react";
+import React, { FocusEventHandler, useMemo, useState } from "react";
 
 const SelectField: React.FC<FieldProps> = (props) => {
   const {
@@ -17,6 +18,9 @@ const SelectField: React.FC<FieldProps> = (props) => {
     disabled,
   } = props;
   const { resource, optionLabel } = schema;
+  const [searchValue, setSearchValue] = useState("");
+  const [debouncedSearchValue] = useDebouncedValue(searchValue, 1000);
+
   if (!resource) {
     throw Error("resource are missing for: " + name);
   }
@@ -34,7 +38,15 @@ const SelectField: React.FC<FieldProps> = (props) => {
       pageSize: 20,
       mode: "client",
     },
-
+    filters: debouncedSearchValue
+      ? [
+          {
+            field: optionLabel,
+            operator: "contains",
+            value: debouncedSearchValue,
+          },
+        ]
+      : [],
     queryOptions: {
       initialData: () => ({ data: [], total: 0 }),
     },
@@ -72,6 +84,9 @@ const SelectField: React.FC<FieldProps> = (props) => {
       readOnly={readonly}
       required={required}
       disabled={disabled ?? query.isFetching}
+      searchValue={searchValue}
+      onSearchChange={setSearchValue}
+      searchable
     />
   );
 };
