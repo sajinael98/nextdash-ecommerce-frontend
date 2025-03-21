@@ -1,147 +1,56 @@
 "use client";
 
-import {
-  Badge,
-  Box,
-  Button,
-  Container,
-  Group,
-  LoadingOverlay,
-  Menu,
-  Title,
-} from "@mantine/core";
-import { createFormContext, FormValidateInput } from "@mantine/form";
-import { useDebouncedCallback } from "@mantine/hooks";
-import { notifications } from "@mantine/notifications";
-import { BaseRecord, useResourceParams } from "@refinedev/core";
-import { IChangeEvent } from "@rjsf/core";
-import { RJSFSchema } from "@rjsf/utils";
-import { IconDeviceFloppy } from "@tabler/icons-react";
+import { Box, Button, Group, LoadingOverlay } from "@mantine/core";
+import { BaseRecord, useForm, useResourceParams } from "@refinedev/core";
+import { IconClock, IconMenu2 } from "@tabler/icons-react";
 import React from "react";
-import AutoForm from "../autoform";
-
-interface MenuItem {
-  label: string;
-  onClick: (data: any) => void;
-}
+import AutoForm from "../dashboard-form";
+import { Schema } from "../dashboard-form/types";
 
 interface ResourceFormProps {
-  formValues?: BaseRecord;
-  validate?: FormValidateInput<BaseRecord>;
-  onSubmit: (values: BaseRecord) => void;
-  schema: RJSFSchema;
-  loading: boolean;
-  menuItems?: MenuItem[];
+  schema: Schema;
 }
 
-const [FormProvider, _, useForm] = createFormContext<BaseRecord>();
-
 const ResourceForm: React.FC<ResourceFormProps> = (props) => {
-  const {
-    formValues = {},
-    onSubmit,
-    schema,
-    validate,
-    loading,
-    menuItems = [],
-  } = props;
-
+  const { schema } = props;
   const { identifier, action } = useResourceParams();
-  const form = useForm({
-    mode: "uncontrolled",
-    initialValues: formValues,
-    validate,
-  });
+  const { formLoading, onFinish, query } = useForm();
 
   if (!identifier) {
-    throw Error("ResourceForm is used only with resources.");
+    throw Error("This component is allowed only for resources.");
   }
 
-  const formChangeHandler = useDebouncedCallback(
-    (event: IChangeEvent, fieldId?: string) => {
-      if (!fieldId) return;
+  function saveHandler(values: BaseRecord) {
+    onFinish(values);
+  }
 
-      const field = fieldId
-        .substring(5)
-        .split("_")
-        .map((part, index) =>
-          index === 0 ? part : part.charAt(0).toUpperCase() + part.slice(1)
-        )
-        .join("");
-        
-      form.setFieldValue(field, event.formData[field]);
+  const visible = formLoading || query?.isFetching;
 
-      const { hasError, error } = form.validateField(field);
-      hasError &&
-        notifications.show({
-          title: field,
-          message: error,
-          color: "red",
-        });
-    },
-    500
-  );
-  const values = Object.keys(form.getValues()).length
-    ? form.getValues()
-    : formValues;
   return (
-    <FormProvider form={form}>
-      <Container size="xl" pos="relative">
-        <LoadingOverlay visible={loading} />
-        <Group mb="md" justify="space-between">
-          <Box>
-            <Title tt="capitalize" order={2}>
-              {identifier} Form
-              <Badge
-                ml="sm"
-                variant="light"
-                color={action === "create" ? "red" : "green"}
-              >
-                {action === "create" ? "not saved" : "old"}
-              </Badge>
-            </Title>
-          </Box>
-          <Box>
-            <Menu>
-              <Menu.Target>
-                <Button variant="light">Menu</Button>
-              </Menu.Target>
-              {Boolean(menuItems.length) && (
-                <Menu.Dropdown>
-                  {menuItems.map((item, index) => (
-                    <Menu.Item
-                      key={index}
-                      onClick={() => item.onClick(formValues)}
-                    >
-                      {item.label}
-                    </Menu.Item>
-                  ))}
-                </Menu.Dropdown>
-              )}
-            </Menu>
-          </Box>
+    <Box h={400} pos="relative">
+      {action === "edit" && (
+        <Group justify="flex-end" pos="absolute" top={-40} right={0}>
+          <Button leftSection={<IconClock />} variant="light">
+            Audit
+          </Button>
+          <Button leftSection={<IconMenu2 />} variant="light">
+            Menu
+          </Button>
         </Group>
+      )}
+      <LoadingOverlay
+        visible={visible}
+        loaderProps={{ children: "Loading..." }}
+      />
+      {(query?.isFetched || action === "create") && (
         <AutoForm
-          formValues={values}
           schema={schema}
-          onChange={formChangeHandler}
-          onSubmit={(data) => {
-            const hasErros = form.validate().hasErrors;
-            if (hasErros) {
-              return;
-            }
-
-            onSubmit(data.formData);
-          }}
-        >
-          <Group mt="md" justify="flex-end">
-            <Button type="submit" leftSection={<IconDeviceFloppy />}>
-              Save
-            </Button>
-          </Group>
-        </AutoForm>
-      </Container>
-    </FormProvider>
+          onSubmit={saveHandler}
+          values={query?.data?.data}
+        />
+      )}
+      {query?.isFetching && <AutoForm schema={schema} onSubmit={saveHandler} />}
+    </Box>
   );
 };
 

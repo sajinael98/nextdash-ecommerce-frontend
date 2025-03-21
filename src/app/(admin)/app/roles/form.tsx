@@ -1,55 +1,15 @@
-import { RJSFSchema } from "@rjsf/utils";
+import { Schema } from "../components/admin-panel/dashboard-form/types";
 
-export const roleSchema: RJSFSchema = {
-  type: "object",
-  required: ["role"],
-  properties: {
-    role: {
-      type: "string",
-      title: "Role",
-    },
-    enabled: {
-      type: "boolean",
-      title: "Enabled",
-
-      default: true,
-    },
-    permissions: {
-      type: "array",
-      title: "Permissions",
-      items: {
-        type: "object",
-        properties: {
-          resource: {
-            type: "string",
-            format: "custom-url",
-            url: "/resources",
-            title: "Resource",
-            view: true,
-          },
-
-          create: {
-            view: true,
-            type: "boolean",
-            title: "Create",
-          },
-          read: {
-            view: true,
-            type: "boolean",
-            title: "Read",
-          },
-          update: {
-            view: true,
-            type: "boolean",
-            title: "Update",
-          },
-          delete: {
-            view: true,
-            type: "boolean",
-            title: "Delete",
-          },
-        },
-      },
-    },
+export const roleSchema: Schema = {
+  role: {
+    type: "string",
+    label: "Role",
+    name: "role",
+  },
+  enabled: {
+    type: "boolean",
+    label: "Enabled",
+    name: "enabled",
+    default: true
   },
 };

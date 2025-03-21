@@ -1,27 +1,14 @@
 "use client";
-import { useForm } from "@refinedev/core";
-import { userSchema } from "../form";
-import ResourceForm from "../../components/admin-panel/resource-form";
 
-const CreateUserPage = () => {
-  const { onFinish, formLoading } = useForm({});
-  function submitHandler(values: any) {
-    onFinish(values);
-  }
+import ResourceForm from "../../components/admin-panel/resource-form";
+import { userSchema } from "../form";
+
+const CreatrUserPage = () => {
   return (
     <ResourceForm
-      loading={formLoading}
-      onSubmit={submitHandler}
       schema={userSchema}
-      validate={{
-        firstName(value) {
-          return value?.length < 6
-            ? "The first name should be at least 6 characters long!"
-            : null;
-        },
-      }}
     />
   );
 };
 
-export default CreateUserPage;
+export default CreatrUserPage;

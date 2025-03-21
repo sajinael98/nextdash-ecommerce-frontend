@@ -1,23 +1,25 @@
 import { ComboboxItem, Select } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
 import { useSelect } from "@refinedev/core";
-import { FieldProps } from "@rjsf/utils";
 import React, { FocusEventHandler, useMemo, useState } from "react";
+import { Field } from "./types";
 
-const SelectField: React.FC<FieldProps> = (props) => {
+const ResourceField: React.FC<
+  Field & {
+    resource: string | undefined;
+    optionLabel: string;
+  }
+> = (props) => {
   const {
     name,
-    idSchema,
-    schema,
     defaultValue = "",
-    formData = "",
     onChange,
     onBlur,
-    readonly,
     required,
-    disabled,
+    value,
+    optionLabel,
+    resource,
   } = props;
-  const { resource, optionLabel } = schema;
   const [searchValue, setSearchValue] = useState("");
   const [debouncedSearchValue] = useDebouncedValue(searchValue, 1000);
 
@@ -31,7 +33,7 @@ const SelectField: React.FC<FieldProps> = (props) => {
 
   const { query } = useSelect({
     resource,
-    defaultValue: formData,
+    defaultValue: value,
     optionLabel,
     pagination: {
       current: 1,
@@ -52,7 +54,7 @@ const SelectField: React.FC<FieldProps> = (props) => {
     },
     defaultValueQueryOptions: {
       initialData: () => ({ data: [], total: 0 }),
-      enabled: !!formData,
+      enabled: !!value,
     },
   });
 
@@ -68,27 +70,25 @@ const SelectField: React.FC<FieldProps> = (props) => {
     onChange(value ? +value : null);
 
   const foucsHandler: FocusEventHandler<HTMLInputElement> = function (event) {
-    onBlur(idSchema.$id, event.target.value);
+    onBlur(event.target.value);
   };
 
   return (
     <Select
       data={data}
-      id={idSchema.$id}
       name={name}
       defaultValue={defaultValue as string}
-      value={String(formData || "")}
+      value={String(value || "")}
       onChange={changeHandler}
       onFocus={foucsHandler}
       onBlur={foucsHandler}
-      readOnly={readonly}
       required={required}
-      disabled={disabled ?? query.isFetching}
       searchValue={searchValue}
       onSearchChange={setSearchValue}
       searchable
+      clearable
     />
   );
 };
 
-export default SelectField;
+export default ResourceField;

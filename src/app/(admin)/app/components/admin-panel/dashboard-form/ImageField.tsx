@@ -3,18 +3,10 @@ import { useCustomMutation } from "@refinedev/core";
 import { FieldProps } from "@rjsf/utils";
 import { IconTrash } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
+import { Field } from "./types";
 
-const ImageUploader: React.FC<FieldProps> = (props) => {
-  const {
-    name,
-    idSchema,
-    formData = "",
-    onChange,
-    onBlur,
-    readonly,
-    required,
-    disabled,
-  } = props;
+const ImageField: React.FC<Field> = (props) => {
+  const { name, value: image, onChange, required } = props;
   const [value, setValue] = useState<File | null>(null);
   const { isLoading, mutateAsync } = useCustomMutation();
 
@@ -47,19 +39,17 @@ const ImageUploader: React.FC<FieldProps> = (props) => {
   }
   return (
     <>
-      {!formData && (
+      {!image && (
         <FileInput
           value={value}
           onChange={setValue}
           clearable
-          disabled={isLoading || disabled}
-          id={idSchema.$id}
+          disabled={isLoading}
           name={name}
-          readOnly={readonly}
           required={required}
         />
       )}
-      {formData && (
+      {image && (
         <Box pos="relative" w={100} h={100}>
           <ActionIcon
             pos="absolute"
@@ -78,7 +68,7 @@ const ImageUploader: React.FC<FieldProps> = (props) => {
             h={100}
             radius="md"
             mt="md"
-            src={`/backend-api/files/${formData}`}
+            src={`/backend-api/files/${image}`}
             alt={name}
           />
         </Box>
@@ -87,4 +77,4 @@ const ImageUploader: React.FC<FieldProps> = (props) => {
   );
 };
 
-export default ImageUploader;
+export default ImageField;
