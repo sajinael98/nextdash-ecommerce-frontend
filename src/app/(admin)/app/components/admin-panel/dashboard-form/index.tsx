@@ -22,8 +22,8 @@ export const FieldContainer: React.FC<SchemaField> = (props) => {
     name,
     label,
     type,
-    dependsOn = "() => true",
-    disabled = "() => false",
+    dependsOn = () => true,
+    disabled = () => false,
     fullWidth,
     description,
     required = false,
@@ -35,14 +35,8 @@ export const FieldContainer: React.FC<SchemaField> = (props) => {
   const formCtx = useFormContext();
   const formValues = formCtx.getValues();
 
-  const shouldRenderField = useMemo(
-    () => eval(dependsOn)(formValues),
-    [formValues]
-  );
-  const shouldDisableField = useMemo(
-    () => eval(disabled)(formValues),
-    [formValues]
-  );
+  const shouldRenderField = useMemo(() => dependsOn(formValues), [formValues]);
+  const shouldDisableField = useMemo(() => disabled(formValues), [formValues]);
 
   const handleFieldReset = useCallback(() => {
     if (formValues[name]) {
@@ -142,7 +136,20 @@ export const FieldContainer: React.FC<SchemaField> = (props) => {
 
   return (
     <Grid.Col span={fullWidth ? 12 : { base: 12, md: 6 }}>
-      <Fieldset legend={label} variant="unstyled" disabled={shouldDisableField}>
+      <Fieldset
+        legend={
+          <Text>
+            {label}
+            {required && (
+              <Text pos="relative" top={-5} c="red.8" fz="xs" span>
+                &#9733;
+              </Text>
+            )}
+          </Text>
+        }
+        variant="unstyled"
+        disabled={shouldDisableField}
+      >
         {field}
 
         {description && (

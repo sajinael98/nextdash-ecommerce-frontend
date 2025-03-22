@@ -18,8 +18,8 @@ export interface SchemaField {
   label: string;
   type: SchemaFieldTypes;
   fullWidth?: boolean;
-  dependsOn?: string;
-  disabled?: string;
+  dependsOn?: (values: BaseRecord) => boolean;
+  disabled?: (values: BaseRecord) => boolean;
   description?: string;
   required?: boolean;
   default?: any;
