@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { accessControlProvider } from "@providers/access-control-provider";
 import { auditLogProvider } from "@providers/audit-log-provider";
@@ -7,7 +7,13 @@ import { defaultDataProvider } from "@providers/data-provider";
 import { notificationProvider } from "@providers/notification-provider";
 import { Refine, ResourceProps } from "@refinedev/core";
 import routerProvider from "@refinedev/nextjs-router";
-import { IconHierarchy3, IconHome, IconUser } from "@tabler/icons-react";
+import {
+  IconBuildingWarehouse,
+  IconHierarchy3,
+  IconHome,
+  IconLocation,
+  IconUser,
+} from "@tabler/icons-react";
 import React, { PropsWithChildren } from "react";
 
 const resources: ResourceProps[] = [
@@ -16,7 +22,7 @@ const resources: ResourceProps[] = [
     list: "/app",
     meta: {
       icon: <IconHome />,
-      label: "Home"
+      label: "Home",
     },
   },
   {
@@ -35,6 +41,65 @@ const resources: ResourceProps[] = [
     edit: "/app/roles/:id",
     meta: {
       icon: <IconHierarchy3 />,
+    },
+  },
+  {
+    name: "geo",
+    meta: {
+      label: "GEO",
+      icon: <IconLocation />,
+    },
+  },
+  {
+    name: "countries",
+    list: "/app/countries",
+    create: "/app/countries/create",
+    edit: "/app/countries/:id",
+    meta: {
+      parent: "geo",
+    },
+  },
+  {
+    name: "locations",
+    list: "/app/locations",
+    create: "/app/locations/create",
+    edit: "/app/locations/:id",
+    meta: {
+      parent: "geo",
+    },
+  },
+  {
+    name: "stock-management",
+    meta: {
+      label: "Stock Management",
+      icon: <IconBuildingWarehouse />,
+    },
+  },
+  {
+    name: "warehouses",
+    list: "/app/warehouses",
+    create: "/app/warehouses/create",
+    edit: "/app/warehouses/:id",
+    meta: {
+      parent: "stock-management",
+    },
+  },
+  {
+    name: "variants",
+    list: "/app/variants",
+    create: "/app/variants/create",
+    edit: "/app/variants/:id",
+    meta: {
+      parent: "stock-management",
+    },
+  },
+  {
+    name: "items",
+    list: "/app/items",
+    create: "/app/items/create",
+    edit: "/app/items/:id",
+    meta: {
+      parent: "stock-management",
     },
   },
 ];
