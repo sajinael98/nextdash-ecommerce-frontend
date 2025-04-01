@@ -1,6 +1,15 @@
 "use client";
 
-import { Box, Button, Group, LoadingOverlay, Menu } from "@mantine/core";
+import {
+  Box,
+  Button,
+  Grid,
+  Group,
+  LoadingOverlay,
+  Menu,
+  SimpleGrid,
+  Skeleton,
+} from "@mantine/core";
 import { BaseRecord, useForm, useResourceParams } from "@refinedev/core";
 import { IconClock, IconMenu2 } from "@tabler/icons-react";
 import React, { PropsWithChildren } from "react";
@@ -11,6 +20,40 @@ interface ResourceFormProps {
   schema: Schema;
   menuItems?: { label: string; onClick: (values: BaseRecord) => void }[];
 }
+
+const FormSkeleton = () => (
+  <Box pos="relative">
+    <Group justify="flex-end" pos="absolute" top={-40} right={0}>
+      <Skeleton w={120} h={40} />
+      <Skeleton w={120} h={40} />
+    </Group>
+    <Grid mb="md">
+      <Grid.Col span={{ base: 12, md: 6 }}>
+        <Skeleton h={10} w={80} mb="sm" />
+        <Skeleton h={40} />
+      </Grid.Col>
+      <Grid.Col span={{ base: 12, md: 6 }}>
+        <Skeleton h={10} w={80} mb="sm" />
+        <Skeleton h={40} />
+      </Grid.Col>
+      <Grid.Col span={{ base: 12, md: 6 }}>
+        <Skeleton h={10} w={80} mb="sm" />
+        <Skeleton h={40} />
+      </Grid.Col>
+      <Grid.Col span={{ base: 12, md: 6 }}>
+        <Skeleton h={10} w={80} mb="sm" />
+        <Skeleton h={40} />
+      </Grid.Col>
+      <Grid.Col span={12}>
+        <Skeleton h={10} w={80} mb="sm" />
+        <Skeleton h={200} />
+      </Grid.Col>
+    </Grid>
+    <Group justify="flex-end">
+      <Skeleton w={120} h={40} />
+    </Group>
+  </Box>
+);
 
 const ResourceForm: React.FC<ResourceFormProps> = (props) => {
   const { schema, menuItems = [] } = props;
@@ -25,51 +68,42 @@ const ResourceForm: React.FC<ResourceFormProps> = (props) => {
     onFinish(values);
   }
 
-  const visible = formLoading || query?.isFetching;
+  if (formLoading || query?.isFetching) {
+    return <FormSkeleton />;
+  }
 
   return (
-    <>
-      <Box h={400} pos="relative">
-        {action === "edit" && (
-          <Group justify="flex-end" pos="absolute" top={-40} right={0}>
-            <Button leftSection={<IconClock />} variant="light">
-              Audit
-            </Button>
-            <Menu>
-              <Menu.Target>
-                <Button leftSection={<IconMenu2 />} variant="light">
-                  Menu
-                </Button>
-              </Menu.Target>
-              <Menu.Dropdown>
-                {menuItems.map((item) => (
-                  <Menu.Item
-                    key={item.label}
-                    onClick={() => item.onClick(query?.data?.data)}
-                  >
-                    {item.label}
-                  </Menu.Item>
-                ))}
-              </Menu.Dropdown>
-            </Menu>
-          </Group>
-        )}
-        <LoadingOverlay
-          visible={visible}
-          loaderProps={{ children: "Loading..." }}
-        />
-        {(query?.isFetched || action === "create") && (
-          <AutoForm
-            schema={schema}
-            onSubmit={saveHandler}
-            values={query?.data?.data ?? { isNew: action === "create" }}
-          />
-        )}
-        {query?.isFetching && (
-          <AutoForm schema={schema} onSubmit={saveHandler} />
-        )}
-      </Box>
-    </>
+    <Box h={400} pos="relative">
+      {action === "edit" && (
+        <Group justify="flex-end" pos="absolute" top={-40} right={0}>
+          <Button leftSection={<IconClock />} variant="light">
+            Audit
+          </Button>
+          <Menu>
+            <Menu.Target>
+              <Button leftSection={<IconMenu2 />} variant="light">
+                Menu
+              </Button>
+            </Menu.Target>
+            <Menu.Dropdown>
+              {menuItems.map((item) => (
+                <Menu.Item
+                  key={item.label}
+                  onClick={() => item.onClick(query?.data?.data ?? {})}
+                >
+                  {item.label}
+                </Menu.Item>
+              ))}
+            </Menu.Dropdown>
+          </Menu>
+        </Group>
+      )}
+      <AutoForm
+        schema={schema}
+        onSubmit={saveHandler}
+        values={query?.data?.data ?? { isNew: action === "create" }}
+      />
+    </Box>
   );
 };
 

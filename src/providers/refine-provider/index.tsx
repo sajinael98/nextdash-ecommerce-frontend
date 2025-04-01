@@ -12,17 +12,24 @@ import {
   IconHierarchy3,
   IconHome,
   IconLocation,
+  IconMap,
+  IconPuzzle,
+  IconShirt,
   IconUser,
 } from "@tabler/icons-react";
 import React, { PropsWithChildren } from "react";
 
 const resources: ResourceProps[] = [
   {
+    name: "dashboard",
+  },
+  {
     name: "home",
     list: "/app",
     meta: {
       icon: <IconHome />,
       label: "Home",
+      parent: "dashboard",
     },
   },
   {
@@ -32,6 +39,7 @@ const resources: ResourceProps[] = [
     edit: "/app/users/:id",
     meta: {
       icon: <IconUser />,
+      parent: "dashboard",
     },
   },
   {
@@ -41,13 +49,13 @@ const resources: ResourceProps[] = [
     edit: "/app/roles/:id",
     meta: {
       icon: <IconHierarchy3 />,
+      parent: "dashboard",
     },
   },
   {
     name: "geo",
     meta: {
       label: "GEO",
-      icon: <IconLocation />,
     },
   },
   {
@@ -57,6 +65,7 @@ const resources: ResourceProps[] = [
     edit: "/app/countries/:id",
     meta: {
       parent: "geo",
+      icon: <IconMap />,
     },
   },
   {
@@ -66,6 +75,7 @@ const resources: ResourceProps[] = [
     edit: "/app/locations/:id",
     meta: {
       parent: "geo",
+      icon: <IconLocation />,
     },
   },
   {
@@ -82,6 +92,7 @@ const resources: ResourceProps[] = [
     edit: "/app/warehouses/:id",
     meta: {
       parent: "stock-management",
+      icon: <IconBuildingWarehouse />,
     },
   },
   {
@@ -91,6 +102,7 @@ const resources: ResourceProps[] = [
     edit: "/app/variants/:id",
     meta: {
       parent: "stock-management",
+      icon: <IconPuzzle />,
     },
   },
   {
@@ -100,6 +112,7 @@ const resources: ResourceProps[] = [
     edit: "/app/items/:id",
     meta: {
       parent: "stock-management",
+      icon: <IconShirt />,
     },
   },
 ];

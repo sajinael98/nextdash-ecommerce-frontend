@@ -20,7 +20,7 @@ const AdminPanelLayout: React.FC<PropsWithChildren> = ({ children }) => {
     <AppShell
       layout="alt"
       navbar={{
-        width: 300,
+        width: 250,
         breakpoint: "sm",
       }}
       header={{
@@ -54,7 +54,7 @@ const AdminPanelLayout: React.FC<PropsWithChildren> = ({ children }) => {
         <Divider mb="md" />
         <Menu />
       </AppShellNavbar>
-      <AppShellMain className={classes["glass-bg"]}>{children}</AppShellMain>
+      <AppShellMain >{children}</AppShellMain>
     </AppShell>
   );
 };

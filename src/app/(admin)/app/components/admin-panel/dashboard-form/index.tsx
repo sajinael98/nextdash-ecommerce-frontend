@@ -62,7 +62,7 @@ export const FieldContainer: React.FC<SchemaField> = (props) => {
         return (
           <Accordion variant="separated" defaultValue={name}>
             <Accordion.Item value={name}>
-              <Accordion.Control h={40}></Accordion.Control>
+              <Accordion.Control >{label}</Accordion.Control>
               <Accordion.Panel>
                 <ObjectField
                   name={name}
@@ -162,7 +162,7 @@ export const FieldContainer: React.FC<SchemaField> = (props) => {
       <Fieldset
         legend={
           <Text>
-            {label}
+            {type !== "object" && label}
             {required && (
               <Text pos="relative" top={-5} c="red.8" fz="xs" span>
                 &#9733;
