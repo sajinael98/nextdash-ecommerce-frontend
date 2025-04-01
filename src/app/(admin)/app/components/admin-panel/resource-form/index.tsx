@@ -5,14 +5,19 @@ import {
   Button,
   Grid,
   Group,
-  LoadingOverlay,
   Menu,
-  SimpleGrid,
   Skeleton,
+  Table
 } from "@mantine/core";
-import { BaseRecord, useForm, useResourceParams } from "@refinedev/core";
+import { modals } from "@mantine/modals";
+import {
+  BaseRecord,
+  useForm,
+  useLogList,
+  useResourceParams,
+} from "@refinedev/core";
 import { IconClock, IconMenu2 } from "@tabler/icons-react";
-import React, { PropsWithChildren } from "react";
+import React from "react";
 import AutoForm from "../dashboard-form";
 import { Schema } from "../dashboard-form/types";
 
@@ -55,9 +60,44 @@ const FormSkeleton = () => (
   </Box>
 );
 
+const AuditContent: React.FC<{ resource: string; id: number }> = (props) => {
+  const { id, resource } = props;
+  const { data, isFetching } = useLogList({
+    resource,
+    meta: {
+      id,
+    },
+  });
+
+  if (isFetching) {
+    return <div>loading...</div>;
+  }
+  
+  return (
+    <Table striped highlightOnHover withTableBorder withColumnBorders>
+      <Table.Thead>
+        <Table.Tr>
+          <Table.Th>User</Table.Th>
+          <Table.Th>Action</Table.Th>
+          <Table.Th>Date</Table.Th>
+        </Table.Tr>
+      </Table.Thead>
+      <Table.Tbody>
+        {data?.data?.map((log, index) => (
+          <Table.Tr key={index}>
+            <Table.Td>{log.username}</Table.Td>
+            <Table.Td>{log.action}</Table.Td>
+            <Table.Td>{log.createdDate}</Table.Td>
+          </Table.Tr>
+        ))}
+      </Table.Tbody>
+    </Table>
+  );
+};
+
 const ResourceForm: React.FC<ResourceFormProps> = (props) => {
   const { schema, menuItems = [] } = props;
-  const { identifier, action } = useResourceParams();
+  const { identifier, action, id } = useResourceParams();
   const { formLoading, onFinish, query } = useForm();
 
   if (!identifier) {
@@ -68,15 +108,32 @@ const ResourceForm: React.FC<ResourceFormProps> = (props) => {
     onFinish(values);
   }
 
+  function auditHandler() {
+    if (!id) {
+      return;
+    }
+    modals.open({
+      title: "History",
+      size: "lg",
+      children: (
+        <AuditContent resource={identifier as string} id={id as number} />
+      ),
+    });
+  }
+
   if (formLoading || query?.isFetching) {
     return <FormSkeleton />;
   }
 
   return (
-    <Box h={400} pos="relative">
+    <Box pos="relative">
       {action === "edit" && (
         <Group justify="flex-end" pos="absolute" top={-40} right={0}>
-          <Button leftSection={<IconClock />} variant="light">
+          <Button
+            leftSection={<IconClock />}
+            onClick={auditHandler}
+            variant="light"
+          >
             Audit
           </Button>
           <Menu>

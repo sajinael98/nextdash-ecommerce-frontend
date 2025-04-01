@@ -5,10 +5,9 @@ import {
   Checkbox,
   Divider,
   Group,
-  LoadingOverlay,
   Menu,
+  Skeleton,
   Switch,
-  Text,
 } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { CanAccess, useDeleteMany, useResourceParams } from "@refinedev/core";
@@ -28,6 +27,22 @@ import DashboardTable from "../table";
 interface ResourceListProps {
   columns: ColumnDef<any>[];
 }
+
+const ResourceListSkeleton = () => (
+  <Box pos="relative">
+    <Group justify="flex-end" pos="absolute" top={-40} right={0}>
+      <Skeleton w={120} h={40} />
+      <Skeleton w={120} h={40} />
+      <Skeleton w={120} h={40} />
+      <Divider orientation="vertical" />
+      <Skeleton w={120} h={40} />
+    </Group>
+    <Box pt="md">
+      <Skeleton h={300} />
+    </Box>
+  </Box>
+);
+
 const ResourceList: React.FC<ResourceListProps> = ({ columns: cols }) => {
   const { resource } = useResourceParams();
   if (!resource?.name) {
@@ -98,7 +113,6 @@ const ResourceList: React.FC<ResourceListProps> = ({ columns: cols }) => {
     [table.getSelectedRowModel().rows.map((row) => row.original)]
   );
   function deleteHandler() {
-    console.log(selectedRows);
     const ids = selectedRows.map((row) => row.id);
     if (!ids.length) {
       notifications.show({
@@ -112,11 +126,15 @@ const ResourceList: React.FC<ResourceListProps> = ({ columns: cols }) => {
       resource: resource?.name as string,
     });
   }
+
+  if (table.refineCore.tableQuery.isFetching) {
+    return <ResourceListSkeleton />;
+  }
+
   return (
     <CanAccess action="read">
       <Box pos="relative">
-        <LoadingOverlay visible={table.refineCore.tableQuery.isFetching} />
-        <Group justify="flex-end" mb="md">
+        <Group justify="flex-end" pos="absolute" top={-40} right={0}>
           <Menu closeOnItemClick={false}>
             <Menu.Target>
               <div>
@@ -202,7 +220,9 @@ const ResourceList: React.FC<ResourceListProps> = ({ columns: cols }) => {
             </ActionIcon>
           </CanAccess>
         </Group>
-        <DashboardTable table={table} />
+        <Box pt="md">
+          <DashboardTable table={table} />
+        </Box>
       </Box>
     </CanAccess>
   );
