@@ -1,6 +1,6 @@
 "use client";
 
-import { Accordion, Button, Fieldset, Grid, Text } from "@mantine/core";
+import { Accordion, Button, Fieldset, Grid, List, Text } from "@mantine/core";
 import { createFormContext } from "@mantine/form";
 import { BaseRecord } from "@refinedev/core";
 import { IconDeviceFloppy } from "@tabler/icons-react";
@@ -13,6 +13,9 @@ import ObjectField from "./ObjectField";
 import ResourceField from "./ResourceField";
 import StringField from "./StringField";
 import { AutoFormProps, Schema, SchemaField } from "./types";
+import SelectField from "./SelectField";
+import { modals } from "@mantine/modals";
+import DateField from "./DataField";
 
 export const [FormProvider, useFormContext, useForm] =
   createFormContext<BaseRecord>();
@@ -30,6 +33,7 @@ export const FieldContainer: React.FC<SchemaField> = (props) => {
     schema,
     optionLabel,
     resource,
+    data,
   } = props;
 
   const formCtx = useFormContext();
@@ -40,7 +44,7 @@ export const FieldContainer: React.FC<SchemaField> = (props) => {
 
   const handleFieldReset = useCallback(() => {
     if (formValues[name]) {
-      formCtx.setFieldValue(name, null);
+      formCtx.setFieldValue(name, getDefault(props));
     }
   }, [formValues]);
 
@@ -119,6 +123,25 @@ export const FieldContainer: React.FC<SchemaField> = (props) => {
           />
         );
       }
+      case "select": {
+        return (
+          <SelectField
+            data={data}
+            name={name}
+            required={required}
+            {...formCtx.getInputProps(name)}
+          />
+        );
+      }
+      case "date": {
+        return (
+          <DateField
+            name={name}
+            required={required}
+            {...formCtx.getInputProps(name)}
+          />
+        );
+      }
       default:
         throw new Error(`Unsupported field type: ${type}`);
     }
@@ -162,57 +185,55 @@ export const FieldContainer: React.FC<SchemaField> = (props) => {
   );
 };
 
-export function getInitialValues(schema: Schema, values = {}) {
-  const getDefault = (props: SchemaField) => {
-    switch (props.type) {
-      case "string":
-        return props.default ?? "";
-      case "object":
-        return Object.entries(props?.schema ?? {}).reduce<Record<string, any>>(
-          (obj, [name, props]) => {
-            obj[name] = getDefault(props);
-            return obj;
-          },
-          {}
-        );
-      case "array": {
-        return [
-          Object.entries(props?.schema ?? {}).reduce<Record<string, any>>(
-            (obj, [name, props]) => {
-              obj[name] = getDefault(props);
-              return obj;
-            },
-            {}
-          ),
-        ];
-      }
-      case "image": {
-        return undefined;
-      }
-      case "boolean": {
-        return props.default ?? false;
-      }
-      case "resource": {
-        return undefined;
-      }
-      case "number": {
-        return 0;
-      }
-      default:
-        throw Error(`field type:[${props.type}] is not supported`);
+const getDefault = (props: SchemaField) => {
+  switch (props.type) {
+    case "string":
+      return props.default ?? "";
+    case "object":
+      return Object.entries(props?.schema ?? {}).reduce<Record<string, any>>(
+        (obj, [name, props]) => {
+          obj[name] = getDefault(props);
+          return obj;
+        },
+        {}
+      );
+    case "array": {
+      return [];
     }
-  };
-
-  if (Object.keys(values).length) {
-    return values;
+    case "image": {
+      return undefined;
+    }
+    case "boolean": {
+      return props.default ?? false;
+    }
+    case "resource": {
+      return undefined;
+    }
+    case "number": {
+      return 0;
+    }
+    case "select": {
+      return undefined;
+    }
+    case "date": {
+      return undefined;
+    }
+    default:
+      throw Error(`field type:[${props.type}] is not supported`);
   }
+};
 
+export function getInitialValues(schema: Schema, values = {}) {
   return Object.entries(schema).reduce<Record<string, any>>(
     (obj, [name, props]) => {
-      obj[name] = getDefault(props);
+      if (name in values) {
+        obj[name] = values[name];
+      } else {
+        obj[name] = getDefault(props);
+      }
       return obj;
     },
-    {}
+    values
   );
 }
 
@@ -243,7 +264,7 @@ const AutoForm: React.FC<AutoFormProps> = (props) => {
     initialValues,
     validate,
   });
-
+  
   const fields = Object.entries(schema).map(([name, props]) => (
     <FieldContainer key={name} {...props} />
   ));
@@ -276,10 +297,30 @@ const AutoForm: React.FC<AutoFormProps> = (props) => {
       </Grid.Col>
     </Grid>
   );
+
+  const handleError = (errors: typeof form.errors) => {
+    console.log(errors)
+    if (Object.keys(errors).length) {
+      modals.open({
+        title: "Missing Values",
+        children: (
+          <>
+            <List>
+              {Object.entries(errors).map(([field, msg]) => (
+                <List.Item key={field}>
+                  {field}: {msg}
+                </List.Item>
+              ))}
+            </List>
+          </>
+        ),
+      });
+    }
+  };
   return (
     <FormProvider form={form}>
       {!noSubmitButton && (
-        <form onSubmit={form.onSubmit(onSubmit)}>{content}</form>
+        <form onSubmit={form.onSubmit(onSubmit, handleError)}>{content}</form>
       )}
       {noSubmitButton && content}
     </FormProvider>

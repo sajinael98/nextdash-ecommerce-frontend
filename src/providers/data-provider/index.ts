@@ -114,6 +114,7 @@ const dataProvider = (apiUrl: string): DataProvider => ({
       Authorization: "Bearer " + session?.user.token,
       ...params.headers,
     };
+    console.log(params.payload);
     switch (params.method) {
       case "post":
         return axiosInstance.post(`${apiUrl}/${params.url}`, params.payload, {

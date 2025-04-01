@@ -1,3 +1,4 @@
+import { ComboboxItem } from "@mantine/core";
 import {
   FormValidateInput,
   GetInputPropsReturnType,
@@ -11,7 +12,9 @@ export type SchemaFieldTypes =
   | "image"
   | "resource"
   | "boolean"
-  | "number";
+  | "number"
+  | "select"
+  | "date";
 
 export interface SchemaField {
   name: string;
@@ -25,9 +28,10 @@ export interface SchemaField {
   default?: any;
   schema?: Schema;
   view?: boolean;
-  validate?: (value: unknown) => React.ReactNode;
+  validate?: (value: unknown, values?:BaseRecord) => React.ReactNode;
   resource?: string | undefined;
   optionLabel?: string;
+  data?: ComboboxItem[]
 }
 
 export interface Schema {
@@ -46,4 +50,5 @@ export interface AutoFormProps {
 export interface Field extends GetInputPropsReturnType {
   name: string;
   required: boolean;
+  data?: ComboboxItem[];
 }

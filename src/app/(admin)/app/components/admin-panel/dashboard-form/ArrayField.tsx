@@ -12,7 +12,7 @@ import DashboardTable from "../table";
 import { Field, Schema } from "./types";
 
 const ArrayField: React.FC<Field & { schema: Schema }> = (props) => {
-  const { schema, value, name } = props;
+  const { schema, value = [], name } = props;
   const [
     createModalVisible,
     { open: showCreateModal, close: hideCreateModel },
@@ -20,7 +20,7 @@ const ArrayField: React.FC<Field & { schema: Schema }> = (props) => {
   const [editModalVisible, { open: showEditModal, close: hideEditModel }] =
     useDisclosure(false);
 
-  const [currentIndex, setCurrentIndex] = useState<number>(-1);
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
   const formCtx = useFormContext();
   const columns = useMemo<ColumnDef<any>[]>(
     () =>
@@ -80,7 +80,7 @@ const ArrayField: React.FC<Field & { schema: Schema }> = (props) => {
 
   function showEditModalHandler(index: number) {
     setCurrentIndex(index);
-    showEditModal()
+    showEditModal();
   }
 
   function editRowHandler(values: any) {
