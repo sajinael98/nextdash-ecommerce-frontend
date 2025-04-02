@@ -34,13 +34,17 @@ export const FieldContainer: React.FC<SchemaField> = (props) => {
     optionLabel,
     resource,
     data,
+    readOnly
   } = props;
 
   const formCtx = useFormContext();
   const formValues = formCtx.getValues();
 
   const shouldRenderField = useMemo(() => dependsOn(formValues), [formValues]);
-  const shouldDisableField = useMemo(() => disabled(formValues), [formValues]);
+  const shouldDisableField = useMemo(
+    () => readOnly || disabled(formValues),
+    [formValues]
+  );
 
   const handleFieldReset = useCallback(() => {
     if (formValues[name]) {
@@ -253,7 +257,7 @@ export function getValidate(schema: Schema) {
     }, {});
 }
 const AutoForm: React.FC<AutoFormProps> = (props) => {
-  const { loading, schema = {}, values = {}, onSubmit, noSubmitButton } = props;
+  const { loading, schema = {}, values = {}, onSubmit, noSubmitButton, readOnly } = props;
 
   const initialValues = useMemo<Record<string, any>>(
     () => getInitialValues(schema, values),
@@ -265,10 +269,16 @@ const AutoForm: React.FC<AutoFormProps> = (props) => {
     validate,
   });
   
-  const fields = Object.entries(schema).map(([name, props]) => (
-    <FieldContainer key={name} {...props} />
-  ));
-
+  const fields = Object.entries(schema).map(
+    ([name, { readOnly: fieldReadOnly, ...props }]) => (
+      <FieldContainer
+        key={name}
+        readOnly={readOnly || fieldReadOnly || false}
+        {...props}
+      />
+    )
+  );
+  
   const content = (
     <Grid>
       {fields}

@@ -24,6 +24,7 @@ import { Schema } from "../dashboard-form/types";
 interface ResourceFormProps {
   schema: Schema;
   menuItems?: { label: string; onClick: (values: BaseRecord) => void }[];
+  readOnly?:boolean
 }
 
 const FormSkeleton = () => (
@@ -96,7 +97,7 @@ const AuditContent: React.FC<{ resource: string; id: number }> = (props) => {
 };
 
 const ResourceForm: React.FC<ResourceFormProps> = (props) => {
-  const { schema, menuItems = [] } = props;
+  const { schema, menuItems = [], readOnly = false } = props;
   const { identifier, action, id } = useResourceParams();
   const { formLoading, onFinish, query } = useForm();
 
@@ -159,6 +160,7 @@ const ResourceForm: React.FC<ResourceFormProps> = (props) => {
         schema={schema}
         onSubmit={saveHandler}
         values={query?.data?.data ?? { isNew: action === "create" }}
+        readOnly={readOnly}
       />
     </Box>
   );

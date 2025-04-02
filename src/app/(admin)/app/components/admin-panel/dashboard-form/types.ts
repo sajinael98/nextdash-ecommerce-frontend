@@ -28,10 +28,11 @@ export interface SchemaField {
   default?: any;
   schema?: Schema;
   view?: boolean;
-  validate?: (value: unknown, values?:BaseRecord) => React.ReactNode;
+  validate?: (value: unknown, values?: BaseRecord) => React.ReactNode;
   resource?: string | undefined;
   optionLabel?: string;
-  data?: ComboboxItem[]
+  data?: ComboboxItem[];
+  readOnly?: boolean;
 }
 
 export interface Schema {
@@ -45,6 +46,7 @@ export interface AutoFormProps {
   schema: Schema;
   onSubmit: (values: BaseRecord) => void;
   noSubmitButton?: boolean;
+  readOnly?: boolean
 }
 
 export interface Field extends GetInputPropsReturnType {
