@@ -1,26 +1,19 @@
-import { ActionIcon, Button, Group, Modal } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
+import { ActionIcon, Button, Group } from "@mantine/core";
+import { modals } from "@mantine/modals";
+import { BaseRecord } from "@refinedev/core";
 import { IconEdit, IconTrash } from "@tabler/icons-react";
 import {
   ColumnDef,
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import React, { useMemo, useState } from "react";
-import AutoForm, { getInitialValues, useFormContext } from ".";
+import React, { useMemo } from "react";
+import AutoForm, { useFormContext } from ".";
 import DashboardTable from "../table";
 import { Field, Schema } from "./types";
 
 const ArrayField: React.FC<Field & { schema: Schema }> = (props) => {
   const { schema, value = [], name } = props;
-  const [
-    createModalVisible,
-    { open: showCreateModal, close: hideCreateModel },
-  ] = useDisclosure(false);
-  const [editModalVisible, { open: showEditModal, close: hideEditModel }] =
-    useDisclosure(false);
-
-  const [currentIndex, setCurrentIndex] = useState<number>(0);
   const formCtx = useFormContext();
   const columns = useMemo<ColumnDef<any>[]>(
     () =>
@@ -40,7 +33,7 @@ const ArrayField: React.FC<Field & { schema: Schema }> = (props) => {
                 <>
                   <Group gap="xs" wrap="nowrap">
                     <ActionIcon
-                      onClick={() => showEditModalHandler(index)}
+                      onClick={() => editRowHandler(index)}
                       size="sm"
                       variant="transparent"
                     >
@@ -72,59 +65,48 @@ const ArrayField: React.FC<Field & { schema: Schema }> = (props) => {
       },
     },
   });
-
-  function addRowHandler(values: any) {
-    formCtx.insertListItem(name, values);
-    hideCreateModel();
+  function addRowHandler() {
+    const modalId = "add" + name;
+    function submitHandler(values: BaseRecord) {
+      formCtx.insertListItem(name, values);
+      modals.close(modalId);
+    }
+    modals.open({
+      modalId,
+      title: "Add Row",
+      children: <AutoForm schema={schema} onSubmit={submitHandler} />,
+      size: "lg",
+    });
   }
 
-  function showEditModalHandler(index: number) {
-    setCurrentIndex(index);
-    showEditModal();
-  }
-
-  function editRowHandler(values: any) {
-    formCtx.replaceListItem(name, currentIndex, values);
-    hideEditModel();
+  function editRowHandler(index: number) {
+    const modalId = "edit" + name + index;
+    function submitHandler(values: BaseRecord) {
+      formCtx.replaceListItem(name, index, values);
+      modals.close(modalId);
+    }
+    modals.open({
+      modalId,
+      title: "Edit Row: " + index,
+      children: (
+        <AutoForm
+          schema={schema}
+          onSubmit={submitHandler}
+          values={formCtx.getValues()[name][index]}
+        />
+      ),
+      size: "lg",
+    });
   }
 
   function removeRowHandler(index: number) {
     formCtx.removeListItem(name, index);
   }
-
   return (
     <>
-      <Modal
-        title={`Add ${name}`}
-        opened={createModalVisible}
-        onClose={hideCreateModel}
-        size="lg"
-        withinPortal
-      >
-        <AutoForm
-          schema={schema}
-          values={getInitialValues(schema)}
-          onSubmit={addRowHandler}
-          noSubmitButton
-        />
-      </Modal>
-      <Modal
-        title={`Edit ${name}`}
-        opened={editModalVisible}
-        onClose={hideEditModel}
-        size="lg"
-        withinPortal
-      >
-        <AutoForm
-          schema={schema}
-          values={value[currentIndex]}
-          onSubmit={editRowHandler}
-          noSubmitButton
-        />
-      </Modal>
       <DashboardTable table={table} />
-      <Group mt="md">
-        <Button variant="light" size="compact-sm" onClick={showCreateModal}>
+      <Group mt="sm">
+        <Button variant="light" size="compact-sm" onClick={addRowHandler}>
           Add Row
         </Button>
       </Group>
