@@ -13,6 +13,7 @@ import {
   IconHome,
   IconLocation,
   IconMap,
+  IconPercentage,
   IconPuzzle,
   IconShirt,
   IconUser,
@@ -113,6 +114,17 @@ const resources: ResourceProps[] = [
     meta: {
       parent: "stock-management",
       icon: <IconShirt />,
+    },
+  },
+  {
+    name: "uoms",
+    list: "/app/uoms",
+    create: "/app/uoms/create",
+    edit: "/app/uoms/:id",
+    meta: {
+      parent: "stock-management",
+      icon: <IconPercentage />,
+      label: "UOM",
     },
   },
 ];
