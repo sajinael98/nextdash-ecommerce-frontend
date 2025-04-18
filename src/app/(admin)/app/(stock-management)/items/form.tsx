@@ -1,11 +1,13 @@
 import { isNotEmpty } from "@mantine/form";
 import { Schema } from "../../components/admin-panel/dashboard-form/types";
+import ResourceForm from "../../components/admin-panel/resource-form";
+import { getResouceValues } from "../../../../../../lib/db";
 
 export const itemSchema: Schema = {
   title: {
     type: "string",
     label: "Title",
-    name: "title",
+    required: true,
     disabled(values) {
       return !!values.variantInformation.template;
     },
@@ -13,40 +15,32 @@ export const itemSchema: Schema = {
   enabled: {
     type: "boolean",
     label: "Enabled",
-    name: "enabled",
     default: true,
   },
   websiteInformation: {
     type: "object",
-    name: "websiteInformation",
     label: "Website",
     fullWidth: true,
     schema: {
       published: {
         type: "boolean",
         label: "Published",
-        name: "published",
       },
       publishedDate: {
         type: "date",
         label: "Published Date",
-        name: "publishedDate",
-        dependsOn(values) {
-          return values.websiteInformation.published;
-        },
       },
     },
   },
   variantInformation: {
     type: "object",
     label: "Variants Information",
-    name: "variantInformation",
     fullWidth: true,
     schema: {
       hasSubItems: {
         type: "boolean",
         label: "Is Template",
-        name: "hasSubItems",
+
         disabled(values) {
           return !values.isNew;
         },
@@ -54,29 +48,26 @@ export const itemSchema: Schema = {
       template: {
         type: "string",
         label: "Parent Item",
-        name: "template",
-        dependsOn(values) {
-          return values.variantInformation.template;
-        },
         disabled(values) {
-          return values.variantInformation.template;
+          return !!values.variantInformation.templateId;
+        },
+        visible(values) {
+          return !!values.variantInformation.templateId;
         },
       },
       values: {
         type: "array",
         label: "Variants",
-        name: "values",
         fullWidth: true,
-        required: true,
         validate: (value, values) => {
           return values?.variantInformation.hasSubItems
             ? isNotEmpty("Enter at least one variant")(value)
             : null;
         },
-        dependsOn(values) {
+        visible(values) {
           return (
-            values.variantInformation.hasSubItems ||
-            values.variantInformation.template
+            values.variantInformation.templateId ||
+            values.variantInformation.hasSubItems
           );
         },
         disabled(values) {
@@ -86,16 +77,36 @@ export const itemSchema: Schema = {
           variantId: {
             type: "resource",
             label: "Variant",
-            name: "variantId",
             resource: "variants",
             optionLabel: "title",
+          },
+          variant: {
+            type: "string",
+            label: "Variant",
             view: true,
+            visible: () => false,
           },
           value: {
             type: "string",
             label: "Value",
-            name: "value",
-            view: true,
+            visible(values) {
+              return !!values.value;
+            },
+          },
+        },
+        change: {
+          variantId: function (value, values, { setFieldValue }) {
+            if (!value) {
+              return;
+            }
+
+            getResouceValues(
+              "variants",
+              ["title"],
+              [{ field: "id", operator: "eq", value: value }]
+            ).then((data) => {
+              setFieldValue("variant", data[0].title);
+            });
           },
         },
       },
@@ -104,36 +115,56 @@ export const itemSchema: Schema = {
   uoms: {
     type: "array",
     label: "Uom",
-    name: "uoms",
     fullWidth: true,
     required: true,
     validate: (value) => {
       if (value.length === 0) {
         return "include one uom at least.";
       }
-      if(value[0].value !== 1){ 
-        return "first uom should have '1' as value"
+      if (value[0].value !== 1) {
+        return "first uom should have '1' as value";
       }
+    },
+    disabled(values) {
+        return !!values.variantInformation.templateId;
     },
     schema: {
       uomId: {
         type: "resource",
         label: "Uom",
-        name: "uomId",
         resource: "uoms",
         optionLabel: "uom",
-        view: true,
         required: true,
-        validate: isNotEmpty("required"),
+      },
+      uom: {
+        type: "string",
+        label: "Uom",
+        view: true,
+        visible: () => false,
       },
       value: {
         type: "number",
         label: "Value",
-        name: "value",
         view: true,
         required: true,
-        validate: isNotEmpty("required"),
+      },
+    },
+    change: {
+      uomId: function (value, values, { setFieldValue }) {
+        if (!value) {
+          return;
+        }
+
+        getResouceValues(
+          "uoms",
+          ["uom"],
+          [{ field: "id", operator: "eq", value: value }]
+        ).then((data) => {
+          setFieldValue("uom", data[0].uom);
+        });
       },
     },
   },
 };
+
+export const itemForm = () => <ResourceForm schema={itemSchema} />;

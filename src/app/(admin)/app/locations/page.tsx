@@ -8,7 +8,7 @@ import ResourceList from "../components/admin-panel/List";
 const LocationsListPage = () => {
   const columns = useMemo<ColumnDef<BaseRecord>[]>(() => [
     {
-      accessorKey: "countryId",
+      accessorKey: "country",
       header: "Country"
     },
     {

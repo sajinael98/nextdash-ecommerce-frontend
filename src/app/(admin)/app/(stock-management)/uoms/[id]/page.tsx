@@ -1,8 +1,8 @@
 import React from "react";
 import { UomForm } from "../form";
 
-const CreateUomPage = () => {
+const EditUomPage = () => {
   return <UomForm />;
 };
 
-export default CreateUomPage;
+export default EditUomPage;

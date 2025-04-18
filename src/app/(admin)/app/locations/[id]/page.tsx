@@ -1,9 +1,7 @@
-import React from "react";
-import ResourceForm from "../../components/admin-panel/resource-form";
-import { locationSchema } from "../form";
+import { LocationForm } from "../form";
 
 const EditLocationPage = () => {
-  return <ResourceForm schema={locationSchema} />;
+  return <LocationForm />;
 };
 
 export default EditLocationPage;

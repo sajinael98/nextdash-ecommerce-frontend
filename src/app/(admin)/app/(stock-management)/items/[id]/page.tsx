@@ -14,7 +14,7 @@ import { modals } from "@mantine/modals";
 import { notifications } from "@mantine/notifications";
 import { BaseRecord, useCustomMutation, useList } from "@refinedev/core";
 import React from "react";
-import { itemSchema } from "../form";
+import { itemSchema } from "../form.tsx";
 
 const Modal: React.FC<{ values: BaseRecord }> = ({ values }) => {
   const itemId = values.id;
@@ -56,7 +56,7 @@ const Modal: React.FC<{ values: BaseRecord }> = ({ values }) => {
     const selectedVariants = Object.entries(values)
       .filter(([, value]) => value) // Keep only truthy values
       .map(([key]) => key); // Extract the keys
-    
+
     // Group variant values into a Map
     const variantValues = selectedVariants.reduce<{ [key: string]: string[] }>(
       (map, variantValue) => {
@@ -95,7 +95,7 @@ const Modal: React.FC<{ values: BaseRecord }> = ({ values }) => {
         });
       });
   }
-  
+
   return (
     <form onSubmit={onSubmit(submitHandler)}>
       <SimpleGrid cols={2}>
@@ -131,7 +131,7 @@ const EditItemPage = () => {
             label: "Create Variants",
             onClick(values) {
               modals.open({
-                children: <Modal values={values} />
+                children: <Modal values={values} />,
               });
             },
           },

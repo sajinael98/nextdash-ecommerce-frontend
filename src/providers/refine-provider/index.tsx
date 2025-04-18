@@ -15,6 +15,7 @@ import {
   IconMap,
   IconPercentage,
   IconPuzzle,
+  IconReceipt,
   IconShirt,
   IconUser,
 } from "@tabler/icons-react";
@@ -127,6 +128,19 @@ const resources: ResourceProps[] = [
       label: "UOM",
     },
   },
+  {
+    name: "buying-management",
+  },
+  {
+    name: "purchase-transactions",
+    list: "/app/purchase-transactions",
+    create: "/app/purchase-transactions/create",
+    edit: "/app/purchase-transactions/:id",
+    meta: {
+      parent: "buying-management",
+      icon: <IconReceipt />,
+    },
+  },
 ];
 
 const RefineProvider: React.FC<PropsWithChildren> = ({ children }) => {
@@ -144,6 +158,10 @@ const RefineProvider: React.FC<PropsWithChildren> = ({ children }) => {
         warnWhenUnsavedChanges: true,
         useNewQueryKeys: true,
         projectId: "sXyKYR-uoMAWV-NTZ337",
+        redirect: {
+          afterCreate: false,
+          afterEdit: false
+        }
       }}
     >
       {children}

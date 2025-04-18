@@ -1,9 +1,7 @@
-import ResourceForm from "@app/(admin)/app/components/admin-panel/resource-form";
-import React from "react";
-import { warehouseSchema } from "../form";
+import { WarehouseForm } from "../form";
 
 const CreateWarehousePage = () => {
-  return <ResourceForm schema={warehouseSchema} />;
+  return <WarehouseForm/>;
 };
 
 export default CreateWarehousePage;

@@ -12,6 +12,10 @@ const WarehousesListPage = () => {
         accessorKey: "title",
         header: "Warehouse",
       },
+      {
+        accessorKey: "location",
+        header: "Location",
+      },
     ],
     []
   );

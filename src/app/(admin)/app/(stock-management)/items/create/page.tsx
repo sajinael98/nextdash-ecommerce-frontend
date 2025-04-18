@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
 import ResourceForm from "@app/(admin)/app/components/admin-panel/resource-form";
 import React from "react";
-import { itemSchema } from "../form";
+import { itemSchema } from "../form.tsx";
 
 const CreateItemPage = () => {
   return <ResourceForm schema={itemSchema} />;
