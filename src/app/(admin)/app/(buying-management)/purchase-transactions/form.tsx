@@ -1,7 +1,6 @@
 "use client";
 
 import dayjs from "dayjs";
-import { getResouceValues } from "../../../../../../lib/db";
 import { Schema } from "../../components/admin-panel/dashboard-form/types";
 import ResourceForm from "../../components/admin-panel/resource-form";
 
@@ -83,16 +82,7 @@ const schema: Schema = {
     },
     change: {
       uomId: async function (value, values, { setFieldValue }) {
-        getResouceValues(
-          "item_uoms",
-          ["value"],
-          [
-            { field: "uomId", operator: "eq", value: value },
-            { field: "itemId", operator: "eq", value: values.itemId },
-          ]
-        ).then((data) => {
-          setFieldValue("uomFactor", data[0].value);
-        });
+       
       },
       qty: function (value, values, {setFieldValue}) {
         setFieldValue("total", value as number * values.price);

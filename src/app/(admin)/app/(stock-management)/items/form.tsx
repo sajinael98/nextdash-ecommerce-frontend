@@ -1,7 +1,6 @@
 import { isNotEmpty } from "@mantine/form";
 import { Schema } from "../../components/admin-panel/dashboard-form/types";
 import ResourceForm from "../../components/admin-panel/resource-form";
-import { getResouceValues } from "../../../../../../lib/db";
 
 export const itemSchema: Schema = {
   title: {
@@ -100,13 +99,7 @@ export const itemSchema: Schema = {
               return;
             }
 
-            getResouceValues(
-              "variants",
-              ["title"],
-              [{ field: "id", operator: "eq", value: value }]
-            ).then((data) => {
-              setFieldValue("variant", data[0].title);
-            });
+           
           },
         },
       },
@@ -155,13 +148,7 @@ export const itemSchema: Schema = {
           return;
         }
 
-        getResouceValues(
-          "uoms",
-          ["uom"],
-          [{ field: "id", operator: "eq", value: value }]
-        ).then((data) => {
-          setFieldValue("uom", data[0].uom);
-        });
+       
       },
     },
   },

@@ -16,6 +16,7 @@ import {
   IconPercentage,
   IconPuzzle,
   IconReceipt,
+  IconSettings,
   IconShirt,
   IconUser,
 } from "@tabler/icons-react";
@@ -141,6 +142,15 @@ const resources: ResourceProps[] = [
       icon: <IconReceipt />,
     },
   },
+  {
+    name: "buying-setting",
+    list: "/app/buying-setting",
+    meta: {
+      icon: <IconSettings />,
+      parent: "buying-management",
+      label: "Buying Setting"
+    },
+  },
 ];
 
 const RefineProvider: React.FC<PropsWithChildren> = ({ children }) => {
@@ -160,8 +170,8 @@ const RefineProvider: React.FC<PropsWithChildren> = ({ children }) => {
         projectId: "sXyKYR-uoMAWV-NTZ337",
         redirect: {
           afterCreate: false,
-          afterEdit: false
-        }
+          afterEdit: false,
+        },
       }}
     >
       {children}

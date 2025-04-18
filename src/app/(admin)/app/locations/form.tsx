@@ -1,10 +1,9 @@
 "use client";
 
 import { useDataProvider } from "@refinedev/core";
-import { getResouceValues } from "../../../../../lib/db";
+import { useMemo } from "react";
 import { Schema } from "../components/admin-panel/dashboard-form/types";
 import ResourceForm from "../components/admin-panel/resource-form";
-import { useMemo } from "react";
 
 export const LocationForm = () => {
   const dataProvider = useDataProvider();
