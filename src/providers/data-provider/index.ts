@@ -67,7 +67,7 @@ const dataProvider = (apiUrl: string): DataProvider => ({
 
       return { data: response.data };
     } catch (error) {
-      errorHandler(error);
+      return errorHandler(error);
     }
   },
   update: async function ({ resource, id, variables }) {

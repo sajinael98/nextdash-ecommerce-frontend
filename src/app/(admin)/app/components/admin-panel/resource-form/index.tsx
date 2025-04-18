@@ -24,7 +24,7 @@ interface ResourceFormProps {
   confirmable?: boolean;
 }
 
-const FormSkeleton = () => (
+export const FormSkeleton = () => (
   <Box pos="relative">
     <Group justify="flex-end" pos="absolute" top={-40} right={0}>
       <Skeleton w={120} h={40} />

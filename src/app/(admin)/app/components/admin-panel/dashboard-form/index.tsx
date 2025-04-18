@@ -90,7 +90,7 @@ export const FieldContainer: React.FC<Fields & { name: string }> = (props) => {
       <Fieldset
         legend={
           <Text>
-            {type !== "object" && label}
+            {!["object", "boolean"].includes(type) && label}
             {required && (
               <Text pos="relative" top={-5} c="red.8" fz="xs" span>
                 &#9733;
@@ -112,7 +112,7 @@ export const FieldContainer: React.FC<Fields & { name: string }> = (props) => {
           </Accordion>
         )}
         {type !== "object" && (
-          <Field name={name} {...fieldProps} {...schemaProps} />
+          <Field name={name} {...fieldProps} {...schemaProps} {...(type === "boolean" && {label: label})} />
         )}
 
         {description && (
