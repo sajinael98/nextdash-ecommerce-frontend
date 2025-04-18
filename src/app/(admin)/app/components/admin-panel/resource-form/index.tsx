@@ -1,14 +1,6 @@
 "use client";
 
-import {
-  Box,
-  Button,
-  Grid,
-  Group,
-  Menu,
-  Skeleton,
-  Table
-} from "@mantine/core";
+import { Box, Button, Grid, Group, Menu, Skeleton, Table } from "@mantine/core";
 import { modals } from "@mantine/modals";
 import {
   BaseRecord,
@@ -19,12 +11,17 @@ import {
 import { IconClock, IconMenu2 } from "@tabler/icons-react";
 import React from "react";
 import AutoForm from "../dashboard-form";
-import { Schema } from "../dashboard-form/types";
+import { FieldChange, Schema } from "../dashboard-form/types";
+import { useRouter } from "next/navigation";
+import { getSession } from "next-auth/react";
+import { axiosInstance } from "@refinedev/simple-rest";
 
 interface ResourceFormProps {
   schema: Schema;
   menuItems?: { label: string; onClick: (values: BaseRecord) => void }[];
-  readOnly?:boolean
+  readOnly?: boolean;
+  change?: FieldChange;
+  confirmable?: boolean;
 }
 
 const FormSkeleton = () => (
@@ -73,7 +70,7 @@ const AuditContent: React.FC<{ resource: string; id: number }> = (props) => {
   if (isFetching) {
     return <div>loading...</div>;
   }
-  
+
   return (
     <Table striped highlightOnHover withTableBorder withColumnBorders>
       <Table.Thead>
@@ -97,9 +94,24 @@ const AuditContent: React.FC<{ resource: string; id: number }> = (props) => {
 };
 
 const ResourceForm: React.FC<ResourceFormProps> = (props) => {
-  const { schema, menuItems = [], readOnly = false } = props;
+  const {
+    schema,
+    menuItems = [],
+    readOnly = false,
+    change = {},
+    confirmable,
+  } = props;
   const { identifier, action, id } = useResourceParams();
-  const { formLoading, onFinish, query } = useForm();
+  const router = useRouter();
+  const { formLoading, onFinish, query, mutation } = useForm({
+    onMutationSuccess(data, variables, context, isAutoSave) {
+      if (action === "create") {
+        router.push(`/app/${identifier}/${data.data.id}`);
+      } else {
+        router.replace(`/app/${identifier}/${data.data.id}`);
+      }
+    },
+  });
 
   if (!identifier) {
     throw Error("This component is allowed only for resources.");
@@ -121,6 +133,43 @@ const ResourceForm: React.FC<ResourceFormProps> = (props) => {
       ),
     });
   }
+
+ async function changeStatusHandler(status: "DRAFT" | "CONFIRMED") {
+   const modalConfig = {
+     title: status === "DRAFT" ? "Cancel" : "Confirm",
+     message: "Are you sure you want to proceed?",
+     actionUri: status === "DRAFT" ? "cancel" : "confirm",
+   };
+
+   modals.openConfirmModal({
+     title: modalConfig.title,
+     children: modalConfig.message,
+     labels: { confirm: "Yes", cancel: "No" },
+     onConfirm: async () => {
+       try {
+         const session = await getSession();
+         if (!session?.user.token) {
+           throw new Error("User token is missing");
+         }
+
+         await axiosInstance.patch(
+           `/backend-api/${identifier}/${id}/${modalConfig.actionUri}`,
+           { status },
+           {
+             headers: {
+               Authorization: `Bearer ${session.user.token}`,
+             },
+           }
+         );
+
+         query?.refetch();
+       } catch (error) {
+         console.error("Error updating status:", error);
+         // Optionally, display an error message to the user
+       }
+     },
+   });
+ }
 
   if (formLoading || query?.isFetching) {
     return <FormSkeleton />;
@@ -144,6 +193,16 @@ const ResourceForm: React.FC<ResourceFormProps> = (props) => {
               </Button>
             </Menu.Target>
             <Menu.Dropdown>
+              {query?.data?.data.status === "CONFIRMED" && (
+                <Menu.Item onClick={() => changeStatusHandler("DRAFT")}>
+                  Cancel
+                </Menu.Item>
+              )}
+              {confirmable && query?.data?.data.status === "DRAFT" && (
+                <Menu.Item onClick={() => changeStatusHandler("CONFIRMED")}>
+                  Confirm
+                </Menu.Item>
+              )}
               {menuItems.map((item) => (
                 <Menu.Item
                   key={item.label}
@@ -160,7 +219,8 @@ const ResourceForm: React.FC<ResourceFormProps> = (props) => {
         schema={schema}
         onSubmit={saveHandler}
         values={query?.data?.data ?? { isNew: action === "create" }}
-        readOnly={readOnly}
+        readOnly={readOnly || query?.data?.data.status === "CONFIRMED"}
+        change={change}
       />
     </Box>
   );

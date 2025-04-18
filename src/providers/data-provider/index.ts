@@ -31,10 +31,11 @@ async function getCommonHeaders(
 
 const dataProvider = (apiUrl: string): DataProvider => ({
   getApiUrl: () => apiUrl,
-  getList: async ({ resource, pagination, sorters, filters }) => {
+  getList: async ({ resource, pagination, sorters, filters, meta }) => {
+    const { extraParams = {} } = meta
     const headers = await getCommonHeaders(resource);
     const params = {
-      page: pagination?.current ?? 1,
+      page: pagination?.current ? pagination.current - 1 : 0,
       size: pagination?.pageSize ?? 20,
       filters,
       sorters,
@@ -42,7 +43,10 @@ const dataProvider = (apiUrl: string): DataProvider => ({
     try {
       const response = await axiosInstance.get(apiUrl + `/${resource}`, {
         headers,
-        params,
+        params: {
+          ...params,
+          ...extraParams,
+        },
       });
 
       return response.data;
@@ -61,7 +65,7 @@ const dataProvider = (apiUrl: string): DataProvider => ({
         }
       );
 
-      return response.data;
+      return { data: response.data };
     } catch (error) {
       errorHandler(error);
     }

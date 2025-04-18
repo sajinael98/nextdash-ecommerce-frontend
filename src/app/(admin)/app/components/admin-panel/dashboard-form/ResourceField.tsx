@@ -1,8 +1,10 @@
 import { ComboboxItem, Select } from "@mantine/core";
 import { useDebouncedValue } from "@mantine/hooks";
-import { useSelect } from "@refinedev/core";
+import { LogicalFilter, useDataProvider } from "@refinedev/core";
+import { useQuery } from "@tanstack/react-query";
 import React, { FocusEventHandler, useMemo, useState } from "react";
-import { Field } from "./types";
+import { useFormContext } from ".";
+import { ResourceField as Field } from "./types";
 
 const ResourceField: React.FC<
   Field & {
@@ -15,57 +17,68 @@ const ResourceField: React.FC<
     defaultValue = "",
     onChange,
     onBlur,
-    required,
     value,
-    optionLabel,
+    optionLabel = "title",
     resource,
+    filters,
   } = props;
-  const [searchValue, setSearchValue] = useState("");
-  const [debouncedSearchValue] = useDebouncedValue(searchValue, 1000);
-
   if (!resource) {
     throw Error("resource are missing for: " + name);
   }
+  const [searchValue, setSearchValue] = useState("");
+  const [debouncedSearchValue] = useDebouncedValue(searchValue, 1000);
+  const formCtx = useFormContext();
+  const dataProvider = useDataProvider();
 
-  if (!optionLabel) {
-    throw Error("optionLabel are missing for: " + name);
-  }
+  const filtersArr = useMemo(() => {
+    const filterList: LogicalFilter[] = filters
+      ? filters(formCtx.getValues())
+      : [];
+    if (debouncedSearchValue) {
+      filterList.push({
+        field: optionLabel,
+        operator: "contains",
+        value: debouncedSearchValue,
+      });
+    }
+    if (value) {
+      filterList.push({
+        field: "id",
+        operator: "eq",
+        value,
+      });
+    }
+    return filterList;
+  }, [debouncedSearchValue, formCtx.getValues(), value]);
 
-  const { query } = useSelect({
-    resource,
-    defaultValue: value,
-    optionLabel,
-    pagination: {
-      current: 1,
-      pageSize: 20,
-      mode: "client",
-    },
-    filters: debouncedSearchValue
-      ? [
-          {
-            field: optionLabel,
-            operator: "contains",
-            value: debouncedSearchValue,
+  const query = useQuery({
+    queryKey: ["select", resource, filtersArr],
+    queryFn: ({ signal }) =>
+      dataProvider().getList({
+        resource,
+        filters: filtersArr,
+        pagination: {
+          current: 0,
+          mode: "client",
+          pageSize: 20,
+        },
+        meta: {
+          extraParams: {
+            fields: "id," + optionLabel,
           },
-        ]
-      : [],
-    queryOptions: {
-      initialData: () => ({ data: [], total: 0 }),
-    },
-    defaultValueQueryOptions: {
-      initialData: () => ({ data: [], total: 0 }),
-      enabled: !!value,
-    },
+        },
+      }),
+    initialData: () => [],
   });
 
-  const data = useMemo(
-    () =>
-      query.data?.data.map((record) => ({
+  const data = useMemo(() => {
+    return query.data?.map(
+      (record: { [optionLabel]: unknown; id: number }) => ({
         label: record[optionLabel],
         value: String(record["id"]),
-      })),
-    [query.data?.data]
-  );
+      })
+    );
+  }, [query.data]);
   const changeHandler = (value: string | null, option: ComboboxItem) =>
     onChange(value ? +value : null);
 
@@ -82,7 +95,6 @@ const ResourceField: React.FC<
       onChange={changeHandler}
       onFocus={foucsHandler}
       onBlur={foucsHandler}
-      required={required}
       searchValue={searchValue}
       onSearchChange={setSearchValue}
       searchable

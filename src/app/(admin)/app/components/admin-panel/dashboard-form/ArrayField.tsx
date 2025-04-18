@@ -10,10 +10,29 @@ import {
 import React, { useMemo } from "react";
 import AutoForm, { useFormContext } from ".";
 import DashboardTable from "../table";
-import { Field, Schema } from "./types";
+import { ArrayField as Field, Schema } from "./types";
+
+function getValue(obj: Record<string, object>, key: string) {
+  if (typeof obj !== "object" || obj === null || typeof key !== "string") {
+    return undefined;
+  }
+
+  const keys = key.split(".");
+
+  let current = obj;
+  for (const k of keys) {
+    if (current && typeof current === "object" && k in current) {
+      current = current[k];
+    } else {
+      return undefined;
+    }
+  }
+
+  return current;
+}
 
 const ArrayField: React.FC<Field & { schema: Schema }> = (props) => {
-  const { schema, value = [], name } = props;
+  const { schema, value = [], name, change } = props;
   const formCtx = useFormContext();
   const columns = useMemo<ColumnDef<any>[]>(
     () =>
@@ -69,12 +88,16 @@ const ArrayField: React.FC<Field & { schema: Schema }> = (props) => {
     const modalId = "add" + name;
     function submitHandler(values: BaseRecord) {
       formCtx.insertListItem(name, values);
+      console.log(formCtx.getValues());
+      formCtx.setFieldValue(name, [...getValue(formCtx.getValues(), name)]);
       modals.close(modalId);
     }
     modals.open({
       modalId,
       title: "Add Row",
-      children: <AutoForm schema={schema} onSubmit={submitHandler} />,
+      children: (
+        <AutoForm schema={schema} onSubmit={submitHandler} change={change} />
+      ),
       size: "lg",
     });
   }
@@ -83,6 +106,7 @@ const ArrayField: React.FC<Field & { schema: Schema }> = (props) => {
     const modalId = "edit" + name + index;
     function submitHandler(values: BaseRecord) {
       formCtx.replaceListItem(name, index, values);
+      formCtx.setFieldValue(name, [...getValue(formCtx.getValues(), name)]);
       modals.close(modalId);
     }
     modals.open({
@@ -92,7 +116,8 @@ const ArrayField: React.FC<Field & { schema: Schema }> = (props) => {
         <AutoForm
           schema={schema}
           onSubmit={submitHandler}
-          values={formCtx.getValues()[name][index]}
+          values={getValue(formCtx.getValues(), name)[index]}
+          change={change}
         />
       ),
       size: "lg",
