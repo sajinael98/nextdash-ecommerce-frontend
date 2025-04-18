@@ -171,7 +171,7 @@ const ResourceForm: React.FC<ResourceFormProps> = (props) => {
    });
  }
 
-  if (formLoading || query?.isFetching) {
+  if (query?.isLoading) {
     return <FormSkeleton />;
   }
 
@@ -219,7 +219,7 @@ const ResourceForm: React.FC<ResourceFormProps> = (props) => {
         schema={schema}
         onSubmit={saveHandler}
         values={query?.data?.data ?? { isNew: action === "create" }}
-        readOnly={readOnly || query?.data?.data.status === "CONFIRMED"}
+        readOnly={readOnly || query?.data?.data.status === "CONFIRMED" || formLoading}
         change={change}
       />
     </Box>

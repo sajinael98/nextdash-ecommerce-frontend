@@ -59,7 +59,6 @@ const ResourceField: React.FC<
         filters: filtersArr,
         pagination: {
           current: 0,
-          mode: "client",
           pageSize: 20,
         },
         meta: {
@@ -72,15 +71,27 @@ const ResourceField: React.FC<
   });
 
   const data = useMemo(() => {
-    return query.data?.map(
-      (record: { [optionLabel]: unknown; id: number }) => ({
-        label: record[optionLabel],
-        value: String(record["id"]),
-      })
-    );
-  }, [query.data]);
-  const changeHandler = (value: string | null, option: ComboboxItem) =>
-    onChange(value ? +value : null);
+    if (query.isFetched) {
+      return query.data.data.map(
+        (record: { [optionLabel]: unknown; id: number }) => ({
+          label: record[optionLabel],
+          value: String(record["id"]),
+        })
+      );
+    }
+    return [];
+  }, [query.data, query.isFetched]);
+  const changeHandler = (value: string | null, option: ComboboxItem) => {
+    let title = "";
+    if (value) {
+      title = data?.find((d) => {
+        console.log(d.value === String(value), value, d.value);
+        return d.value === String(value);
+      })["label"];
+    }
+    onChange(value);
+    formCtx.setFieldValue(name.replace("Id", ""), title);
+  };
 
   const foucsHandler: FocusEventHandler<HTMLInputElement> = function (event) {
     onBlur(event.target.value);

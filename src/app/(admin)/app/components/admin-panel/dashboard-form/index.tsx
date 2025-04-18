@@ -89,7 +89,7 @@ export const FieldContainer: React.FC<Fields & { name: string }> = (props) => {
     <Grid.Col span={fullWidth ? 12 : { base: 12, md: 6 }}>
       <Fieldset
         legend={
-          <Text>
+          <Text {...(type === "boolean" && {h:'var(--mantine-spacing-md)'})}>
             {!["object", "boolean"].includes(type) && label}
             {required && (
               <Text pos="relative" top={-5} c="red.8" fz="xs" span>
@@ -248,7 +248,7 @@ const AutoForm: React.FC<AutoFormProps> = (props) => {
   ));
 
   const content = (
-    <Grid>
+    <Grid align="flex-end">
       {fields}
       <Grid.Col
         span={12}
