@@ -303,7 +303,7 @@ const AutoForm: React.FC<AutoFormProps> = (props) => {
       setFieldValue: form.setFieldValue,
       setFieldError: form.setFieldError,
     });
-  }, 1000);
+  }, 500);
 
   Object.keys(change).forEach((field) => {
     form.watch(field, ({ value }) => fieldChangeHandler(field, value));

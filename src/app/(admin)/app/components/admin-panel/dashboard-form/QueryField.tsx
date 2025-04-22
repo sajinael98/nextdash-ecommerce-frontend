@@ -7,8 +7,8 @@ import { Select } from "@mantine/core";
 import { getSession } from "next-auth/react";
 
 const QueryField: React.FC<Field> = (props) => {
-  const { query: getUrl, ...fieldProps } = props;
-  const { getValues } = useFormContext();
+  const { query: getUrl, onChange, ...fieldProps } = props;
+  const { getValues, setFieldValue } = useFormContext();
   const url = useMemo(() => getUrl(getValues()), [getValues()]);
 
   const query = useQuery({
@@ -43,11 +43,15 @@ const QueryField: React.FC<Field> = (props) => {
       }) ?? []
     );
   }, [query.data?.data]);
-  console.log(data);
+
   return (
     <Select
       data={data}
       {...fieldProps}
+      onChange={(value) => {
+        onChange(value)
+        setFieldValue(props.name.replace("Id", ""), data.find(d => d.value === value).label)
+      }}
       defaultValue={String(fieldProps.defaultValue)}
       value={String(fieldProps.value)}
       clearable

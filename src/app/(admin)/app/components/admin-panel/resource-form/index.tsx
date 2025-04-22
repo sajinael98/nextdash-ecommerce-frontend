@@ -134,44 +134,44 @@ const ResourceForm: React.FC<ResourceFormProps> = (props) => {
     });
   }
 
- async function changeStatusHandler(status: "DRAFT" | "CONFIRMED") {
-   const modalConfig = {
-     title: status === "DRAFT" ? "Cancel" : "Confirm",
-     message: "Are you sure you want to proceed?",
-     actionUri: status === "DRAFT" ? "cancel" : "confirm",
-   };
+  async function changeStatusHandler(status: "DRAFT" | "CONFIRMED") {
+    const modalConfig = {
+      title: status === "DRAFT" ? "Cancel" : "Confirm",
+      message: "Are you sure you want to proceed?",
+      actionUri: status === "DRAFT" ? "cancel" : "confirm",
+    };
 
-   modals.openConfirmModal({
-     title: modalConfig.title,
-     children: modalConfig.message,
-     labels: { confirm: "Yes", cancel: "No" },
-     onConfirm: async () => {
-       try {
-         const session = await getSession();
-         if (!session?.user.token) {
-           throw new Error("User token is missing");
-         }
+    modals.openConfirmModal({
+      title: modalConfig.title,
+      children: modalConfig.message,
+      labels: { confirm: "Yes", cancel: "No" },
+      onConfirm: async () => {
+        try {
+          const session = await getSession();
+          if (!session?.user.token) {
+            throw new Error("User token is missing");
+          }
 
-         await axiosInstance.patch(
-           `/backend-api/${identifier}/${id}/${modalConfig.actionUri}`,
-           { status },
-           {
-             headers: {
-               Authorization: `Bearer ${session.user.token}`,
-             },
-           }
-         );
+          await axiosInstance.patch(
+            `/backend-api/${identifier}/${id}/${modalConfig.actionUri}`,
+            { status },
+            {
+              headers: {
+                Authorization: `Bearer ${session.user.token}`,
+              },
+            }
+          );
 
-         query?.refetch();
-       } catch (error) {
-         console.error("Error updating status:", error);
-         // Optionally, display an error message to the user
-       }
-     },
-   });
- }
+          query?.refetch();
+        } catch (error) {
+          console.error("Error updating status:", error);
+          // Optionally, display an error message to the user
+        }
+      },
+    });
+  }
 
-  if (query?.isLoading) {
+  if (action === "edit" && query?.isLoading) {
     return <FormSkeleton />;
   }
 
@@ -219,7 +219,9 @@ const ResourceForm: React.FC<ResourceFormProps> = (props) => {
         schema={schema}
         onSubmit={saveHandler}
         values={query?.data?.data ?? { isNew: action === "create" }}
-        readOnly={readOnly || query?.data?.data.status === "CONFIRMED" || formLoading}
+        readOnly={
+          readOnly || query?.data?.data.status === "CONFIRMED" || formLoading
+        }
         change={change}
       />
     </Box>

@@ -32,7 +32,7 @@ async function getCommonHeaders(
 const dataProvider = (apiUrl: string): DataProvider => ({
   getApiUrl: () => apiUrl,
   getList: async ({ resource, pagination, sorters, filters, meta }) => {
-    const { extraParams = {} } = meta
+    const { extraParams = {} } = meta;
     const headers = await getCommonHeaders(resource);
     const params = {
       page: pagination?.current ? pagination.current - 1 : 0,
@@ -118,13 +118,17 @@ const dataProvider = (apiUrl: string): DataProvider => ({
       Authorization: "Bearer " + session?.user.token,
       ...params.headers,
     };
-    console.log(params.payload);
+
     switch (params.method) {
       case "post":
         return axiosInstance.post(`${apiUrl}/${params.url}`, params.payload, {
           headers,
         });
 
+      case "get":
+        return axiosInstance.get(`${apiUrl}/${params.url}`, {
+          headers,
+        });
       case "patch":
         return axiosInstance.patch(`${apiUrl}/${params.url}`, params.payload, {
           headers,

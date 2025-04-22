@@ -1,12 +1,10 @@
 "use client";
 
-import { useDataProvider } from "@refinedev/core";
 import { useMemo } from "react";
 import { Schema } from "../components/admin-panel/dashboard-form/types";
 import ResourceForm from "../components/admin-panel/resource-form";
 
 export const LocationForm = () => {
-  const dataProvider = useDataProvider();
   const locationSchema = useMemo<Schema>(
     () => ({
       countryId: {
@@ -39,34 +37,5 @@ export const LocationForm = () => {
     }),
     []
   );
-  return (
-    <ResourceForm
-      schema={locationSchema}
-      change={{
-        countryId: function (value, values, { setFieldValue }) {
-          dataProvider()
-            .getList({
-              resource: "countries",
-              filters: [{ field: "id", operator: "eq", value: value }],
-              pagination: {
-                current: 0,
-                mode: "client",
-                pageSize: 20,
-              },
-              meta: {
-                extraParams: {
-                  fields: "id,title",
-                },
-              },
-            })
-            .then((res) => {
-              const data = res
-              if (data.length) {
-                setFieldValue("country", data[0].title);
-              }
-            });
-        },
-      }}
-    />
-  );
+  return <ResourceForm schema={locationSchema} />;
 };

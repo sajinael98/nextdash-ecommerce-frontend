@@ -1,104 +1,135 @@
 "use client";
 
-import dayjs from "dayjs";
+import { useMemo } from "react";
 import { Schema } from "../../components/admin-panel/dashboard-form/types";
 import ResourceForm from "../../components/admin-panel/resource-form";
+import { useCustom, useDataProvider } from "@refinedev/core";
 
-const schema: Schema = {
-  transactionDate: {
-    type: "date",
-    label: "Date",
+const PurchaseTransactionForm = () => {
+  const dataProvider = useDataProvider();
+  const schema = useMemo<Schema>(
+    () => ({
+      transactionDate: {
+        type: "date",
+        label: "Date",
 
-    default: new Date(),
-  },
-  transactionType: {
-    type: "select",
-    label: "Type",
+        default: new Date(),
+      },
+      transactionType: {
+        type: "select",
+        label: "Type",
 
-    data: [
-      { label: "Received", value: "received".toUpperCase() },
-      { label: "Ordered", value: "ordered".toUpperCase() },
-    ],
-  },
-  warehouseId: {
-    type: "resource",
-    label: "Warehouse",
-
-    resource: "warehouses",
-    optionLabel: "title",
-  },
-  items: {
-    type: "array",
-    label: "Items",
-    fullWidth: true,
-    schema: {
-      itemId: {
+        data: [
+          { label: "Received", value: "received".toUpperCase() },
+          { label: "Ordered", value: "ordered".toUpperCase() },
+        ],
+      },
+      warehouseId: {
         type: "resource",
-        label: "Item",
-        resource: "items",
+        label: "Warehouse",
+        resource: "warehouses",
         optionLabel: "title",
-        view: true,
-        filters(values) {
-            return [
-              {
-                field: "hasSubItems",
-                operator: "eq",
-                value: "No",
-              },
-            ];
-        },
       },
-      uomId: {
-        type: "query",
-        label: "Uom",
-        query(values) {
-          if (values.itemId) {
-            return `/items/${values.itemId}/uoms`;
-          }
-        },
-        view: true,
-      },
-      uomFactor: {
-        type: "number",
-        label: "Uom Factor",
-        visible(values) {
-          return !!values.uomId;
-        },
-      },
-      qty: {
-        type: "number",
-        label: "Qunatity",
-      },
-      price: {
-        type: "number",
-        label: "Price",
+      items: {
+        type: "array",
+        label: "Items",
+        fullWidth: true,
+        schema: {
+          itemId: {
+            type: "resource",
+            label: "Item",
+            resource: "items",
+            filters(values) {
+              return [
+                {
+                  field: "variantInformation.hasSubItems",
+                  operator: "eq",
+                  value: "false",
+                },
+              ];
+            },
+          },
+          item: {
+            type: "string",
+            label: "Item",
+            visible: () => false,
+            view: true,
+          },
+          uomId: {
+            type: "query",
+            label: "Uom",
+            query(values) {
+              if (values.itemId) {
+                return `/items/${values.itemId}/uoms`;
+              }
+            },
+          },
+          uom: {
+            type: "string",
+            label: "uom",
+            view: true,
+            visible: (values) => false,
+          },
+          uomFactor: {
+            type: "number",
+            label: "Uom Factor",
+            visible(values) {
+              return !!values.uomId;
+            },
+            disabled: () => true,
+          },
+          qty: {
+            type: "number",
+            label: "Qunatity",
+            view: true,
+          },
+          stockQty: {
+            type: "number",
+            label: "Stock Qty",
+            visible: (values) => !!values.qty,
+            disabled: () => true,
+          },
+          price: {
+            type: "number",
+            label: "Price",
 
-        view: true,
+            view: true,
+          },
+          total: {
+            type: "number",
+            label: "Total",
+          },
+        },
+        change: {
+          uomId: async function (value, values, { setFieldValue }) {
+            let uomFactor = 0;
+            if (value) {
+              console.log(value);
+              const data = await dataProvider().custom({
+                method: "get",
+                url: `/items/${values.itemId}/uoms/${value}`,
+              });
+              uomFactor = data.data as number;
+            }
+            setFieldValue("uomFactor", uomFactor);
+          },
+          qty: function (value, values, { setFieldValue }) {
+            setFieldValue("total", (value as number) * values.price);
+            setFieldValue("stockQty", (value as number) * values.uomFactor);
+          },
+          price: function (value, values, { setFieldValue }) {
+            setFieldValue("total", (value as number) * values.qty);
+          },
+        },
       },
       total: {
         type: "number",
         label: "Total",
       },
-    },
-    change: {
-      uomId: async function (value, values, { setFieldValue }) {
-       
-      },
-      qty: function (value, values, {setFieldValue}) {
-        setFieldValue("total", value as number * values.price);
-      },
-      price: function (value, values, {setFieldValue}) {
-        setFieldValue("total", value as number * values.qty);
-      },
-    },
-  },
-  total: {
-    type: "number",
-    label: "Total",
-  },
-};
+    }),
+    []
+  );
 
-const PurchaseTransactionForm = () => {
   return (
     <ResourceForm
       schema={schema}

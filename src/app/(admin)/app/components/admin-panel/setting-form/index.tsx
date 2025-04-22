@@ -44,7 +44,7 @@ const SettingForm: React.FC<SettingFormProps> = (props) => {
   });
 
   const values = useMemo(() => {
-    if (query.isFetched) {
+    if (query.isFetched && query.data?.data.length) {
       return JSON.parse(query.data?.data[0].data);
     }
     return {};
