@@ -1,9 +1,10 @@
 "use client";
 
+import { hasLength, isInRange } from "@mantine/form";
+import { useDataProvider } from "@refinedev/core";
 import { useMemo } from "react";
 import { Schema } from "../../components/admin-panel/dashboard-form/types";
 import ResourceForm from "../../components/admin-panel/resource-form";
-import { useCustom, useDataProvider } from "@refinedev/core";
 
 const PurchaseTransactionForm = () => {
   const dataProvider = useDataProvider();
@@ -12,23 +13,24 @@ const PurchaseTransactionForm = () => {
       transactionDate: {
         type: "date",
         label: "Date",
-
         default: new Date(),
+        required: true,
       },
       transactionType: {
         type: "select",
         label: "Type",
-
         data: [
-          { label: "Received", value: "received".toUpperCase() },
-          { label: "Ordered", value: "ordered".toUpperCase() },
+          { label: "PURCHASE", value: "PURCHASE" },
+          { label: "REQUEST", value: "REQUEST" },
+          { label: "RETURN", value: "RETURN" },
         ],
+        required: true,
       },
       warehouseId: {
         type: "resource",
         label: "Warehouse",
         resource: "warehouses",
-        optionLabel: "title",
+        required: true,
       },
       items: {
         type: "array",
@@ -48,6 +50,7 @@ const PurchaseTransactionForm = () => {
                 },
               ];
             },
+            required: true,
           },
           item: {
             type: "string",
@@ -63,6 +66,7 @@ const PurchaseTransactionForm = () => {
                 return `/items/${values.itemId}/uoms`;
               }
             },
+            required: true,
           },
           uom: {
             type: "string",
@@ -82,6 +86,7 @@ const PurchaseTransactionForm = () => {
             type: "number",
             label: "Qunatity",
             view: true,
+            validate: isInRange({ min: 1 }),
           },
           stockQty: {
             type: "number",
@@ -92,8 +97,8 @@ const PurchaseTransactionForm = () => {
           price: {
             type: "number",
             label: "Price",
-
             view: true,
+            validate: isInRange({ min: 1 }, "one item is required at least"),
           },
           total: {
             type: "number",
@@ -104,7 +109,6 @@ const PurchaseTransactionForm = () => {
           uomId: async function (value, values, { setFieldValue }) {
             let uomFactor = 0;
             if (value) {
-              console.log(value);
               const data = await dataProvider().custom({
                 method: "get",
                 url: `/items/${values.itemId}/uoms/${value}`,
@@ -121,10 +125,13 @@ const PurchaseTransactionForm = () => {
             setFieldValue("total", (value as number) * values.qty);
           },
         },
+        required: true,
+        validate: hasLength({ min: 1 }),
       },
       total: {
         type: "number",
         label: "Total",
+        disabled: () => true,
       },
     }),
     []
@@ -134,18 +141,13 @@ const PurchaseTransactionForm = () => {
     <ResourceForm
       schema={schema}
       change={{
-        items: function (
-          value,
-          values,
-          { setFieldError, setFieldValue, setValues }
-        ) {
+        items: function (value, values, { setFieldValue }) {
           setFieldValue(
             "total",
             value.reduce((total, item) => item.total + total, 0)
           );
         },
       }}
-      confirmable
     />
   );
 };

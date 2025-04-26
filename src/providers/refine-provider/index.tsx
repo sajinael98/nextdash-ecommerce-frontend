@@ -16,6 +16,7 @@ import {
   IconPercentage,
   IconPuzzle,
   IconReceipt,
+  IconReport,
   IconSettings,
   IconShirt,
   IconUser,
@@ -148,7 +149,16 @@ const resources: ResourceProps[] = [
     meta: {
       icon: <IconSettings />,
       parent: "buying-management",
-      label: "Buying Setting"
+      label: "Buying Setting",
+    },
+  },
+  {
+    name: "stock-room-summary",
+    list: "/app/stock-room-summary",
+    meta: {
+      icon: <IconReport />,
+      parent: "buying-management",
+      label: "Stock Room Summary",
     },
   },
 ];
