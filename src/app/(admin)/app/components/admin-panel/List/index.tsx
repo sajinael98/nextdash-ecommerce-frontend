@@ -6,6 +6,7 @@ import {
   Divider,
   Group,
   Menu,
+  Portal,
   Skeleton,
   Switch,
 } from "@mantine/core";
@@ -134,7 +135,7 @@ const ResourceList: React.FC<ResourceListProps> = ({ columns: cols }) => {
   return (
     <CanAccess action="read">
       <Box pos="relative">
-        <Group justify="flex-end" pos="absolute" top={-40} right={0}>
+        <Portal target="#page-actions">
           <Menu closeOnItemClick={false}>
             <Menu.Target>
               <div>
@@ -219,7 +220,7 @@ const ResourceList: React.FC<ResourceListProps> = ({ columns: cols }) => {
               <IconPlus />
             </ActionIcon>
           </CanAccess>
-        </Group>
+        </Portal>
         <Box pt="md">
           <DashboardTable table={table} />
         </Box>

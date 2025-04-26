@@ -8,7 +8,7 @@ import {
   BaseRecord,
   useCustomMutation,
   useForm,
-  useResourceParams
+  useResourceParams,
 } from "@refinedev/core";
 import { IconDeviceFloppy, IconMenu2 } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
@@ -148,7 +148,7 @@ const ResourceForm: React.FC<ResourceFormProps> = (props) => {
   return (
     <FormProvider form={resourceForm}>
       <Group grow>
-        <Group justify="flex-end">
+        <Portal target="#page-actions">
           {buttons.length > 0 &&
             buttons.map((button, index) => (
               <Button
@@ -181,7 +181,7 @@ const ResourceForm: React.FC<ResourceFormProps> = (props) => {
               )}
             </Menu.Dropdown>
           </Menu>
-        </Group>
+        </Portal>
       </Group>
 
       <form onSubmit={saveHandler}>

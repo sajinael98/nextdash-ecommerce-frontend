@@ -26,10 +26,15 @@ const StockRoomSummaryReport = () => {
           defaultValue: new Date(),
           required: true,
         },
-        items: {
+        item: {
           type: "resource",
-          label: "Items",
+          label: "Item",
           resource: "items",
+        },
+        warehouse: {
+          type: "resource",
+          label: "Warehouse",
+          resource: "warehouses",
         },
       }}
     />
