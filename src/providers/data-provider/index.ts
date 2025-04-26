@@ -118,7 +118,7 @@ const dataProvider = (apiUrl: string): DataProvider => ({
       Authorization: "Bearer " + session?.user.token,
       ...params.headers,
     };
-
+   
     switch (params.method) {
       case "post":
         return axiosInstance.post(`${apiUrl}/${params.url}`, params.payload, {
@@ -128,6 +128,7 @@ const dataProvider = (apiUrl: string): DataProvider => ({
       case "get":
         return axiosInstance.get(`${apiUrl}/${params.url}`, {
           headers,
+          params: params?.meta?.params,
         });
       case "patch":
         return axiosInstance.patch(`${apiUrl}/${params.url}`, params.payload, {

@@ -1,230 +1,239 @@
 "use client";
 
-import { Box, Button, Grid, Group, Menu, Skeleton, Table } from "@mantine/core";
+import { Box, Button, Grid, Group, List, Menu, Portal } from "@mantine/core";
+import { useForm as useMantineForm } from "@mantine/form";
+import { useDebouncedCallback } from "@mantine/hooks";
 import { modals } from "@mantine/modals";
 import {
   BaseRecord,
+  useCustomMutation,
   useForm,
-  useLogList,
-  useResourceParams,
+  useResourceParams
 } from "@refinedev/core";
-import { IconClock, IconMenu2 } from "@tabler/icons-react";
-import React from "react";
-import AutoForm from "../dashboard-form";
-import { FieldChange, Schema } from "../dashboard-form/types";
+import { IconDeviceFloppy, IconMenu2 } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
-import { getSession } from "next-auth/react";
-import { axiosInstance } from "@refinedev/simple-rest";
+import React, { useEffect, useMemo } from "react";
+import {
+  FieldContainer,
+  FormProvider,
+  getInitialValues,
+  getValidate,
+} from "../dashboard-form";
+import { Schema } from "../dashboard-form/types";
+import { ResourceFormProps } from "./types";
 
-interface ResourceFormProps {
-  schema: Schema;
-  menuItems?: { label: string; onClick: (values: BaseRecord) => void }[];
-  readOnly?: boolean;
-  change?: FieldChange;
-  confirmable?: boolean;
-}
-
-export const FormSkeleton = () => (
-  <Box pos="relative">
-    <Group justify="flex-end" pos="absolute" top={-40} right={0}>
-      <Skeleton w={120} h={40} />
-      <Skeleton w={120} h={40} />
-    </Group>
-    <Grid mb="md">
-      <Grid.Col span={{ base: 12, md: 6 }}>
-        <Skeleton h={10} w={80} mb="sm" />
-        <Skeleton h={40} />
-      </Grid.Col>
-      <Grid.Col span={{ base: 12, md: 6 }}>
-        <Skeleton h={10} w={80} mb="sm" />
-        <Skeleton h={40} />
-      </Grid.Col>
-      <Grid.Col span={{ base: 12, md: 6 }}>
-        <Skeleton h={10} w={80} mb="sm" />
-        <Skeleton h={40} />
-      </Grid.Col>
-      <Grid.Col span={{ base: 12, md: 6 }}>
-        <Skeleton h={10} w={80} mb="sm" />
-        <Skeleton h={40} />
-      </Grid.Col>
-      <Grid.Col span={12}>
-        <Skeleton h={10} w={80} mb="sm" />
-        <Skeleton h={200} />
-      </Grid.Col>
-    </Grid>
-    <Group justify="flex-end">
-      <Skeleton w={120} h={40} />
-    </Group>
-  </Box>
-);
-
-const AuditContent: React.FC<{ resource: string; id: number }> = (props) => {
-  const { id, resource } = props;
-  const { data, isFetching } = useLogList({
-    resource,
-    meta: {
-      id,
-    },
+const setupFieldWatchers = (
+  change: Record<string, Function>,
+  form: ReturnType<typeof useMantineForm>,
+  handler: (field: string, value: any) => void
+) => {
+  Object.keys(change).forEach((field) => {
+    form.watch(field, ({ value }) => handler(field, value));
   });
-
-  if (isFetching) {
-    return <div>loading...</div>;
-  }
-
-  return (
-    <Table striped highlightOnHover withTableBorder withColumnBorders>
-      <Table.Thead>
-        <Table.Tr>
-          <Table.Th>User</Table.Th>
-          <Table.Th>Action</Table.Th>
-          <Table.Th>Date</Table.Th>
-        </Table.Tr>
-      </Table.Thead>
-      <Table.Tbody>
-        {data?.data?.map((log, index) => (
-          <Table.Tr key={index}>
-            <Table.Td>{log.username}</Table.Td>
-            <Table.Td>{log.action}</Table.Td>
-            <Table.Td>{log.createdDate}</Table.Td>
-          </Table.Tr>
-        ))}
-      </Table.Tbody>
-    </Table>
-  );
 };
 
 const ResourceForm: React.FC<ResourceFormProps> = (props) => {
   const {
     schema,
+    buttons = [],
     menuItems = [],
     readOnly = false,
     change = {},
-    confirmable,
   } = props;
+
   const { identifier, action, id } = useResourceParams();
+  if (!identifier) {
+    throw Error("ResourceForm is only used with resources");
+  }
+
   const router = useRouter();
-  const { formLoading, onFinish, query, mutation } = useForm({
+
+  const form = useForm({
     onMutationSuccess(data, variables, context, isAutoSave) {
-      if (action === "create") {
-        router.push(`/app/${identifier}/${data.data.id}`);
-      } else {
-        router.replace(`/app/${identifier}/${data.data.id}`);
-      }
+      router.replace(`/app/${identifier}/${data.data.id}`);
     },
   });
 
-  if (!identifier) {
-    throw Error("This component is allowed only for resources.");
-  }
+  const initialValues = useMemo(() => {
+    const values = getInitialValues(schema, {});
+    values["isNew"] = action === "create";
+    return values;
+  }, []);
 
-  function saveHandler(values: BaseRecord) {
-    onFinish(values);
-  }
+  const validate = useMemo(() => getValidate(schema), []);
 
-  function auditHandler() {
-    if (!id) {
+  const resourceForm = useMantineForm({
+    initialValues,
+    validate,
+  });
+
+  const generateFields = (schema: Schema, readOnly: boolean) =>
+    Object.entries(schema).map(([name, props]) => (
+      <FieldContainer
+        key={name}
+        name={name}
+        {...props}
+        {...(readOnly && { disabled: () => true })}
+      />
+    ));
+
+  const fields = useMemo(
+    () =>
+      generateFields(
+        schema,
+        readOnly || resourceForm.getValues().status === "CONFIRMED"
+      ),
+    [schema, readOnly, resourceForm.getValues().status]
+  );
+
+  const fieldChangeHandler = useDebouncedCallback((field, value) => {
+    change[field](value, resourceForm.getValues(), {
+      setValues: resourceForm.setValues,
+      setFieldValue: resourceForm.setFieldValue,
+      setFieldError: resourceForm.setFieldError,
+    });
+  }, 500);
+
+  setupFieldWatchers(change, resourceForm, fieldChangeHandler);
+
+  const confirmMutation = useCustomMutation();
+
+  const handleError = (errors: typeof resourceForm.errors) => {
+    if (Object.keys(errors).length) {
+      modals.open({
+        title: "Missing Values",
+        children: (
+          <>
+            <List>
+              {Object.entries(errors).map(([field, msg]) => (
+                <List.Item key={field}>
+                  {field}: {msg}
+                </List.Item>
+              ))}
+            </List>
+          </>
+        ),
+      });
+    }
+  };
+
+  const saveHandler = resourceForm.onSubmit(
+    (values) => form.onFinish(values),
+    handleError
+  );
+
+  const handleConfirmAction = async (confirm: boolean) => {
+    await confirmMutation.mutateAsync({
+      method: "patch",
+      url: `/${identifier}/${id}/${confirm ? "confirm" : "cancel"}`,
+      values: {},
+    });
+    form.query?.refetch();
+  };
+
+  useEffect(() => {
+    if (!form.query?.data?.data) {
       return;
     }
-    modals.open({
-      title: "History",
-      size: "lg",
-      children: (
-        <AuditContent resource={identifier as string} id={id as number} />
-      ),
-    });
-  }
+    const data = form.query.data?.data as BaseRecord;
+    resourceForm.setValues(data);
+    resourceForm.resetDirty(data);
+  }, [form.query?.data?.data]);
 
-  async function changeStatusHandler(status: "DRAFT" | "CONFIRMED") {
-    const modalConfig = {
-      title: status === "DRAFT" ? "Cancel" : "Confirm",
-      message: "Are you sure you want to proceed?",
-      actionUri: status === "DRAFT" ? "cancel" : "confirm",
-    };
-
-    modals.openConfirmModal({
-      title: modalConfig.title,
-      children: modalConfig.message,
-      labels: { confirm: "Yes", cancel: "No" },
-      onConfirm: async () => {
-        try {
-          const session = await getSession();
-          if (!session?.user.token) {
-            throw new Error("User token is missing");
-          }
-
-          await axiosInstance.patch(
-            `/backend-api/${identifier}/${id}/${modalConfig.actionUri}`,
-            { status },
-            {
-              headers: {
-                Authorization: `Bearer ${session.user.token}`,
-              },
-            }
-          );
-
-          query?.refetch();
-        } catch (error) {
-          console.error("Error updating status:", error);
-          // Optionally, display an error message to the user
-        }
-      },
-    });
-  }
-
-  if (action === "edit" && query?.isLoading) {
-    return <FormSkeleton />;
-  }
+  useEffect(() => {
+    if (action === "create" && form.mutation.isSuccess) {
+    }
+  }, [action]);
 
   return (
-    <Box pos="relative">
-      {action === "edit" && (
-        <Group justify="flex-end" pos="absolute" top={-40} right={0}>
-          <Button
-            leftSection={<IconClock />}
-            onClick={auditHandler}
-            variant="light"
-          >
-            Audit
-          </Button>
-          <Menu>
+    <FormProvider form={resourceForm}>
+      <Group grow>
+        <Group justify="flex-end">
+          {buttons.length > 0 &&
+            buttons.map((button, index) => (
+              <Button
+                key={index}
+                onClick={() => button.onClick(resourceForm.getValues())}
+              >
+                {button.label}
+              </Button>
+            ))}
+          <Menu width={200} position="bottom-end">
             <Menu.Target>
-              <Button leftSection={<IconMenu2 />} variant="light">
+              <Button variant="light" leftSection={<IconMenu2 />}>
                 Menu
               </Button>
             </Menu.Target>
             <Menu.Dropdown>
-              {query?.data?.data.status === "CONFIRMED" && (
-                <Menu.Item onClick={() => changeStatusHandler("DRAFT")}>
-                  Cancel
-                </Menu.Item>
+              <Menu.Item>Delete</Menu.Item>
+              {menuItems.length > 0 && (
+                <>
+                  <Menu.Divider />
+                  {menuItems.map((menuItem, index) => (
+                    <Menu.Item
+                      key={index}
+                      onClick={() => menuItem.onClick(resourceForm.getValues())}
+                    >
+                      {menuItem.label}
+                    </Menu.Item>
+                  ))}
+                </>
               )}
-              {confirmable && query?.data?.data.status === "DRAFT" && (
-                <Menu.Item onClick={() => changeStatusHandler("CONFIRMED")}>
-                  Confirm
-                </Menu.Item>
-              )}
-              {menuItems.map((item) => (
-                <Menu.Item
-                  key={item.label}
-                  onClick={() => item.onClick(query?.data?.data ?? {})}
-                >
-                  {item.label}
-                </Menu.Item>
-              ))}
             </Menu.Dropdown>
           </Menu>
         </Group>
-      )}
-      <AutoForm
-        schema={schema}
-        onSubmit={saveHandler}
-        values={query?.data?.data ?? { isNew: action === "create" }}
-        readOnly={
-          readOnly || query?.data?.data.status === "CONFIRMED" || formLoading
-        }
-        change={change}
-      />
-    </Box>
+      </Group>
+
+      <form onSubmit={saveHandler}>
+        <Grid mb="md">{fields}</Grid>
+        <Group justify="flex-end">
+          {resourceForm.getValues().status === "DRAFT" &&
+            action === "edit" &&
+            resourceForm.isDirty() && (
+              <Button
+                leftSection={<IconDeviceFloppy />}
+                type="submit"
+                loading={form.query?.isFetching || form.formLoading}
+              >
+                Save
+              </Button>
+            )}
+          {resourceForm.getValues().status === "DRAFT" &&
+            action === "edit" &&
+            !resourceForm.isDirty() && (
+              <Button
+                leftSection={<IconDeviceFloppy />}
+                loading={confirmMutation.isLoading}
+                onClick={() => handleConfirmAction(true)}
+              >
+                Confirm
+              </Button>
+            )}
+
+          {resourceForm.getValues().status === "CONFIRMED" &&
+            action === "edit" &&
+            !resourceForm.isDirty() && (
+              <Button
+                leftSection={<IconDeviceFloppy />}
+                loading={confirmMutation.isLoading}
+                onClick={() => handleConfirmAction(false)}
+              >
+                Cancel
+              </Button>
+            )}
+          {action === "create" && (
+            <Button
+              leftSection={<IconDeviceFloppy />}
+              type="submit"
+              loading={form.query?.isFetching || form.formLoading}
+              disabled={!resourceForm.isDirty()}
+            >
+              Save
+            </Button>
+          )}
+        </Group>
+      </form>
+    </FormProvider>
   );
 };
 

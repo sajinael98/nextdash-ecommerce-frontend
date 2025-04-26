@@ -35,7 +35,7 @@ import QueryField from "./QueryField";
 export const [FormProvider, useFormContext, useForm] =
   createFormContext<BaseRecord>();
 
-function getField(name: string, props: BaseSchemaField) {
+export function getField(name: string, props: BaseSchemaField) {
   switch (props.type) {
     case "string":
       return StringField;
@@ -89,7 +89,7 @@ export const FieldContainer: React.FC<Fields & { name: string }> = (props) => {
     <Grid.Col span={fullWidth ? 12 : { base: 12, md: 6 }}>
       <Fieldset
         legend={
-          <Text {...(type === "boolean" && {h:'var(--mantine-spacing-md)'})}>
+          <Text {...(type === "boolean" && { h: "var(--mantine-spacing-md)" })}>
             {!["object", "boolean"].includes(type) && label}
             {required && (
               <Text pos="relative" top={-5} c="red.8" fz="xs" span>
@@ -112,7 +112,12 @@ export const FieldContainer: React.FC<Fields & { name: string }> = (props) => {
           </Accordion>
         )}
         {type !== "object" && (
-          <Field name={name} {...fieldProps} {...schemaProps} {...(type === "boolean" && {label: label})} />
+          <Field
+            name={name}
+            {...fieldProps}
+            {...schemaProps}
+            {...(type === "boolean" && { label: label })}
+          />
         )}
 
         {description && (
@@ -214,6 +219,24 @@ export function getValidate(schema: Schema) {
       return validate;
     }, {});
 }
+const handleError = (errors: typeof Error) => {
+  if (Object.keys(errors).length) {
+    modals.open({
+      title: "Missing Values",
+      children: (
+        <>
+          <List>
+            {Object.entries(errors).map(([field, msg]) => (
+              <List.Item key={field}>
+                {field}: {msg}
+              </List.Item>
+            ))}
+          </List>
+        </>
+      ),
+    });
+  }
+};
 
 const AutoForm: React.FC<AutoFormProps> = (props) => {
   const {
@@ -277,25 +300,6 @@ const AutoForm: React.FC<AutoFormProps> = (props) => {
       </Grid.Col>
     </Grid>
   );
-
-  const handleError = (errors: typeof form.errors) => {
-    if (Object.keys(errors).length) {
-      modals.open({
-        title: "Missing Values",
-        children: (
-          <>
-            <List>
-              {Object.entries(errors).map(([field, msg]) => (
-                <List.Item key={field}>
-                  {field}: {msg}
-                </List.Item>
-              ))}
-            </List>
-          </>
-        ),
-      });
-    }
-  };
 
   const fieldChangeHandler = useDebouncedCallback((field, value) => {
     change[field](value, form.getValues(), {
