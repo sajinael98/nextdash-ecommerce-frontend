@@ -2,14 +2,23 @@
 
 import React, {
   forwardRef,
-  PropsWithChildren,
+  useEffect,
   useImperativeHandle,
-  useMemo,
+  useMemo
 } from "react";
 
-import { Checkbox, List, NumberInput, Select, TextInput } from "@mantine/core";
+import {
+  Checkbox,
+  Fieldset,
+  List,
+  NumberInput,
+  Select,
+  TextInput
+} from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import { isNotEmpty, useForm } from "@mantine/form";
+import { useDebouncedCallback } from "@mantine/hooks";
+import { modals } from "@mantine/modals";
 import { BaseRecord, useSelect } from "@refinedev/core";
 import { FormProvider, useFormContext } from "../dashboard-form";
 import {
@@ -23,13 +32,11 @@ import {
   SelectFieldProps,
   Types,
 } from "./types";
-import { useDebouncedCallback } from "@mantine/hooks";
-import { modals } from "@mantine/modals";
 
 const TextField: React.FC<FieldProps> = (props) => {
   const { name } = props;
-  const formCtx = useFormContext();
-  return <TextInput size="sm" {...formCtx.getInputProps(name)} />;
+  const form = useFormContext();
+  return <TextInput size="sm" {...form.getInputProps(name)} />;
 };
 
 const NumberField: React.FC<FieldProps> = (props) => {
@@ -184,7 +191,15 @@ export const AutoFormBuilder = forwardRef<
   AutoFormBuilderHandle,
   AutoFormBuilderProps
 >((props, ref) => {
-  const { fields, fieldContainer, change = {}, values = {}, onSubmit } = props;
+  const {
+    fields,
+    fieldContainer,
+    change = {},
+    values = {},
+    onSubmit,
+    readonly,
+    isDirty = () => {},
+  } = props;
 
   const form = useForm({
     validate: getValidate(fields),
@@ -203,10 +218,36 @@ export const AutoFormBuilder = forwardRef<
     form.watch(field, ({ value }) => fieldChangeHandler(field, value));
   });
 
-  const formFields = Object.entries(fields).map(([name, props]) => {
-    const { label, type, defaultValue, ...fieldProps } = props;
-    const Field = getField(props.type);
-    return fieldContainer(props, <Field name={name} {...fieldProps}  />);
+  const visibleFields = useMemo(() => {
+    return Object.entries(fields).filter(([name, props]) =>
+      props.visible ? props.visible(form.values) : true
+    );
+  }, [fields, form.values]);
+
+  const formFields = visibleFields.map(([name, props]) => {
+    const {
+      label,
+      type,
+      defaultValue,
+      disabled = () => false,
+      required = false,
+      description,
+      ...fieldProps
+    } = props;
+
+    const Field = getField(type);
+    const { error } = form.getInputProps(name);
+
+    const shouldDisabled = readonly || disabled(form.values);
+
+    const FieldContainer = fieldContainer(
+      props,
+      <Fieldset disabled={shouldDisabled} variant="unstyled">
+        <Field name={name} {...fieldProps} />
+      </Fieldset>
+    );
+
+    return FieldContainer;
   });
 
   const handleError = (errors: typeof form.errors) => {
@@ -214,28 +255,35 @@ export const AutoFormBuilder = forwardRef<
       modals.open({
         title: "Missing Values",
         children: (
-          <>
-            <List>
-              {Object.entries(errors).map(([field, msg]) => (
-                <List.Item key={field}>
-                  {field}: {msg}
-                </List.Item>
-              ))}
-            </List>
-          </>
+          <List spacing="xs" size="sm">
+            {Object.entries(errors).map(([field, msg]) => (
+              <List.Item key={field}>
+                <strong>{field}</strong>: {msg}
+              </List.Item>
+            ))}
+          </List>
         ),
       });
     }
   };
 
-  useImperativeHandle(ref, () => ({
-    submit: () => {
-      form.onSubmit(onSubmit, handleError)();
-    },
-    isDirty: form.isDirty(),
-    values: form.getValues(),
-  }));
+  useImperativeHandle(
+    ref,
+    () => ({
+      submit: () => form.onSubmit(onSubmit, handleError)(),
+      values: form.getValues(),
+      setValues: form.setValues,
+      resetDirty: () => form.resetDirty(form.getValues()),
+    }),
+    [form]
+  );
 
+  useEffect(() => {
+    isDirty(form.isDirty());
+  });
   return <FormProvider form={form}>{formFields}</FormProvider>;
 });
+
 export default AutoFormBuilder;
+
+AutoFormBuilder.displayName = "AutoFormBuilder";

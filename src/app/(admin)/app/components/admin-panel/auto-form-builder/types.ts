@@ -2,10 +2,10 @@ import { ComboboxData } from "@mantine/core";
 import {
   SetFieldError,
   SetFieldValue,
-  SetValues,
+  SetValues
 } from "@mantine/form/lib/types";
 import { BaseRecord } from "@refinedev/core";
-import React, { PropsWithChildren } from "react";
+import React from "react";
 
 // report view
 export interface Schema {
@@ -20,6 +20,8 @@ export interface AutoFormBuilderProps {
   ) => React.ReactNode;
   change?: FieldChange;
   onSubmit: (values: BaseRecord) => void;
+  readonly?: boolean;
+  isDirty?: (isDirty: boolean) => void;
 }
 
 // Fields
@@ -108,8 +110,9 @@ export interface FieldChange {
 
 export interface AutoFormBuilderHandle {
   submit: () => void;
-  isDirty: boolean;
   values: Record<string, any>;
+  setValues: SetValues<Record<string, any>>;
+  resetDirty: VoidFunction;
 }
 
 export type FieldComponentMap = {
