@@ -2,7 +2,7 @@ import { ComboboxData } from "@mantine/core";
 import {
   SetFieldError,
   SetFieldValue,
-  SetValues
+  SetValues,
 } from "@mantine/form/lib/types";
 import { BaseRecord } from "@refinedev/core";
 import React from "react";
@@ -18,6 +18,7 @@ export interface AutoFormBuilderProps {
     props: BaseFieldConfig | SelectFieldConfig | ResourceFieldConfig,
     field: React.ReactNode
   ) => React.ReactNode;
+  formContainer: (field: React.ReactNode) => React.ReactNode;
   change?: FieldChange;
   onSubmit: (values: BaseRecord) => void;
   readonly?: boolean;
@@ -26,7 +27,14 @@ export interface AutoFormBuilderProps {
 
 // Fields
 export interface BaseFieldConfig {
-  type: "string" | "number" | "boolean" | "select" | "resource" | "date";
+  type:
+    | "string"
+    | "number"
+    | "boolean"
+    | "select"
+    | "resource"
+    | "date"
+    | "object";
   defaultValue?: string | number | boolean | Date | [Date, Date];
   label: string;
   required?: boolean;
@@ -75,6 +83,11 @@ export interface DateFieldConfig extends BaseFieldConfig {
   defaultValue?: Date;
 }
 
+export interface ObjectFieldConfig extends BaseFieldConfig {
+  type: "object";
+  schema: AutoFormBuilderProps;
+}
+
 export interface FieldProps {
   name: string;
 }
@@ -88,13 +101,18 @@ export interface ResourceFieldProps extends FieldProps {
   optionLabel?: string;
 }
 
+export interface ObjectFieldProps extends FieldProps {
+  schema: Schema;
+}
+
 type FieldTypes =
   | StringFieldConfig
   | NumberFieldConfig
   | BooleanFieldConfig
   | SelectFieldConfig
   | ResourceFieldConfig
-  | DateFieldConfig;
+  | DateFieldConfig
+  | ObjectFieldConfig;
 
 export interface FieldChange {
   [key: string]: (
@@ -122,4 +140,5 @@ export type FieldComponentMap = {
   date: React.FC<FieldProps>;
   resource: React.FC<ResourceFieldProps>;
   select: React.FC<SelectFieldProps>;
+  object: React.FC<ObjectFieldConfig>;
 };

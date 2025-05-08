@@ -1,6 +1,14 @@
 "use client";
 
-import { Button, Grid, Group, Menu, Portal, Text } from "@mantine/core";
+import {
+  Accordion,
+  Button,
+  Grid,
+  Group,
+  Menu,
+  Portal,
+  Text,
+} from "@mantine/core";
 import {
   BaseRecord,
   useCustomMutation,
@@ -149,24 +157,37 @@ const ResourceForm: React.FC<ResourceFormProps> = (props) => {
 
       {form.query && (
         <>
-          <Grid mb="md">
-            <AutoFormBuilder
-              readonly={readOnly}
-              onSubmit={(values) => {
-                form.onFinish(values);
-              }}
-              change={change}
-              fields={schema}
-              ref={formRef}
-              fieldContainer={(props, field) => (
+          <AutoFormBuilder
+            formContainer={(form) => <Grid>{form}</Grid>}
+            readonly={readOnly}
+            onSubmit={(values) => {
+              form.onFinish(values);
+            }}
+            change={change}
+            fields={schema}
+            ref={formRef}
+            fieldContainer={(props, field) => {
+              if (props.type === "object") {
+                return (
+                  <Grid.Col span={{ base: 12 }}>
+                    <Accordion variant="separated">
+                      <Accordion.Item value={props.label}>
+                        <Accordion.Control>{props.label}</Accordion.Control>
+                        <Accordion.Panel>{field}</Accordion.Panel>
+                      </Accordion.Item>
+                    </Accordion>
+                  </Grid.Col>
+                );
+              }
+              return (
                 <Grid.Col span={{ base: 12, md: 6 }}>
                   <Text>{props.label}</Text>
                   {field}
                 </Grid.Col>
-              )}
-              isDirty={(dirty) => setIsDirty(dirty)}
-            />
-          </Grid>
+              );
+            }}
+            isDirty={(dirty) => setIsDirty(dirty)}
+          />
 
           <Group justify="flex-end">{renderActionButtons()}</Group>
         </>

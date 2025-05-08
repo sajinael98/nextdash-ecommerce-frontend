@@ -1,7 +1,8 @@
 import { BaseRecord } from "@refinedev/core";
-import { AutoFormProps, Schema } from "../dashboard-form/types";
+import { AutoFormBuilderProps, Schema } from "../auto-form-builder/types";
 
-export interface ResourceFormProps extends Pick<AutoFormProps, "change"> {
+export interface ResourceFormProps
+  extends Pick<AutoFormBuilderProps, "change"> {
   schema: Schema;
   confirmable?: boolean;
   readOnly?: boolean;

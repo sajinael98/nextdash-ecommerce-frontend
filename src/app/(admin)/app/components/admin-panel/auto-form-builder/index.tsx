@@ -4,7 +4,7 @@ import React, {
   forwardRef,
   useEffect,
   useImperativeHandle,
-  useMemo
+  useMemo,
 } from "react";
 
 import {
@@ -13,7 +13,7 @@ import {
   List,
   NumberInput,
   Select,
-  TextInput
+  TextInput,
 } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import { isNotEmpty, useForm } from "@mantine/form";
@@ -27,10 +27,11 @@ import {
   BaseFieldConfig,
   FieldComponentMap,
   FieldProps,
+  ObjectFieldConfig,
   ResourceFieldProps,
   Schema,
   SelectFieldProps,
-  Types,
+  Types
 } from "./types";
 
 const TextField: React.FC<FieldProps> = (props) => {
@@ -83,6 +84,11 @@ const DateField: React.FC<FieldProps> = (props) => {
   return <DateInput size="sm" {...form.getInputProps(name)} />;
 };
 
+const ObjectField: React.FC<ObjectFieldConfig> = (props) => {
+  const { schema } = props;
+  return <AutoFormBuilder {...schema} />;
+};
+
 const fieldMap: FieldComponentMap = {
   string: TextField,
   number: NumberField,
@@ -90,6 +96,7 @@ const fieldMap: FieldComponentMap = {
   date: DateField,
   resource: ResourceField,
   select: SelectField,
+  object: ObjectField,
 };
 
 function getField(
@@ -109,11 +116,11 @@ function getValidate(schema: Schema) {
       ([field, props]) => props.required || !!props.validate //|| props.type === "object"
     )
     .reduce<Record<string, any>>((validate, [field, props]) => {
-      if (false /*props.type === "object"*/) {
-        // const obj = getValidate(props.schema as ObjectSchemaField);
-        // if (Object.keys(obj)) {
-        //   validate[field] = obj;
-        // }
+      if (props.type === "object") {
+        const obj = getValidate(props.schema);
+        if (Object.keys(obj)) {
+          validate[field] = obj;
+        }
       } else {
         if (props.required) {
           validate[field] = (value: any, values: BaseRecord) => {
@@ -155,14 +162,14 @@ const getDefault = (props: BaseFieldConfig) => {
   switch (props.type) {
     case "string":
       return props.defaultValue ?? "";
-    // case "object":
-    //   return Object.entries(props?.schema ?? {}).reduce<Record<string, any>>(
-    //     (obj, [name, props]) => {
-    //       obj[name] = getDefault(props);
-    //       return obj;
-    //     },
-    //     {}
-    //   );
+    case "object":
+      return Object.entries(props?.schema ?? {}).reduce<Record<string, any>>(
+        (obj, [name, props]) => {
+          obj[name] = getDefault(props);
+          return obj;
+        },
+        {}
+      );
     // case "array": {
     //   return [];
     // }
@@ -199,6 +206,7 @@ export const AutoFormBuilder = forwardRef<
     onSubmit,
     readonly,
     isDirty = () => {},
+    formContainer,
   } = props;
 
   const form = useForm({
@@ -281,7 +289,7 @@ export const AutoFormBuilder = forwardRef<
   useEffect(() => {
     isDirty(form.isDirty());
   });
-  return <FormProvider form={form}>{formFields}</FormProvider>;
+  return <FormProvider form={form}>{formContainer(formFields)}</FormProvider>;
 });
 
 export default AutoFormBuilder;
